@@ -1,1 +1,1 @@
-Sitemap: https://pranath.github.io/blog/sitemap.xml
+Sitemap: http://livingdatalab.com/blog/sitemap.xml
