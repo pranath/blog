@@ -1,11 +1,9 @@
 ---
 layout: page
-title: About Me
+title: About Livingdatalab
 permalink: /about/
 ---
 
-This website is powered by **[fastpages](https://github.com/fastai/fastpages)** [^1].
+Livingdatalab is the personal blog of Pranath Fernando, a Data Scientist at Southern Water UK.
 
-
-
-[^1]:a blogging platform that natively supports Jupyter notebooks in addition to other formats.
+I have a special interest in Deep Learning and its applications.
