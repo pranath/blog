@@ -29,7 +29,7 @@
       "page9": {
           "title": "",
           "content": "Sitemap: {{ “sitemap.xml” | absolute_url }} | .",
-          "url": "https://www.livingdatalab.com/robots.txt",
+          "url": "https://livingdatalab.com/robots.txt",
           "relUrl": "/robots.txt",
           "date": ""
       }
