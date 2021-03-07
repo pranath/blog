@@ -6,11 +6,11 @@ categories: [markdown]
 title: An Example Markdown Post
 comments: true
 ---
+![]({{site.baseurl}}/images/chart-preview.png "https://github.com/pranath/fastpages")
+
 # Example Markdown Post
 
 ## Basic setup
-
-![]({{site.baseurl}}/images/chart-preview.png "https://github.com/pranath/fastpages")
 
 Jekyll requires blog post files to be named according to the following format:
 
