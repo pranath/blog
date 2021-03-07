@@ -1,1 +1,1 @@
-Sitemap: http://livingdatalab.com/blog/sitemap.xml
+Sitemap: https://www.livingdatalab.com/blog/sitemap.xml
