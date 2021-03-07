@@ -5,8 +5,8 @@ description: A minimal example of using markdown with fastpages.
 categories: [markdown]
 title: An Example Markdown Post
 comments: true
+image: images/chart-preview.png
 ---
-![]({{site.baseurl}}/images/chart-preview.png "https://github.com/pranath/fastpages")
 
 # Example Markdown Post
 
