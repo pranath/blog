@@ -10,6 +10,8 @@ comments: true
 
 ## Basic setup
 
+![]({{site.baseurl}}/images/chart-preview.png "https://github.com/pranath/fastpages")
+
 Jekyll requires blog post files to be named according to the following format:
 
 `YEAR-MONTH-DAY-filename.md`
