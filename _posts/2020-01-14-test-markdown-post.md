@@ -6,6 +6,7 @@ categories: [markdown]
 title: An Example Markdown Post
 comments: false
 image: images/chart-preview.png
+hide: true
 ---
 
 # Example Markdown Post
