@@ -100,9 +100,27 @@ window.onload = wrap_img;
     </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <h1 id="what-ai-can-tell-us-about-the-hidden-preferences-of-human-beings">What AI can tell us about the hidden preferences of human beings</h1>
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#what-ai-can-tell-us-about-the-hidden-preferences-of-human-beings">What AI can tell us about the hidden preferences of human beings</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#introduction">Introduction</a></li>
+<li class="toc-entry toc-h2"><a href="#what-are-recommendation-systems">What are Recommendation Systems?</a></li>
+<li class="toc-entry toc-h2"><a href="#creating-a-book-recommendation-system">Creating a book recommendation system</a></li>
+<li class="toc-entry toc-h2"><a href="#going-down-the-rabbit-hole-what-is-our-book-recommendation-system-actually-doing">Going down the rabbit hole: what is our book recommendation system actually doing?</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#looking-at-bias">Looking at bias</a></li>
+<li class="toc-entry toc-h3"><a href="#looking-at-other-latent-factors">Looking at other latent factors</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#discussion">Discussion</a></li>
+<li class="toc-entry toc-h2"><a href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul><h1 id="what-ai-can-tell-us-about-the-hidden-preferences-of-human-beings">
+<a class="anchor" href="#what-ai-can-tell-us-about-the-hidden-preferences-of-human-beings" aria-hidden="true"><span class="octicon octicon-link"></span></a>What AI can tell us about the hidden preferences of human beings</h1>
 
-<h2 id="introduction">Introduction</h2>
+<h2 id="introduction">
+<a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
 
 <p>AI systems are increasingly being used in almost every area of human activity, from the online world, in streaming media, social media &amp; online shopping - to the offline world, in policing, healthcare and other public services as well as many different physical industries such as water, energy, agriculture and manufacturing. These applications of AI are having a huge impact, often beyond what is commonly known to the public, both <a href="https://www.nature.com/articles/d41586-020-03348-4" target="_blank">positive</a> and <a href="https://www.fast.ai/2017/11/02/ethics/" target="_blank">negative</a>.</p>
 
@@ -112,12 +130,13 @@ window.onload = wrap_img;
 
 <p>In this article I’m going to look at one particular area of AI application called Recommendation Systems. For a recent project, I created an AI system for recommending new books to readers. I then extended the project to study how this AI book recommendation system itself was working, and discovered what it had learnt about the hidden preferences of book readers.</p>
 
-<h2 id="what-are-recommendation-systems">What are Recommendation Systems?</h2>
+<h2 id="what-are-recommendation-systems">
+<a class="anchor" href="#what-are-recommendation-systems" aria-hidden="true"><span class="octicon octicon-link"></span></a>What are Recommendation Systems?</h2>
 <p>Recommendation systems are very common particularly in online services. For example, Amazon suggestions for alternative products, on Netflix suggestions for films, on Spotify for music, or on Facebook for the content you see on your newsfeed. All of these services and more use recommendation systems to suggest new content to people, but what are these systems and how do these actually work?</p>
 
 <p>A very simple approach might be to recommend the most popular items to people. Of course, popular items would probably appeal to many - but not to everyone. With modern AI based recommendation systems we can do much better than this, to make more personalised suggestions that are unique to each person. There are two main approaches to this: content-based filtering and collaborative filtering.</p>
 
-<p><img src="/images/reccsystems.png" alt="" title="Types of Reccomendation Systems" /></p>
+<p><img src="/images/reccsystems.png" alt="" title="Types of Reccomendation Systems"></p>
 
 <p>With content-based filtering, we look at the content a person has previously looked at (eg songs or films you have previously watched) as a basis to recommend new content. In this case, the AI system does the work here to understand what content is similar, for example what films are similar. This might be based on more obvious things such as the film genre, or which actors are in the film. However it can also be based on less obvious things that the AI can learn for itself about what makes films similar or different, things that are not given to the AI at all, but that the AI system can learn itself. These hidden aspects are called latent factors.</p>
 
@@ -125,22 +144,25 @@ window.onload = wrap_img;
 
 <p>But what truly makes people similar or different in their preferences can also be based on less obvious things, more nuanced and subtle reasons, things people often do not perhaps even understand themselves, biases, etc that are hidden and unconscious, and yet drive and influence people’s choices and behaviour. These hidden biases and influences are things not given to the AI at all, how could they be? and yet, they are things AI systems can still learn about for itself, which are again here called latent factors.</p>
 
-<h2 id="creating-a-book-recommendation-system">Creating a book recommendation system</h2>
+<h2 id="creating-a-book-recommendation-system">
+<a class="anchor" href="#creating-a-book-recommendation-system" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating a book recommendation system</h2>
 <p>For my book recommendation system, I used the collaborative filtering approach. The data I used to create this system is the Book Crossing dataset, which is data on peoples book ratings of around 27,000 different books, from the Book Crossing community website, gathered in September 2004. There are around 28,000 users of this website who are from all over the world, and from a range of different ages. The key data is a table of individual ratings of a person (identified by a unique user id), a book and a the value of the rating (a number between 0-10).</p>
 
-<p><img src="/images/rating_table.png" alt="" title="Ratings table data" /></p>
+<p><img src="/images/rating_table.png" alt="" title="Ratings table data"></p>
 
 <p>These user ratings are not exhaustive, i.e. every user has not rated every book. Note also there is no extra information about the books such as categories, or about each person such as their ages. But we don’t actually need this extra data, we can create an AI collaborative filter based system (commonly called a ‘model’) that learns just from the table of users, books and ratings, to build up an understanding of the latent factors that uniquely describes each book, and each person. Once the model has been ‘trained’ on this data, and learnt these latent factors - the model can then use these latent factors to make recommendations for each person, about what new books they might like.</p>
 
 <p>When the AI model learns, it doesn’t directly see the real ratings - it just tries to make guesses about what the ratings should be. We then compare the guesses to the actual ratings we know, and give the model back some measure of accuracy, which the model then uses to improve its guesses in the next cycle. This training process repeats for many cycles.</p>
 
-<h2 id="going-down-the-rabbit-hole-what-is-our-book-recommendation-system-actually-doing">Going down the rabbit hole: what is our book recommendation system actually doing?</h2>
+<h2 id="going-down-the-rabbit-hole-what-is-our-book-recommendation-system-actually-doing">
+<a class="anchor" href="#going-down-the-rabbit-hole-what-is-our-book-recommendation-system-actually-doing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Going down the rabbit hole: what is our book recommendation system actually doing?</h2>
 
 <p>So we now have a book recommendation system that can suggest new books to people. But we can if we choose, take things further. Simply from the data of book ratings and the learning process, the system has had to understand something more, about the implicit reasons certain people prefer certain books over others - and indeed perhaps about general qualities that drive these choices. These qualities might correspond to categories we might recognise as more obvious book genres, but they might also correspond to other qualities that are not commonly recognised as ‘categories’ yet might still be factors that drive people to prefer different books.</p>
 
 <p>How might we try and understand these latent factors that drive people’s preferences for books?</p>
 
-<h3 id="looking-at-bias">Looking at bias</h3>
+<h3 id="looking-at-bias">
+<a class="anchor" href="#looking-at-bias" aria-hidden="true"><span class="octicon octicon-link"></span></a>Looking at bias</h3>
 
 <p>We actually have 2 types of latent factors, normal factors and bias factors. Bias factors represent a general bias towards a book, either positive or negative. This will mean for that book, regardless if it would be generally a good suggestion for a person - if it has a negative bias it will be far less likely to be suggested. Similarly, if a book has a very positive bias, it might be more likely to be suggested to you, even if you would not normally read that kind of book i.e. you would not normally read that genre. We can think of bias then as some kind of measure of ‘general popularity’ of a book.</p>
 
@@ -205,11 +227,14 @@ This book does have many many online reviews, on the whole which can be summariz
 
 <p>So we can perhaps appreciate some of the reasons perhaps why the AI model thinks this is a good book to recommend to anyone, regardless of what their normal reading preferences might be. The second most positively biased book is “Harry Potter and the Goblet of fire”. Being one of a series of some of the most popular books of all time - this is perhaps not surprising at all that the AI model thinks this would be a good book to recommend to most people, regardless of their normal reading preferences.</p>
 
-<h3 id="looking-at-other-latent-factors">Looking at other latent factors</h3>
+<h3 id="looking-at-other-latent-factors">
+<a class="anchor" href="#looking-at-other-latent-factors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Looking at other latent factors</h3>
 
 <p>So for the remaining latent factors, we actually have 50 of them for each of our 27,000 books - so quite a few! However we can use a process called dimensionality reduction to actually reduce these down, to the 2 most important latent factors for all books. We can plot each book on a graph, with the measure that book has for each of these 2 key latent factors.</p>
 
-<p><img src="/images/factors0-1.png" alt="" title="Key latent factor 1 (horizontal axis) and factor 2 (vertical axis) for 50 books" /></p>
+<p><img src="/images/factors0-1.png" alt="" title="Key latent factor 1 (horizontal axis) and factor 2 (vertical axis) for 50 books"></p>
+
+<p>A bigger view of this image of latent factors 1 &amp; can be seen <a href="https://github.com/pranath/blog/blob/master/images/factors0-1.png" target="_blank">here</a></p>
 
 <p>Here we can see 50 books plotted. On the horizontal axis that is a measure of how much of latent factor 1 each book has. On the vertical axis, that is a measure of how much of latent factor 2 each book has.</p>
 
@@ -264,12 +289,14 @@ This book does have many many online reviews, on the whole which can be summariz
 
 <p>Remember the AI model is given no information about book categories, authors, genres, themes etc. All the AI has to learn from is the ratings between users and books - that’s all. Not only has our AI model discovered this particular axis theme by itself from very limited information, but it has done so because the AI model has judged that this theme-axis, whatever it is, is one of the most useful for the purposes of making good book recommendations to people.</p>
 
-<h2 id="discussion">Discussion</h2>
+<h2 id="discussion">
+<a class="anchor" href="#discussion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Discussion</h2>
 <p>So how do we make sense of our findings? We can’t conclusively say that my suggested ‘triumph of the group vs triumph of the individual’ theme-axis is generally true, or the key hidden factor for understanding generally why people prefer certain books over others. Firstly, it’s based on an inevitably limited data set of books, people and ratings. Perhaps the people who made those ratings are not representative of the general population? Secondly, we only randomly chose 50 books to plot for our latent factors. What if we randomly picked a different set of 50 books, would we see the same kind of themes for latent factor 1, or something else? If the ‘triumph of the group vs triumph of the individual’ theme axis does appear to be a key factor over many more books and people - why is this the case? and what does it suggest about human beings more generally? However these are questions that could be further investigated, researched, and better answered - with more time, and the conclusions of which could potentially be very interesting indeed.</p>
 
 <p>What we can say is that from very limited information, looking at a limited number of books, and looking at some of its latent factors such as biases and the main key factor - this AI model seems to have discovered many relationships we could recognise as humans such as ‘generally popular books’ and ‘generally awful books’. The interpretation of the key latent factor as ‘triumph of the group vs triumph of the individual’ as a theme-axis is of course very speculative at this stage, and yet very intriguing! Would you come to a different conclusion looking at the books at either end of the axis of latent factor 1 on the chart? What do you think latent factor 1 on the horizontal axis is all about? What do you think latent factor 2 on the vertical axis is about?  I’d love to hear your feedback and thoughts on this, so do feel free to comment below.</p>
 
-<h2 id="conclusion">Conclusion</h2>
+<h2 id="conclusion">
+<a class="anchor" href="#conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion</h2>
 
 <p>In this article I’ve tried to highlight a few key themes: that AI is being used everywhere, that little work is often done to understand how and why these AI systems work, and that we have so much to gain by actually trying to look inside and understand these AI systems better. I’d also argue this is becoming more and more important, given the growing impact of these increasingly powerful systems on our world and human life.</p>
 
