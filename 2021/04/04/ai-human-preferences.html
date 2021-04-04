@@ -10,14 +10,14 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="AI systems are being used everywhere, but often little work is done to gain a deeper understanding how and why they work. We have so much to gain from trying to look deeper inside these AI systems to understand them better." />
 <meta property="og:description" content="AI systems are being used everywhere, but often little work is done to gain a deeper understanding how and why they work. We have so much to gain from trying to look deeper inside these AI systems to understand them better." />
-<link rel="canonical" href="https://www.livingdatalab.com/ai/deeplearning/opinion/2021/04/04/ai-human-preferences.html" />
-<meta property="og:url" content="https://www.livingdatalab.com/ai/deeplearning/opinion/2021/04/04/ai-human-preferences.html" />
+<link rel="canonical" href="https://www.livingdatalab.com/2021/04/04/ai-human-preferences.html" />
+<meta property="og:url" content="https://www.livingdatalab.com/2021/04/04/ai-human-preferences.html" />
 <meta property="og:site_name" content="livingdatalab" />
 <meta property="og:image" content="https://www.livingdatalab.com/images/aihuman.jpeg" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-04-04T00:00:00-05:00" />
 <script type="application/ld+json">
-{"url":"https://www.livingdatalab.com/ai/deeplearning/opinion/2021/04/04/ai-human-preferences.html","@type":"BlogPosting","headline":"What AI can tell us about the hidden preferences of human beings","dateModified":"2021-04-04T00:00:00-05:00","datePublished":"2021-04-04T00:00:00-05:00","image":"https://www.livingdatalab.com/images/aihuman.jpeg","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/ai/deeplearning/opinion/2021/04/04/ai-human-preferences.html"},"description":"AI systems are being used everywhere, but often little work is done to gain a deeper understanding how and why they work. We have so much to gain from trying to look deeper inside these AI systems to understand them better.","@context":"https://schema.org"}</script>
+{"url":"https://www.livingdatalab.com/2021/04/04/ai-human-preferences.html","@type":"BlogPosting","headline":"What AI can tell us about the hidden preferences of human beings","dateModified":"2021-04-04T00:00:00-05:00","datePublished":"2021-04-04T00:00:00-05:00","image":"https://www.livingdatalab.com/images/aihuman.jpeg","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/2021/04/04/ai-human-preferences.html"},"description":"AI systems are being used everywhere, but often little work is done to gain a deeper understanding how and why they work. We have so much to gain from trying to look deeper inside these AI systems to understand them better.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://www.livingdatalab.com/feed.xml" title="livingdatalab" /><!-- the google_analytics_id gets auto inserted from the config file -->
 
@@ -89,19 +89,6 @@ window.onload = wrap_img;
 </span></p>
 
     
-      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
-      
-        <a class="category-tags-link" href="/categories/#ai">ai</a>
-        &nbsp;
-      
-        <a class="category-tags-link" href="/categories/#deeplearning">deeplearning</a>
-        &nbsp;
-      
-        <a class="category-tags-link" href="/categories/#opinion">opinion</a>
-        
-      
-      </p>
-    
 
     </header>
 
@@ -112,8 +99,18 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#creating-a-book-recommendation-system">Creating a book recommendation system</a></li>
 <li class="toc-entry toc-h2"><a href="#going-down-the-rabbit-hole-what-is-our-book-recommendation-system-actually-doing">Going down the rabbit hole: what is our book recommendation system actually doing?</a>
 <ul>
-<li class="toc-entry toc-h3"><a href="#looking-at-bias-latent-factors">Looking at bias latent factors</a></li>
-<li class="toc-entry toc-h3"><a href="#looking-at-other-latent-factors">Looking at other latent factors</a></li>
+<li class="toc-entry toc-h3"><a href="#looking-at-bias-latent-factors">Looking at bias latent factors</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#negative-bias-books">Negative bias books</a></li>
+<li class="toc-entry toc-h4"><a href="#positive-bias-books">Positive bias books</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#looking-at-other-latent-factors">Looking at other latent factors</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#books-with-high-values-for-latent-factor-1">Books with high values for latent factor 1</a></li>
+<li class="toc-entry toc-h4"><a href="#books-with-low-values-for-latent-factor-1">Books with low values for latent factor 1</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toc-entry toc-h2"><a href="#discussion">Discussion</a></li>
@@ -167,6 +164,9 @@ window.onload = wrap_img;
 
 <p>We actually have 2 types of latent factors, normal factors and bias factors. Bias factors represent a general bias towards a book, either positive or negative. This will mean for that book, regardless if it would be generally a good suggestion for a person - if it has a negative bias it will be far less likely to be suggested. Similarly, if a book has a very positive bias, it might be more likely to be suggested to you, even if you would not normally read that kind of book i.e. you would not normally read that genre. We can think of bias then as some kind of measure of ‘general popularity’ of a book.</p>
 
+<h4 id="negative-bias-books">
+<a class="anchor" href="#negative-bias-books" aria-hidden="true"><span class="octicon octicon-link"></span></a>Negative bias books</h4>
+
 <p>So these are the bottom 10 books with the most negative bias in the AI model:</p>
 
 <ul>
@@ -201,6 +201,9 @@ window.onload = wrap_img;
 </blockquote>
 
 <p>As it happens this book has as many positive reviews as negative online, in fact few reviews seem neutral at all. So this is not universally seen as a bad book, by humans who post reviews online anyway. Nevertheless, our AI model regards this as a book that should not really be suggested to anyone. Is that because the book seems to be so divisive? and perhaps there are other books that are ‘safer bets’? Either way, the computer says no.</p>
+
+<h4 id="positive-bias-books">
+<a class="anchor" href="#positive-bias-books" aria-hidden="true"><span class="octicon octicon-link"></span></a>Positive bias books</h4>
 
 <p>Let’s now look at the top 10 books with the most positive bias in the AI model:</p>
 
@@ -242,7 +245,12 @@ window.onload = wrap_img;
 
 <p>Here we can see 50 books plotted. On the horizontal axis that is a measure of how much of latent factor 1 each book has. On the vertical axis, that is a measure of how much of latent factor 2 each book has.</p>
 
-<p>Let’s look into latent factor 1, which is the strongest latent factor used by the AI model to make book recommendations. We can see in the bottom right corner of the chart ‘The lovely bones’. This has one of the highest measures of factor 1, because it is one of the furthest to the right. We also know from our look at bias factors, that this is the book with the strongest positive bias latent factor as well i.e. a generally popular book. Let’s also note it falls into the categories of ‘Crime, Thriller, Mystery’.</p>
+<p>Let’s look into latent factor 1, which is the strongest latent factor used by the AI model to make book recommendations.</p>
+
+<h4 id="books-with-high-values-for-latent-factor-1">
+<a class="anchor" href="#books-with-high-values-for-latent-factor-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Books with high values for latent factor 1</h4>
+
+<p>We can see in the bottom right corner of the chart ‘The lovely bones’. This has one of the highest measures of factor 1, because it is one of the furthest to the right. We also know from our look at bias factors, that this is the book with the strongest positive bias latent factor as well i.e. a generally popular book. Let’s also note it falls into the categories of ‘Crime, Thriller, Mystery’.</p>
 
 <p>Looking at another book with a high factor 1, in the top right we have ‘Good in Bed’. The synopsis of the book is:</p>
 
@@ -264,7 +272,12 @@ window.onload = wrap_img;
   <li>All 3 have a theme of a huge personal tragedy, which the protagonist is successful in overcoming and rising above by themselves</li>
 </ul>
 
-<p>So lets bear this in mind, while we look at books with the lowest latent factor 1, on the far left of the chart. For example we have ‘A painted house’ the synopsis of this being:</p>
+<p>So lets bear this in mind, while we look at books with the lowest latent factor 1.</p>
+
+<h4 id="books-with-low-values-for-latent-factor-1">
+<a class="anchor" href="#books-with-low-values-for-latent-factor-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Books with low values for latent factor 1</h4>
+
+<p>Books with low values for factor one are on the far left of the chart. For example we have ‘A painted house’ the synopsis of this being:</p>
 
 <blockquote>
   <p>“A Painted House is a moving story of one boy’s journey from innocence to experience, drawn from the personal experience of legendary legal thriller author John Grisham”</p>
@@ -317,8 +330,8 @@ window.onload = wrap_img;
   <div id="disqus_thread"></div>
   <script>
     var disqus_config = function () {
-      this.page.url = 'https://www.livingdatalab.com/ai/deeplearning/opinion/2021/04/04/ai-human-preferences.html';
-      this.page.identifier = 'https://www.livingdatalab.com/ai/deeplearning/opinion/2021/04/04/ai-human-preferences.html';
+      this.page.url = 'https://www.livingdatalab.com/2021/04/04/ai-human-preferences.html';
+      this.page.identifier = 'https://www.livingdatalab.com/2021/04/04/ai-human-preferences.html';
     };
     (function() {
       var d = document, s = d.createElement('script');
@@ -329,7 +342,7 @@ window.onload = wrap_img;
   </script>
   <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 
-<a class="u-url" href="/ai/deeplearning/opinion/2021/04/04/ai-human-preferences.html" hidden></a>
+<a class="u-url" href="/2021/04/04/ai-human-preferences.html" hidden></a>
 </article>
 
       </div>
