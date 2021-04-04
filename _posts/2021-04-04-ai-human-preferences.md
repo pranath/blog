@@ -10,8 +10,6 @@ image: images/aihuman.jpeg
 
 ![]({{ site.baseurl }}/images/aihuman.jpeg " ")
 
-![](../images/aihuman.jpeg)
-
 ## Introduction
 
 AI systems are increasingly being used in almost every area of human activity, from the online world, in streaming media, social media & online shopping - to the offline world, in policing, healthcare and other public services as well as many different physical industries such as water, energy, agriculture and manufacturing. These applications of AI are having a huge impact, often beyond what is commonly known to the public, both [positive](https://www.nature.com/articles/d41586-020-03348-4){:target="_blank"} and [negative](https://www.fast.ai/2017/11/02/ethics/){:target="_blank"}.
