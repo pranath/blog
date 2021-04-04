@@ -1,5 +1,5 @@
 ---
-toc: false
+toc: true
 layout: post
 description: What AI can tell us about the hidden preferences of human beings
 categories: [markdown]
@@ -108,6 +108,8 @@ So we can perhaps appreciate some of the reasons perhaps why the AI model thinks
 So for the remaining latent factors, we actually have 50 of them for each of our 27,000 books - so quite a few! However we can use a process called dimensionality reduction to actually reduce these down, to the 2 most important latent factors for all books. We can plot each book on a graph, with the measure that book has for each of these 2 key latent factors.
 
 ![]({{ site.baseurl }}/images/factors0-1.png "Key latent factor 1 (horizontal axis) and factor 2 (vertical axis) for 50 books")
+
+A bigger view of this image of latent factors 1 & can be seen [here](https://github.com/pranath/blog/blob/master/images/factors0-1.png){:target="_blank"}
 
 Here we can see 50 books plotted. On the horizontal axis that is a measure of how much of latent factor 1 each book has. On the vertical axis, that is a measure of how much of latent factor 2 each book has.
 
