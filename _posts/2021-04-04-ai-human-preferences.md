@@ -1,14 +1,14 @@
 ---
-toc: false
+toc: true
 layout: post
 categories: [markdown]
 title: What AI can tell us about the hidden preferences of human beings
-description: AI is being used everywhere, but little work is done to understand how and why they work. We have so much to gain by trying to look inside and understand these AI systems better.
+description: AI systems are being used everywhere, but often little work is done to gain a deeper understanding how and why they work. We have so much to gain from trying to look deeper inside these AI models to understand them better.
 comments: true
 image: images/aihuman.jpeg
 ---
 
-![]({{ site.baseurl }}/images/aihuman.jpg "")
+![](../images/aihuman.jpg)
 
 ## Introduction
 
@@ -18,7 +18,7 @@ Most work in the field is focussed on trying to use AI to solve a particular pro
 
 It's certainly my belief that this much neglected area is worth far more work than it often gets, not only to allow us to understand the AI system at a deeper level, but that it might also give us new insights and understandings into the area the AI system is being applied to.
 
-In this article I'm going to look at one particular area of AI application called Recommendation Systems. For a recent project, I created an AI system for recommending new books to readers. I then extended the project to study how this AI book recommendation system itself was working, and discovered what it had learnt about the hidden preferences of book readers.
+In this article I'm going to look at one particular area of AI application called *Recommendation Systems*. For a recent project, I created an AI system for recommending new books to readers. I then extended the project to study how this AI book recommendation system itself was working, and discovered what it had learnt about the hidden preferences of book readers.
 
 ## What are Recommendation Systems?
 Recommendation systems are very common particularly in online services. For example, Amazon suggestions for alternative products, on Netflix suggestions for films, on Spotify for music, or on Facebook for the content you see on your newsfeed. All of these services and more use recommendation systems to suggest new content to people, but what are these systems and how do these actually work? 
@@ -27,14 +27,14 @@ A very simple approach might be to recommend the most popular items to people. O
 
 ![]({{ site.baseurl }}/images/reccsystems.png "Types of Reccomendation Systems")
 
-With content-based filtering, we look at the content a person has previously looked at (eg songs or films you have previously watched) as a basis to recommend new content. In this case, the AI system does the work here to understand what content is similar, for example what films are similar. This might be based on more obvious things such as the film genre, or which actors are in the film. However it can also be based on less obvious things that the AI can learn for itself about what makes films similar or different, things that are not given to the AI at all, but that the AI system can learn itself. These hidden aspects are called latent factors.
+With *content-based filtering*, we look at the content a person has previously looked at (eg songs or films you have previously watched) as a basis to recommend new content. In this case, the AI system does the work here to understand what content is similar, for example what films are similar. This might be based on more obvious things such as the film genre, or which actors are in the film. However it can also be based on less obvious things that the AI can learn for itself about what makes films similar or different, things that are not given to the AI at all, but that the AI system can learn itself. These hidden aspects are called **latent factors**.
 
-With collaborative filtering, we look at other people who are similar to us, and suggest items that they have liked, that we have not yet seen. Here the AI system does the work to understand which people are similar to us, as a basis to make suggestions. As a simple example, on a music service, we could find another listener who has listened to some of the same songs we have, find a song they have listened to that we have not, then recommend that to us. However, this simple strategy may not always be effective, just because 2 people like the same song, that does not always mean they would both like another song that one of them liked, let alone that both people are 'similar'? What makes people similar and different, might be based on things like the genre of music they liked, which artists etc. 
+With *collaborative filtering*, we look at other people who are similar to us, and suggest items that they have liked, that we have not yet seen. Here the AI system does the work to understand which people are similar to us, as a basis to make suggestions. As a simple example, on a music service, we could find another listener who has listened to some of the same songs we have, find a song they have listened to that we have not, then recommend that to us. However, this simple strategy may not always be effective, just because 2 people like the same song, that does not always mean they would both like another song that one of them liked, let alone that both people are 'similar'? What makes people similar and different, might be based on things like the genre of music they liked, which artists etc. 
 
 But what truly makes people similar or different in their preferences can also be based on less obvious things, more nuanced and subtle reasons, things people often do not perhaps even understand themselves, biases, etc that are hidden and unconscious, and yet drive and influence people's choices and behaviour. These hidden biases and influences are things not given to the AI at all, how could they be? and yet, they are things AI systems can still learn about for itself, which are again here called latent factors.
 
 ## Creating a book recommendation system
-For my book recommendation system, I used the collaborative filtering approach. The data I used to create this system is the Book Crossing dataset, which is data on peoples book ratings of around 27,000 different books, from the Book Crossing community website, gathered in September 2004. There are around 28,000 users of this website who are from all over the world, and from a range of different ages. The key data is a table of individual ratings of a person (identified by a unique user id), a book and a the value of the rating (a number between 0-10).
+For my book recommendation system, I used the collaborative filtering approach. The data I used to create this system is the [Book Crossing dataset](http://www2.informatik.uni-freiburg.de/~cziegler/BX/){:target="_blank"} which is data on peoples book ratings of around 27,000 different books, from the Book Crossing community website, gathered in September 2004. There are around 28,000 users of this website who are from all over the world, and from a range of different ages. The key data is a table of individual ratings of a person (identified by a unique user id), a book and a the value of the rating (a number between 0-10).
 
 ![]({{ site.baseurl }}/images/rating_table.png "Ratings table data")
 
@@ -149,7 +149,7 @@ In fact when we look at the other books with the lowest factor 1, on the far lef
 
 Let's now consider what factor 1 might actually be about. Given most of these books, regardless of having a low or high value of factor 1, have all been popular and successful - popularity I would argue has nothing to do with what factor 1 is really about. 
 
-So based on what we have learnt about these books so far, I would speculate that latent factor 1 might represent a measure of  'The triumph of the group vs the triumph of the individual' as a theme-axis. So, low values of factor 1 would correspond to 'The triumph of the group' type themes, and high values of factor 1 would correspond to 'The triumph of the individual' type themes for books.
+So based on what we have learnt about these books so far, I would speculate that latent factor 1 might represent a measure of  **'The triumph of the group vs the triumph of the individual'** as a theme-axis. So, low values of factor 1 would correspond to 'The triumph of the group' type themes, and high values of factor 1 would correspond to 'The triumph of the individual' type themes for books.
 
 Remember the AI model is given no information about book categories, authors, genres, themes etc. All the AI has to learn from is the ratings between users and books - that's all. Not only has our AI model discovered this particular axis theme by itself from very limited information, but it has done so because the AI model has judged that this theme-axis, whatever it is, is one of the most useful for the purposes of making good book recommendations to people.
 
