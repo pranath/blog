@@ -8,7 +8,9 @@ comments: true
 image: images/aihuman.jpeg
 ---
 
-![]({{ site.baseurl }}/images/aihuman.jpeg "")
+![]({{ site.baseurl }}/images/aihuman.jpeg " ")
+
+![](../images/aihuman.jpeg)
 
 ## Introduction
 
