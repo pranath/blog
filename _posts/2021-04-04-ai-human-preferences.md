@@ -1,7 +1,7 @@
 ---
 toc: true
 layout: post
-categories: [ai, deeplearning, opinion]
+categories: []
 title: What AI can tell us about the hidden preferences of human beings
 description: AI systems are being used everywhere, but often little work is done to gain a deeper understanding how and why they work. We have so much to gain from trying to look deeper inside these AI systems to understand them better.
 comments: true
@@ -52,6 +52,8 @@ How might we try and understand these latent factors that drive people's prefere
 
 We actually have 2 types of latent factors, normal factors and bias factors. Bias factors represent a general bias towards a book, either positive or negative. This will mean for that book, regardless if it would be generally a good suggestion for a person - if it has a negative bias it will be far less likely to be suggested. Similarly, if a book has a very positive bias, it might be more likely to be suggested to you, even if you would not normally read that kind of book i.e. you would not normally read that genre. We can think of bias then as some kind of measure of 'general popularity' of a book.
 
+#### Negative bias books
+
 So these are the bottom 10 books with the most negative bias in the AI model:
 
 - Wild Animus
@@ -78,6 +80,8 @@ On the whole it seems, Wild Animus seems to provoke a very unfavourable response
 >"After one night of passion, Azucena, an astroanalyst in twenty-third-century Mexico City, is separated from her Twin Soul, Rodrigo, and journeys across the galaxy and through past lives to find her lost love, encountering a deadly enemy along the way..."
 
 As it happens this book has as many positive reviews as negative online, in fact few reviews seem neutral at all. So this is not universally seen as a bad book, by humans who post reviews online anyway. Nevertheless, our AI model regards this as a book that should not really be suggested to anyone. Is that because the book seems to be so divisive? and perhaps there are other books that are 'safer bets'? Either way, the computer says no.
+
+#### Positive bias books
 
 Let's now look at the top 10 books with the most positive bias in the AI model:
 
@@ -112,7 +116,11 @@ A bigger view of this image of latent factors 1 & can be seen [here](https://git
 
 Here we can see 50 books plotted. On the horizontal axis that is a measure of how much of latent factor 1 each book has. On the vertical axis, that is a measure of how much of latent factor 2 each book has.
 
-Let's look into latent factor 1, which is the strongest latent factor used by the AI model to make book recommendations. We can see in the bottom right corner of the chart 'The lovely bones'. This has one of the highest measures of factor 1, because it is one of the furthest to the right. We also know from our look at bias factors, that this is the book with the strongest positive bias latent factor as well i.e. a generally popular book. Let's also note it falls into the categories of 'Crime, Thriller, Mystery'.
+Let's look into latent factor 1, which is the strongest latent factor used by the AI model to make book recommendations. 
+
+#### Books with high values for latent factor 1
+
+We can see in the bottom right corner of the chart 'The lovely bones'. This has one of the highest measures of factor 1, because it is one of the furthest to the right. We also know from our look at bias factors, that this is the book with the strongest positive bias latent factor as well i.e. a generally popular book. Let's also note it falls into the categories of 'Crime, Thriller, Mystery'.
 
 Looking at another book with a high factor 1, in the top right we have 'Good in Bed'. The synopsis of the book is:
 
@@ -128,7 +136,11 @@ Again this book generated very good reviews, was very popular, and might fall in
 - 2 of these books turned into films, and the third is currently being adapted for film.
 - All 3 have a theme of a huge personal tragedy, which the protagonist is successful in overcoming and rising above by themselves
 
-So lets bear this in mind, while we look at books with the lowest latent factor 1, on the far left of the chart. For example we have 'A painted house' the synopsis of this being:
+So lets bear this in mind, while we look at books with the lowest latent factor 1.
+
+#### Books with low values for latent factor 1
+
+Books with low values for factor one are on the far left of the chart. For example we have 'A painted house' the synopsis of this being:
 
 >"A Painted House is a moving story of one boy's journey from innocence to experience, drawn from the personal experience of legendary legal thriller author John Grisham"
 
