@@ -157,6 +157,8 @@ In fact when we look at the other books with the lowest factor 1, on the far lef
 - The Summons
 - The Firm
 
+### So what is latent factor 1?
+
 Let's now consider what factor 1 might actually be about. Given most of these books, regardless of having a low or high value of factor 1, have all been popular and successful - popularity I would argue has nothing to do with what factor 1 is really about. 
 
 So based on what we have learnt about these books so far, I would speculate that latent factor 1 might represent a measure of  **'The triumph of the group vs the triumph of the individual'** as a theme-axis. So, low values of factor 1 would correspond to 'The triumph of the group' type themes, and high values of factor 1 would correspond to 'The triumph of the individual' type themes for books.
