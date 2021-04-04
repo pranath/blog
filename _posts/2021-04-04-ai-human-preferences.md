@@ -1,14 +1,14 @@
 ---
 toc: true
 layout: post
-categories: [markdown]
+categories: [ai, deeplearning, opinion]
 title: What AI can tell us about the hidden preferences of human beings
-description: AI systems are being used everywhere, but often little work is done to gain a deeper understanding how and why they work. We have so much to gain from trying to look deeper inside these AI models to understand them better.
+description: AI systems are being used everywhere, but often little work is done to gain a deeper understanding how and why they work. We have so much to gain from trying to look deeper inside these AI systems to understand them better.
 comments: true
 image: images/aihuman.jpeg
 ---
 
-![](../images/aihuman.jpg)
+![](../images/aihuman.jpeg)
 
 ## Introduction
 
@@ -48,7 +48,7 @@ So we now have a book recommendation system that can suggest new books to people
 
 How might we try and understand these latent factors that drive people's preferences for books? 
 
-### Looking at bias
+### Looking at bias latent factors
 
 We actually have 2 types of latent factors, normal factors and bias factors. Bias factors represent a general bias towards a book, either positive or negative. This will mean for that book, regardless if it would be generally a good suggestion for a person - if it has a negative bias it will be far less likely to be suggested. Similarly, if a book has a very positive bias, it might be more likely to be suggested to you, even if you would not normally read that kind of book i.e. you would not normally read that genre. We can think of bias then as some kind of measure of 'general popularity' of a book.
 
