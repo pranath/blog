@@ -235,11 +235,11 @@ window.onload = wrap_img;
 <h3 id="looking-at-other-latent-factors">
 <a class="anchor" href="#looking-at-other-latent-factors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Looking at other latent factors</h3>
 
-<p>So for the remaining latent factors, we actually have 50 of them for each of our 27,000 books - so quite a few! However we can use a process called dimensionality reduction to actually reduce these down, to the 2 most important latent factors for all books. We can plot each book on a graph, with the measure that book has for each of these 2 key latent factors.</p>
+<p>So for the remaining latent factors, we actually have 50 of them for each of our 27,000 books - so quite a few! However we can use a process called <em>dimensionality reduction</em> to actually reduce these down, to the 2 most important latent factors for all books. We can then plot each book on a graph, with the measure that book has for each of these 2 key latent factors.</p>
 
 <p><img src="/images/factors0-1.png" alt="" title="Key latent factor 1 (horizontal axis) and factor 2 (vertical axis) for 50 books"></p>
 
-<p>A bigger view of this image of latent factors 1 &amp; can be seen <a href="https://github.com/pranath/blog/blob/master/images/factors0-1.png" target="_blank">here</a></p>
+<p>A bigger view of this image of latent factors 1 &amp; 2 can be seen <a href="https://github.com/pranath/blog/blob/master/images/factors0-1.png" target="_blank">here</a></p>
 
 <p>Here we can see 50 books plotted. On the horizontal axis that is a measure of how much of latent factor 1 each book has. On the vertical axis, that is a measure of how much of latent factor 2 each book has.</p>
 
@@ -305,9 +305,9 @@ window.onload = wrap_img;
 <h3 id="so-what-is-latent-factor-1">
 <a class="anchor" href="#so-what-is-latent-factor-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>So what is latent factor 1?</h3>
 
-<p>Let’s now consider what factor 1 might actually be about. Given most of these books, regardless of having a low or high value of factor 1, have all been popular and successful - popularity I would argue has nothing to do with what factor 1 is really about.</p>
+<p>Let’s now consider what factor 1 might actually be about. Given most of these books, regardless of having a low or high value of factor 1, have all been popular and successful - so popularity I would argue has nothing to do with what factor 1 is really about.</p>
 
-<p>So based on what we have learnt about these books so far, I would speculate that latent factor 1 might represent a measure of  <strong>‘The triumph of the group vs the triumph of the individual’</strong> as a theme-axis. So, low values of factor 1 would correspond to ‘The triumph of the group’ type themes, and high values of factor 1 would correspond to ‘The triumph of the individual’ type themes for books.</p>
+<p>Based on what we have learnt about these books so far, I would speculate that latent factor 1 might represent a measure of  <strong>‘The triumph of the group vs the triumph of the individual’</strong> as a theme-axis. So, low values of factor 1 would correspond to ‘The triumph of the group’ type themes, and high values of factor 1 would correspond to ‘The triumph of the individual’ type themes for books.</p>
 
 <p>Remember the AI model is given no information about book categories, authors, genres, themes etc. All the AI has to learn from is the ratings between users and books - that’s all. Not only has our AI model discovered this particular axis theme by itself from very limited information, but it has done so because the AI model has judged that this theme-axis, whatever it is, is one of the most useful for the purposes of making good book recommendations to people.</p>
 
