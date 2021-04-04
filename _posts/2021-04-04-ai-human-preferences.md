@@ -106,11 +106,11 @@ So we can perhaps appreciate some of the reasons perhaps why the AI model thinks
 
 ### Looking at other latent factors
 
-So for the remaining latent factors, we actually have 50 of them for each of our 27,000 books - so quite a few! However we can use a process called dimensionality reduction to actually reduce these down, to the 2 most important latent factors for all books. We can plot each book on a graph, with the measure that book has for each of these 2 key latent factors.
+So for the remaining latent factors, we actually have 50 of them for each of our 27,000 books - so quite a few! However we can use a process called *dimensionality reduction* to actually reduce these down, to the 2 most important latent factors for all books. We can then plot each book on a graph, with the measure that book has for each of these 2 key latent factors.
 
 ![]({{ site.baseurl }}/images/factors0-1.png "Key latent factor 1 (horizontal axis) and factor 2 (vertical axis) for 50 books")
 
-A bigger view of this image of latent factors 1 & can be seen [here](https://github.com/pranath/blog/blob/master/images/factors0-1.png){:target="_blank"}
+A bigger view of this image of latent factors 1 & 2 can be seen [here](https://github.com/pranath/blog/blob/master/images/factors0-1.png){:target="_blank"}
 
 Here we can see 50 books plotted. On the horizontal axis that is a measure of how much of latent factor 1 each book has. On the vertical axis, that is a measure of how much of latent factor 2 each book has.
 
@@ -159,9 +159,9 @@ In fact when we look at the other books with the lowest factor 1, on the far lef
 
 ### So what is latent factor 1?
 
-Let's now consider what factor 1 might actually be about. Given most of these books, regardless of having a low or high value of factor 1, have all been popular and successful - popularity I would argue has nothing to do with what factor 1 is really about. 
+Let's now consider what factor 1 might actually be about. Given most of these books, regardless of having a low or high value of factor 1, have all been popular and successful - so popularity I would argue has nothing to do with what factor 1 is really about. 
 
-So based on what we have learnt about these books so far, I would speculate that latent factor 1 might represent a measure of  **'The triumph of the group vs the triumph of the individual'** as a theme-axis. So, low values of factor 1 would correspond to 'The triumph of the group' type themes, and high values of factor 1 would correspond to 'The triumph of the individual' type themes for books.
+Based on what we have learnt about these books so far, I would speculate that latent factor 1 might represent a measure of  **'The triumph of the group vs the triumph of the individual'** as a theme-axis. So, low values of factor 1 would correspond to 'The triumph of the group' type themes, and high values of factor 1 would correspond to 'The triumph of the individual' type themes for books.
 
 Remember the AI model is given no information about book categories, authors, genres, themes etc. All the AI has to learn from is the ratings between users and books - that's all. Not only has our AI model discovered this particular axis theme by itself from very limited information, but it has done so because the AI model has judged that this theme-axis, whatever it is, is one of the most useful for the purposes of making good book recommendations to people.
 
