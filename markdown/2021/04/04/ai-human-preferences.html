@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>What AI can tell us about the hidden preferences of human beings | livingdatalab</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="What AI can tell us about the hidden preferences of human beings" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="What AI can tell us about the hidden preferences of human beings" />
+<meta property="og:description" content="What AI can tell us about the hidden preferences of human beings" />
+<link rel="canonical" href="https://www.livingdatalab.com/markdown/2021/04/04/ai-human-preferences.html" />
+<meta property="og:url" content="https://www.livingdatalab.com/markdown/2021/04/04/ai-human-preferences.html" />
+<meta property="og:site_name" content="livingdatalab" />
+<meta property="og:image" content="https://www.livingdatalab.com/images/aihuman.jpeg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-04-04T00:00:00-05:00" />
+<script type="application/ld+json">
+{"url":"https://www.livingdatalab.com/markdown/2021/04/04/ai-human-preferences.html","@type":"BlogPosting","headline":"What AI can tell us about the hidden preferences of human beings","dateModified":"2021-04-04T00:00:00-05:00","datePublished":"2021-04-04T00:00:00-05:00","image":"https://www.livingdatalab.com/images/aihuman.jpeg","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/markdown/2021/04/04/ai-human-preferences.html"},"description":"What AI can tell us about the hidden preferences of human beings","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://www.livingdatalab.com/feed.xml" title="livingdatalab" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-91568149-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">livingdatalab</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Livingdatalab</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">What AI can tell us about the hidden preferences of human beings</h1><p class="page-description">What AI can tell us about the hidden preferences of human beings</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-04-04T00:00:00-05:00" itemprop="datePublished">
+        Apr 4, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      19 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#markdown">markdown</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="what-ai-can-tell-us-about-the-hidden-preferences-of-human-beings">What AI can tell us about the hidden preferences of human beings</h1>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>AI systems are increasingly being used in almost every area of human activity, from the online world, in streaming media, social media &amp; online shopping - to the offline world, in policing, healthcare and other public services as well as many different physical industries such as water, energy, agriculture and manufacturing. These applications of AI are having a huge impact, often beyond what is commonly known to the public, both <a href="https://www.nature.com/articles/d41586-020-03348-4" target="_blank">positive</a> and <a href="https://www.fast.ai/2017/11/02/ethics/" target="_blank">negative</a>.</p>
+
+<p>Most work in the field is focussed on trying to use AI to solve a particular problem at hand, and if the problem is ‘solved’ then little more thought is often done. Much less work goes on into understanding the fundamental nature of the AI created to solve a particular problem. To some extent this is of course because the main motivation is to solve the problem, but another reason is often because AI systems i.e. artificial neural networks, are often incredibly complicated, are not directly created by humans - and so can actually be very difficult to understand the inner workings of. Questions such as How is it doing it? Why is it doing it? What has it learnt? are questions often not addressed - as long as the AI system seems to ‘get the job done’.</p>
+
+<p>It’s certainly my belief that this much neglected area is worth far more work than it often gets, not only to allow us to understand the AI system at a deeper level, but that it might also give us new insights and understandings into the area the AI system is being applied to.</p>
+
+<p>In this article I’m going to look at one particular area of AI application called Recommendation Systems. For a recent project, I created an AI system for recommending new books to readers. I then extended the project to study how this AI book recommendation system itself was working, and discovered what it had learnt about the hidden preferences of book readers.</p>
+
+<h2 id="what-are-recommendation-systems">What are Recommendation Systems?</h2>
+<p>Recommendation systems are very common particularly in online services. For example, Amazon suggestions for alternative products, on Netflix suggestions for films, on Spotify for music, or on Facebook for the content you see on your newsfeed. All of these services and more use recommendation systems to suggest new content to people, but what are these systems and how do these actually work?</p>
+
+<p>A very simple approach might be to recommend the most popular items to people. Of course, popular items would probably appeal to many - but not to everyone. With modern AI based recommendation systems we can do much better than this, to make more personalised suggestions that are unique to each person. There are two main approaches to this: content-based filtering and collaborative filtering.</p>
+
+<p><img src="/images/reccsystems.png" alt="" title="Types of Reccomendation Systems" /></p>
+
+<p>With content-based filtering, we look at the content a person has previously looked at (eg songs or films you have previously watched) as a basis to recommend new content. In this case, the AI system does the work here to understand what content is similar, for example what films are similar. This might be based on more obvious things such as the film genre, or which actors are in the film. However it can also be based on less obvious things that the AI can learn for itself about what makes films similar or different, things that are not given to the AI at all, but that the AI system can learn itself. These hidden aspects are called latent factors.</p>
+
+<p>With collaborative filtering, we look at other people who are similar to us, and suggest items that they have liked, that we have not yet seen. Here the AI system does the work to understand which people are similar to us, as a basis to make suggestions. As a simple example, on a music service, we could find another listener who has listened to some of the same songs we have, find a song they have listened to that we have not, then recommend that to us. However, this simple strategy may not always be effective, just because 2 people like the same song, that does not always mean they would both like another song that one of them liked, let alone that both people are ‘similar’? What makes people similar and different, might be based on things like the genre of music they liked, which artists etc.</p>
+
+<p>But what truly makes people similar or different in their preferences can also be based on less obvious things, more nuanced and subtle reasons, things people often do not perhaps even understand themselves, biases, etc that are hidden and unconscious, and yet drive and influence people’s choices and behaviour. These hidden biases and influences are things not given to the AI at all, how could they be? and yet, they are things AI systems can still learn about for itself, which are again here called latent factors.</p>
+
+<h2 id="creating-a-book-recommendation-system">Creating a book recommendation system</h2>
+<p>For my book recommendation system, I used the collaborative filtering approach. The data I used to create this system is the Book Crossing dataset, which is data on peoples book ratings of around 27,000 different books, from the Book Crossing community website, gathered in September 2004. There are around 28,000 users of this website who are from all over the world, and from a range of different ages. The key data is a table of individual ratings of a person (identified by a unique user id), a book and a the value of the rating (a number between 0-10).</p>
+
+<p><img src="/images/rating_table.png" alt="" title="Ratings table data" /></p>
+
+<p>These user ratings are not exhaustive, i.e. every user has not rated every book. Note also there is no extra information about the books such as categories, or about each person such as their ages. But we don’t actually need this extra data, we can create an AI collaborative filter based system (commonly called a ‘model’) that learns just from the table of users, books and ratings, to build up an understanding of the latent factors that uniquely describes each book, and each person. Once the model has been ‘trained’ on this data, and learnt these latent factors - the model can then use these latent factors to make recommendations for each person, about what new books they might like.</p>
+
+<p>When the AI model learns, it doesn’t directly see the real ratings - it just tries to make guesses about what the ratings should be. We then compare the guesses to the actual ratings we know, and give the model back some measure of accuracy, which the model then uses to improve its guesses in the next cycle. This training process repeats for many cycles.</p>
+
+<h2 id="going-down-the-rabbit-hole-what-is-our-book-recommendation-system-actually-doing">Going down the rabbit hole: what is our book recommendation system actually doing?</h2>
+
+<p>So we now have a book recommendation system that can suggest new books to people. But we can if we choose, take things further. Simply from the data of book ratings and the learning process, the system has had to understand something more, about the implicit reasons certain people prefer certain books over others - and indeed perhaps about general qualities that drive these choices. These qualities might correspond to categories we might recognise as more obvious book genres, but they might also correspond to other qualities that are not commonly recognised as ‘categories’ yet might still be factors that drive people to prefer different books.</p>
+
+<p>How might we try and understand these latent factors that drive people’s preferences for books?</p>
+
+<h3 id="looking-at-bias">Looking at bias</h3>
+
+<p>We actually have 2 types of latent factors, normal factors and bias factors. Bias factors represent a general bias towards a book, either positive or negative. This will mean for that book, regardless if it would be generally a good suggestion for a person - if it has a negative bias it will be far less likely to be suggested. Similarly, if a book has a very positive bias, it might be more likely to be suggested to you, even if you would not normally read that kind of book i.e. you would not normally read that genre. We can think of bias then as some kind of measure of ‘general popularity’ of a book.</p>
+
+<p>So these are the bottom 10 books with the most negative bias in the AI model:</p>
+
+<p>-Wild Animus
+-The Law of Love
+-Blood and Gold (Rice Anne Vampire Chronicles)
+-Gorky Park
+-The Cat Who Went into the Closet
+-Waiting to Exhale
+-Night Moves (Tom Clancy’s Net Force No. 3)
+-Ruthless.Com (Tom Clancy’s Power Plays)
+-Ground Zero and Beyond
+-Say Cheese and Die!</p>
+
+<p>Let us look at the 2 books with the most negative bias, ‘Wild Animus’ and ‘The Law of love’. So what is Wild Animus about? The synopsis reads:</p>
+
+<blockquote>
+  <p>“Sam Altman is an intense young man with an animal energy whose unleashed and increasingly unhinged imagination takes him first to Seattle and then farther north, to the remote Alaskan wilderness. …”</p>
+</blockquote>
+
+<p>https://litreactor.com/columns/what-the-hell-is-wild-animus
+This book does have many many online reviews, on the whole which can be summarized by the review <a href="https://litreactor.com/columns/what-the-hell-is-wild-animus" target="_blank">What the hell is Wild animus?</a>. The review concludes with a quote from a goodreads reviewer:</p>
+
+<blockquote>
+  <p>“I’ll tell you the ending. A column of lava erupts from beneath his feet while he is dressed in a goat costume and wolves are in mid-air tearing him apart.”</p>
+</blockquote>
+
+<p>On the whole it seems, Wild Animus seems to provoke a very unfavourable response from most reviewers! The next most negative bias book is ‘The law of love’, it’s synopsis reads:</p>
+
+<blockquote>
+  <p>“After one night of passion, Azucena, an astroanalyst in twenty-third-century Mexico City, is separated from her Twin Soul, Rodrigo, and journeys across the galaxy and through past lives to find her lost love, encountering a deadly enemy along the way…”</p>
+</blockquote>
+
+<p>As it happens this book has as many positive reviews as negative online, in fact few reviews seem neutral at all. So this is not universally seen as a bad book, by humans who post reviews online anyway. Nevertheless, our AI model regards this as a book that should not really be suggested to anyone. Is that because the book seems to be so divisive? and perhaps there are other books that are ‘safer bets’? Either way, the computer says no.</p>
+
+<p>Let’s now look at the top 10 books with the most positive bias in the AI model:</p>
+
+<p>-The Lovely Bones: A Novel
+-Harry Potter and the Goblet of Fire
+-The Da Vinci Code
+-Harry Potter and the Prisoner of Azkaban 
+-The Secret Life of Bees
+-Harry Potter and the Sorcerer’s Stone 
+-Harry Potter and the Chamber of Secrets 
+-Where the Heart Is 
+-To Kill a Mockingbird
+-The Red Tent</p>
+
+<p>So looking in more detail at the 2 books with the most positive bias we have ‘The lovely bones’ and ‘Harry Potter and the Goblet of Fire’. So the synopsis of “The lovely bones” is as follows:</p>
+
+<blockquote>
+  <p>“It is the story of a teenage girl who, after being raped and murdered, watches from her personal Heaven as her family and friends struggle to move on with their lives while she comes to terms with her own death. “</p>
+</blockquote>
+
+<p>This book has a large number of very favourable reviews, in fact it was hard to find a very negative review of this book at all. <a href="https://www.nytimes.com/2002/07/14/books/what-remains.html" target="_blank">The New York Time’s review</a> perhaps sums up well the general sentiment felt by most reviewers of this book:</p>
+
+<blockquote>
+  <p>“…Sebold deals with almost unthinkable subjects with humor and intelligence and a kind of mysterious grace. The Lovely Bones takes the stuff of neighborhood tragedy – the unexplained disappearance of a child, the shattered family alone with its grief – and turns it into literature…”</p>
+</blockquote>
+
+<p>So we can perhaps appreciate some of the reasons perhaps why the AI model thinks this is a good book to recommend to anyone, regardless of what their normal reading preferences might be. The second most positively biased book is “Harry Potter and the Goblet of fire”. Being one of a series of some of the most popular books of all time - this is perhaps not surprising at all that the AI model thinks this would be a good book to recommend to most people, regardless of their normal reading preferences.</p>
+
+<h3 id="looking-at-other-latent-factors">Looking at other latent factors</h3>
+
+<p>So for the remaining latent factors, we actually have 50 of them for each of our 27,000 books - so quite a few! However we can use a process called dimensionality reduction to actually reduce these down, to the 2 most important latent factors for all books. We can plot each book on a graph, with the measure that book has for each of these 2 key latent factors.</p>
+
+<p><img src="/images/factors0-1.png" alt="" title="Key latent factor 1 (horizontal axis) and factor 2 (vertical axis) for 50 books" /></p>
+
+<p>Here we can see 50 books plotted. On the horizontal axis that is a measure of how much of latent factor 1 each book has. On the vertical axis, that is a measure of how much of latent factor 2 each book has.</p>
+
+<p>Let’s look into latent factor 1, which is the strongest latent factor used by the AI model to make book recommendations. We can see in the bottom right corner of the chart ‘The lovely bones’. This has one of the highest measures of factor 1, because it is one of the furthest to the right. We also know from our look at bias factors, that this is the book with the strongest positive bias latent factor as well i.e. a generally popular book. Let’s also note it falls into the categories of ‘Crime, Thriller, Mystery’.</p>
+
+<p>Looking at another book with a high factor 1, in the top right we have ‘Good in Bed’. The synopsis of the book is:</p>
+
+<blockquote>
+  <p>“It tells the story of an overweight Jewish female journalist, her love and work life and her emotional abuse issues with her father.”</p>
+</blockquote>
+
+<p>It generally also has good reviews, and would fall into the category of ‘Women’s fiction’. Let’s look at a third book with a high factor 1, “The life of Pi”. The synopsis of this book is:</p>
+
+<blockquote>
+  <p>“After the tragic sinking of a cargo ship, a solitary lifeboat remains bobbing on the wild, blue Pacific. The only survivors from the wreck are a sixteen year-old boy named Pi, a hyena, a zebra (with a broken leg), a female orang-utan and a 450-pound Royal Bengal tiger.”</p>
+</blockquote>
+
+<p>Again this book generated very good reviews, was very popular, and might fall into the category of ‘Contemporary fiction’. What are some common things to note about all of these books with a high latent factor 1?</p>
+
+<p>-They are all very popular and have great critical acclaim
+-2 of these books turned into films, and the third is currently being adapted for film.
+-All 3 have a theme of a huge personal tragedy, which the protagonist is successful in overcoming and rising above by themselves</p>
+
+<p>So lets bear this in mind, while we look at books with the lowest latent factor 1, on the far left of the chart. For example we have ‘A painted house’ the synopsis of this being:</p>
+
+<blockquote>
+  <p>“A Painted House is a moving story of one boy’s journey from innocence to experience, drawn from the personal experience of legendary legal thriller author John Grisham”</p>
+</blockquote>
+
+<p>Let’s also note this would fall into the categories of  ‘Contemporary fiction, mystery’. Looking at another book with a low factor 1 ‘The street lawyer’, the synopsis being:</p>
+
+<blockquote>
+  <p>“…about an attorney who leaves his high-priced firm to work for the less fortunate.”</p>
+</blockquote>
+
+<p>This also seems to be another book by John Grisham, that would fall into categories such as ‘Thriller, Mystery’. Looking at Grisham’s work, how might we characterise his work more generally? He is well known for writing legal thrillers, and themes such as ‘the triumph of the underdog’, however A painted house seems not to quite fit these themes, an exception - so why is it here? A theme that might link both is ‘the triumph of working together’ in the case of the legal thrillers it’s the lawyer, the legal system his collaborators, in ‘a painted house’ its the family that needs to pull together to triumph, as explained in <a href="https://www.enotes.com/topics/painted-house/themes" target="_blank">this review</a>:</p>
+
+<blockquote>
+  <p>“…The primary theme is the importance of family: only by pulling together does the family achieve even moderate success”</p>
+</blockquote>
+
+<p>In fact when we look at the other books with the lowest factor 1, on the far left of the chart, they pretty much are all John Grisham legal thriller books such as:</p>
+
+<p>-The Pelican brief
+-The Brethren
+-The Summons
+-The Firm</p>
+
+<p>Let’s now consider what factor 1 might actually be about. Given most of these books, regardless of having a low or high value of factor 1, have all been popular and successful - popularity I would argue has nothing to do with what factor 1 is really about.</p>
+
+<p>So based on what we have learnt about these books so far, I would speculate that latent factor 1 might represent a measure of  ‘The triumph of the group vs the triumph of the individual’ as a theme-axis. So, low values of factor 1 would correspond to ‘The triumph of the group’ type themes, and high values of factor 1 would correspond to ‘The triumph of the individual’ type themes for books.</p>
+
+<p>Remember the AI model is given no information about book categories, authors, genres, themes etc. All the AI has to learn from is the ratings between users and books - that’s all. Not only has our AI model discovered this particular axis theme by itself from very limited information, but it has done so because the AI model has judged that this theme-axis, whatever it is, is one of the most useful for the purposes of making good book recommendations to people.</p>
+
+<h2 id="discussion">Discussion</h2>
+<p>So how do we make sense of our findings? We can’t conclusively say that my suggested ‘triumph of the group vs triumph of the individual’ theme-axis is generally true, or the key hidden factor for understanding generally why people prefer certain books over others. Firstly, it’s based on an inevitably limited data set of books, people and ratings. Perhaps the people who made those ratings are not representative of the general population? Secondly, we only randomly chose 50 books to plot for our latent factors. What if we randomly picked a different set of 50 books, would we see the same kind of themes for latent factor 1, or something else? If the ‘triumph of the group vs triumph of the individual’ theme axis does appear to be a key factor over many more books and people - why is this the case? and what does it suggest about human beings more generally? However these are questions that could be further investigated, researched, and better answered - with more time, and the conclusions of which could potentially be very interesting indeed.</p>
+
+<p>What we can say is that from very limited information, looking at a limited number of books, and looking at some of its latent factors such as biases and the main key factor - this AI model seems to have discovered many relationships we could recognise as humans such as ‘generally popular books’ and ‘generally awful books’. The interpretation of the key latent factor as ‘triumph of the group vs triumph of the individual’ as a theme-axis is of course very speculative at this stage, and yet very intriguing! Would you come to a different conclusion looking at the books at either end of the axis of latent factor 1 on the chart? What do you think latent factor 1 on the horizontal axis is all about? What do you think latent factor 2 on the vertical axis is about?  I’d love to hear your feedback and thoughts on this, so do feel free to comment below.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In this article I’ve tried to highlight a few key themes: that AI is being used everywhere, that little work is often done to understand how and why these AI systems work, and that we have so much to gain by actually trying to look inside and understand these AI systems better. I’d also argue this is becoming more and more important, given the growing impact of these increasingly powerful systems on our world and human life.</p>
+
+<p>Looking inside these AI systems, even though not straightforward - gives us the chance to know more about what they are really doing and why, and can give us intriguing hints about the domains in which they are used, which I have tried to illustrate with my book recommendation project.</p>
+
+<p>When these AI systems are used in the domain of human choices, the potential is there hidden within these systems to perhaps discover new insights, and pose new questions about ourselves and our choices, that we may have never even considered or knew to ask. Perhaps by looking a little deeper into AI, we can see a little deeper into ourselves.</p>
+
+  </div>
+
+  <div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+      this.page.url = 'https://www.livingdatalab.com/markdown/2021/04/04/ai-human-preferences.html';
+      this.page.identifier = 'https://www.livingdatalab.com/markdown/2021/04/04/ai-human-preferences.html';
+    };
+    (function() {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://livingdatalab.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+<a class="u-url" href="/markdown/2021/04/04/ai-human-preferences.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/pranath" title="pranath"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://www.linkedin.com/in/pranath-fernando" title="pranath-fernando"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg></a></li><li><a rel="me" href="https://twitter.com/livingdatalab" title="livingdatalab"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
