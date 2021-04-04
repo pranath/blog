@@ -1,14 +1,14 @@
 ---
-toc: true
+toc: false
 layout: post
-description: What AI can tell us about the hidden preferences of human beings
 categories: [markdown]
 title: What AI can tell us about the hidden preferences of human beings
+description: AI is being used everywhere, but little work is done to understand how and why they work. We have so much to gain by trying to look inside and understand these AI systems better.
 comments: true
 image: images/aihuman.jpeg
 ---
 
-# What AI can tell us about the hidden preferences of human beings
+![]({{ site.baseurl }}/images/aihuman.jpg "")
 
 ## Introduction
 
@@ -54,22 +54,21 @@ We actually have 2 types of latent factors, normal factors and bias factors. Bia
 
 So these are the bottom 10 books with the most negative bias in the AI model:
 
--Wild Animus
--The Law of Love
--Blood and Gold (Rice Anne Vampire Chronicles)
--Gorky Park
--The Cat Who Went into the Closet
--Waiting to Exhale
--Night Moves (Tom Clancy's Net Force No. 3)
--Ruthless.Com (Tom Clancy's Power Plays)
--Ground Zero and Beyond
--Say Cheese and Die! 
+- Wild Animus
+- The Law of Love
+- Blood and Gold (Rice Anne Vampire Chronicles)
+- Gorky Park
+- The Cat Who Went into the Closet
+- Waiting to Exhale
+- Night Moves (Tom Clancy's Net Force No. 3)
+- Ruthless.Com (Tom Clancy's Power Plays)
+- Ground Zero and Beyond
+- Say Cheese and Die! 
 
 Let us look at the 2 books with the most negative bias, 'Wild Animus' and 'The Law of love'. So what is Wild Animus about? The synopsis reads:
 
 >"Sam Altman is an intense young man with an animal energy whose unleashed and increasingly unhinged imagination takes him first to Seattle and then farther north, to the remote Alaskan wilderness. ..."
 
-https://litreactor.com/columns/what-the-hell-is-wild-animus
 This book does have many many online reviews, on the whole which can be summarized by the review [What the hell is Wild animus?](https://litreactor.com/columns/what-the-hell-is-wild-animus){:target="_blank"}. The review concludes with a quote from a goodreads reviewer:
 
 >"I'll tell you the ending. A column of lava erupts from beneath his feet while he is dressed in a goat costume and wolves are in mid-air tearing him apart."
@@ -82,16 +81,16 @@ As it happens this book has as many positive reviews as negative online, in fact
 
 Let's now look at the top 10 books with the most positive bias in the AI model:
 
--The Lovely Bones: A Novel
--Harry Potter and the Goblet of Fire
--The Da Vinci Code
--Harry Potter and the Prisoner of Azkaban 
--The Secret Life of Bees
--Harry Potter and the Sorcerer's Stone 
--Harry Potter and the Chamber of Secrets 
--Where the Heart Is 
--To Kill a Mockingbird
--The Red Tent
+- The Lovely Bones: A Novel
+- Harry Potter and the Goblet of Fire
+- The Da Vinci Code
+- Harry Potter and the Prisoner of Azkaban 
+- The Secret Life of Bees
+- Harry Potter and the Sorcerer's Stone 
+- Harry Potter and the Chamber of Secrets 
+- Where the Heart Is 
+- To Kill a Mockingbird
+- The Red Tent
 
 So looking in more detail at the 2 books with the most positive bias we have 'The lovely bones' and 'Harry Potter and the Goblet of Fire'. So the synopsis of "The lovely bones" is as follows:
 
@@ -125,9 +124,9 @@ It generally also has good reviews, and would fall into the category of 'Women's
 
 Again this book generated very good reviews, was very popular, and might fall into the category of 'Contemporary fiction'. What are some common things to note about all of these books with a high latent factor 1?
 
--They are all very popular and have great critical acclaim
--2 of these books turned into films, and the third is currently being adapted for film.
--All 3 have a theme of a huge personal tragedy, which the protagonist is successful in overcoming and rising above by themselves
+- They are all very popular and have great critical acclaim
+- 2 of these books turned into films, and the third is currently being adapted for film.
+- All 3 have a theme of a huge personal tragedy, which the protagonist is successful in overcoming and rising above by themselves
 
 So lets bear this in mind, while we look at books with the lowest latent factor 1, on the far left of the chart. For example we have 'A painted house' the synopsis of this being:
 
@@ -143,10 +142,10 @@ This also seems to be another book by John Grisham, that would fall into categor
 
 In fact when we look at the other books with the lowest factor 1, on the far left of the chart, they pretty much are all John Grisham legal thriller books such as:
 
--The Pelican brief
--The Brethren
--The Summons
--The Firm
+- The Pelican brief
+- The Brethren
+- The Summons
+- The Firm
 
 Let's now consider what factor 1 might actually be about. Given most of these books, regardless of having a low or high value of factor 1, have all been popular and successful - popularity I would argue has nothing to do with what factor 1 is really about. 
 
