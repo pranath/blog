@@ -8,7 +8,7 @@ comments: true
 image: images/aihuman.jpeg
 ---
 
-![]({{ site.baseurl }}/images/reccsystems.png "Types of Reccomendation Systems")
+![]({{ site.baseurl }}/images/aihuman.jpeg "Types")
 
 ## Introduction
 
