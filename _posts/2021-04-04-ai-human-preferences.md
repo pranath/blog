@@ -110,10 +110,6 @@ So for the remaining latent factors, we actually have 50 of them for each of our
 
 ![]({{ site.baseurl }}/images/factors0-1.png "Key latent factor 1 (horizontal axis) and factor 2 (vertical axis) for 50 books")
 
-{% include lightbox.html src="{{ site.baseurl }}/images/factors0-1.png" data="group" title="Sample Title" %}
-
-{% include image.html src="{{ site.baseurl }}/images/factors0-1.png" title="Sample Title" %}
-
 A bigger view of this image of latent factors 1 & 2 can be seen [here](https://livingdatalab.com/images/factors0-1.png){:target="_blank"}
 
 Here we can see 50 books plotted. On the horizontal axis that is a measure of how much of latent factor 1 each book has. On the vertical axis, that is a measure of how much of latent factor 2 each book has.
