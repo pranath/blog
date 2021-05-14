@@ -13,11 +13,11 @@
 <link rel="canonical" href="https://www.livingdatalab.com/opinion/2021/05/14/ai-satellite-images.html" />
 <meta property="og:url" content="https://www.livingdatalab.com/opinion/2021/05/14/ai-satellite-images.html" />
 <meta property="og:site_name" content="livingdatalab" />
-<meta property="og:image" content="https://www.livingdatalab.com/images/sat4.jpeg" />
+<meta property="og:image" content="https://www.livingdatalab.com/images/sat4.jpg" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-05-14T00:00:00-05:00" />
 <script type="application/ld+json">
-{"url":"https://www.livingdatalab.com/opinion/2021/05/14/ai-satellite-images.html","@type":"BlogPosting","headline":"An Eye in the Sky - How AI and Satellite Imagery can help us better understand our changing world","dateModified":"2021-05-14T00:00:00-05:00","datePublished":"2021-05-14T00:00:00-05:00","image":"https://www.livingdatalab.com/images/sat4.jpeg","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/opinion/2021/05/14/ai-satellite-images.html"},"description":"Many of the greatest challenges the world faces today are global in nature, AI and satellite images is a powerful technology that holds huge potential for helping us solve many problems we face.","@context":"https://schema.org"}</script>
+{"url":"https://www.livingdatalab.com/opinion/2021/05/14/ai-satellite-images.html","@type":"BlogPosting","headline":"An Eye in the Sky - How AI and Satellite Imagery can help us better understand our changing world","dateModified":"2021-05-14T00:00:00-05:00","datePublished":"2021-05-14T00:00:00-05:00","image":"https://www.livingdatalab.com/images/sat4.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/opinion/2021/05/14/ai-satellite-images.html"},"description":"Many of the greatest challenges the world faces today are global in nature, AI and satellite images is a powerful technology that holds huge potential for helping us solve many problems we face.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://www.livingdatalab.com/feed.xml" title="livingdatalab" /><!-- the google_analytics_id gets auto inserted from the config file -->
 
@@ -104,7 +104,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#introduction">Introduction</a></li>
 <li class="toc-entry toc-h2"><a href="#using-ai-to-automatically-recognise-woodlands-and-water-areas">Using AI to automatically recognise Woodlands and Water areas</a></li>
 <li class="toc-entry toc-h2"><a href="#conclusion">Conclusion</a></li>
-</ul><p>![](/images/sat4.jpeg” “)</p>
+</ul><p>![](/images/sat4.jpg” “)</p>
 
 <h2 id="introduction">
 <a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
@@ -113,7 +113,7 @@ window.onload = wrap_img;
 
 <p>In the water industry where I work, satellite image data and AI holds great potential for helping solve a number of problems, such as the <a href="https://earthi.space/press/severn-trent-water-enlists-earth-i-to-identify-and-combat-water-leaks-using-sophisticated-data-analytics-from-satellite-imagery/" target="_blank">detection of leaks</a>, <a href="https://www.devex.com/news/how-satellite-images-could-improve-water-management-in-africa-96807" target="_blank">water resource management</a> to ensure on ongoing water supply accounting for changes in population and climate change, <a href="https://jncc.gov.uk/media/4681/eo4water_resources_website_final.pdf" target="_blank">water quality monitoring</a>, and <a href="https://reliefweb.int/report/world/fusing-ai-satellite-image-analysis-inform-rapid-response-floods-un-global-pulse" target="_blank">flood protection</a>.</p>
 
-<p>Beyond the water industry, satellite images and AI are working together to provide critical insights in many diverse areas such as <a href="https://development.asia/insight/how-ai-can-boost-disaster-response-and-recovery" target="_blank">disaster response and recovery</a>, <a href="https://scitechdaily.com/discovering-hidden-archaeological-sites-with-ai-and-satellite-images/" target="_blank">the discovery of hidden archaeological sites</a>, city infrastructure monitoring](https://development.asia/insight/using-artificial-intelligence-city-infrastructure-monitoring){:target=”_blank”}, combating illegal fishing](https://news.microsoft.com/on-the-issues/2019/06/06/ocean-mind-illegal-fishing/){:target=”_blank”}, and predicting crop yields](https://www.theverge.com/2016/8/4/12369494/descartes-artificial-intelligence-crop-predictions-usda){:target=”_blank”}.</p>
+<p>Beyond the water industry, satellite images and AI are working together to provide critical insights in many diverse areas such as <a href="https://development.asia/insight/how-ai-can-boost-disaster-response-and-recovery" target="_blank">disaster response and recovery</a>, <a href="https://scitechdaily.com/discovering-hidden-archaeological-sites-with-ai-and-satellite-images/" target="_blank">the discovery of hidden archaeological sites</a>, <a href="https://development.asia/insight/using-artificial-intelligence-city-infrastructure-monitoring" target="_blank">city infrastructure monitoring</a>, <a href="https://news.microsoft.com/on-the-issues/2019/06/06/ocean-mind-illegal-fishing/" target="_blank">combating illegal fishing</a>, and <a href="https://www.theverge.com/2016/8/4/12369494/descartes-artificial-intelligence-crop-predictions-usda" target="_blank">predicting crop yields</a>.</p>
 
 <p>But how does this technology work? and can you understand the basics of how it works without any technical knowledge? The answer is I believe yes, and I will try to illustrate this by describing a recent project I completed using this approach.</p>
 
@@ -134,7 +134,7 @@ window.onload = wrap_img;
 
 <p>So how well does the AI learn to recognise these things? after running the training process a while, these are some of the results I got when I tested the AI on images it had never seen. Here the ‘Target’ on the left are the labels for images the AI has never seen, and the ‘Prediction’ on the right are what the AI thinks the label colour areas should be in the image.</p>
 
-<p><img src="/images/sat3.png" alt="" title="New satellite image targets to test our AI, which makes predictions"></p>
+<p><img src="/images/sat3.png" alt="" title="New satellite image targets to test our AI on the left, which makes predictions on the right"></p>
 
 <p>So I’d say the AI has done a pretty good job. You can see in these examples it seems to have recognised the correct water areas (in pink) and woodland areas (in red) pretty well? The AI was only trained for a limited time, most likely if I had trained it for longer it would have done even better. I could now use this AI on any new satellite images, and know it would do quite well at recognising woodland and water areas fairly accurately. Because the labels here are actually coloured dots on the image, we could add up all the dots for water or woodland on an image and get a fairly accurate measure for how much water or woodland there was there.</p>
 
