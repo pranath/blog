@@ -2,10 +2,10 @@
 toc: true
 layout: post
 categories: [opinion]
-title: What An Eye in the Sky: How AI and Satellite Imagery can help us better understand our changing world
-description: any of the greatest challenges the world faces today are global in nature, AI and satellite images is a powerful technology that holds huge potential for helping us solve many problems we face.
+title: What AI can tell us about the hidden preferences of human beings
+description: AI systems are being used everywhere, but often little work is done to gain a deeper understanding how and why they work. We have so much to gain from trying to look deeper inside these AI systems to understand them better.
 comments: true
-image: images/sat4.jpeg
+image: images/aihuman.jpeg
 ---
 
 ![]({{ site.baseurl }}/images/sat4.jpeg" ")
