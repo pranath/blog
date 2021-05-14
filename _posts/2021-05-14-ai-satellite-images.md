@@ -5,10 +5,10 @@ categories: [opinion]
 title: An Eye in the Sky - How AI and Satellite Imagery can help us better understand our changing world
 description: Many of the greatest challenges the world faces today are global in nature, AI and satellite images is a powerful technology that holds huge potential for helping us solve many problems we face.
 comments: true
-image: images/sat4.jpeg
+image: images/sat4.jpg
 ---
 
-![]({{ site.baseurl }}/images/sat4.jpeg" ")
+![]({{ site.baseurl }}/images/sat4.jpg" ")
 
 ## Introduction
 
@@ -16,7 +16,7 @@ Many of the greatest challenges the world faces today are global in nature, clim
 
 In the water industry where I work, satellite image data and AI holds great potential for helping solve a number of problems, such as the [detection of leaks](https://earthi.space/press/severn-trent-water-enlists-earth-i-to-identify-and-combat-water-leaks-using-sophisticated-data-analytics-from-satellite-imagery/){:target="_blank"}, [water resource management](https://www.devex.com/news/how-satellite-images-could-improve-water-management-in-africa-96807){:target="_blank"} to ensure on ongoing water supply accounting for changes in population and climate change, [water quality monitoring](https://jncc.gov.uk/media/4681/eo4water_resources_website_final.pdf){:target="_blank"}, and [flood protection](https://reliefweb.int/report/world/fusing-ai-satellite-image-analysis-inform-rapid-response-floods-un-global-pulse){:target="_blank"}.
 
-Beyond the water industry, satellite images and AI are working together to provide critical insights in many diverse areas such as [disaster response and recovery](https://development.asia/insight/how-ai-can-boost-disaster-response-and-recovery){:target="_blank"}, [the discovery of hidden archaeological sites](https://scitechdaily.com/discovering-hidden-archaeological-sites-with-ai-and-satellite-images/){:target="_blank"}, city infrastructure monitoring](https://development.asia/insight/using-artificial-intelligence-city-infrastructure-monitoring){:target="_blank"}, combating illegal fishing](https://news.microsoft.com/on-the-issues/2019/06/06/ocean-mind-illegal-fishing/){:target="_blank"}, and predicting crop yields](https://www.theverge.com/2016/8/4/12369494/descartes-artificial-intelligence-crop-predictions-usda){:target="_blank"}.
+Beyond the water industry, satellite images and AI are working together to provide critical insights in many diverse areas such as [disaster response and recovery](https://development.asia/insight/how-ai-can-boost-disaster-response-and-recovery){:target="_blank"}, [the discovery of hidden archaeological sites](https://scitechdaily.com/discovering-hidden-archaeological-sites-with-ai-and-satellite-images/){:target="_blank"}, [city infrastructure monitoring](https://development.asia/insight/using-artificial-intelligence-city-infrastructure-monitoring){:target="_blank"}, [combating illegal fishing](https://news.microsoft.com/on-the-issues/2019/06/06/ocean-mind-illegal-fishing/){:target="_blank"}, and [predicting crop yields](https://www.theverge.com/2016/8/4/12369494/descartes-artificial-intelligence-crop-predictions-usda){:target="_blank"}.
 
 But how does this technology work? and can you understand the basics of how it works without any technical knowledge? The answer is I believe yes, and I will try to illustrate this by describing a recent project I completed using this approach.
 
@@ -36,7 +36,7 @@ How do these images get their coloured labels? well some poor human has to pains
 
 So how well does the AI learn to recognise these things? after running the training process a while, these are some of the results I got when I tested the AI on images it had never seen. Here the 'Target' on the left are the labels for images the AI has never seen, and the 'Prediction' on the right are what the AI thinks the label colour areas should be in the image.
 
-![]({{ site.baseurl }}/images/sat3.png "New satellite image targets to test our AI, which makes predictions")
+![]({{ site.baseurl }}/images/sat3.png "New satellite image targets to test our AI on the left, which makes predictions on the right")
 
 So I'd say the AI has done a pretty good job. You can see in these examples it seems to have recognised the correct water areas (in pink) and woodland areas (in red) pretty well? The AI was only trained for a limited time, most likely if I had trained it for longer it would have done even better. I could now use this AI on any new satellite images, and know it would do quite well at recognising woodland and water areas fairly accurately. Because the labels here are actually coloured dots on the image, we could add up all the dots for water or woodland on an image and get a fairly accurate measure for how much water or woodland there was there.
 
