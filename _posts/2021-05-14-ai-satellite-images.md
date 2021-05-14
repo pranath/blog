@@ -8,7 +8,7 @@ comments: true
 image: images/sat6.jpg
 ---
 
-![]({{ site.baseurl }}/images/sat6.jpg " ")
+![]({{ site.baseurl }}/images/sat4.jpg " ")
 
 ## Introduction
 
