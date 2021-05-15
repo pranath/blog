@@ -130,11 +130,11 @@ window.onload = wrap_img;
 <h2 id="Introduction">
 <a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
 </h2>
-<p>Satellite imagery is being used together with AI and deep learning in <a href="https://livingdatalab.com/opinion/2021/05/14/ai-satellite-images.html">many areas</a>{:target="_blank"} to produce stunning insights and discoveries. In this project I look at applying this approach to recognising buildings, woodlands &amp; water areas from satellite images.</p>
+<p>Satellite imagery is being used together with AI and deep learning in <a href="https://livingdatalab.com/opinion/2021/05/14/ai-satellite-images.html">many areas</a> to produce stunning insights and discoveries. In this project I look at applying this approach to recognising buildings, woodlands &amp; water areas from satellite images.</p>
 <h2 id="Dataset">
 <a class="anchor" href="#Dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dataset<a class="anchor-link" href="#Dataset"> </a>
 </h2>
-<p>The <a href="https://landcover.ai">dataset</a> used for this project comes from the research paper <a href="https://arxiv.org/pdf/2005.02264.pdf">LandCover.ai: Dataset for Automatic Mapping of Buildings, Woodlands and Water from Aerial Imagery</a>{:target="_blank"} which gathered satellite imagery of different areas of Poland. The satellite images have 3 spectral bands so are RGB jpg images. The researchers chose to use 4 classes for identifying objects in these images:</p>
+<p>The <a href="https://landcover.ai">dataset</a> used for this project comes from the research paper <a href="https://arxiv.org/pdf/2005.02264.pdf">LandCover.ai: Dataset for Automatic Mapping of Buildings, Woodlands and Water from Aerial Imagery</a> which gathered satellite imagery of different areas of Poland. The satellite images have 3 spectral bands so are RGB jpg images. The researchers chose to use 4 classes for identifying objects in these images:</p>
 <ul>
 <li>Building</li>
 <li>Woodland</li>
@@ -145,7 +145,7 @@ window.onload = wrap_img;
 <h2 id="Methodology">
 <a class="anchor" href="#Methodology" aria-hidden="true"><span class="octicon octicon-link"></span></a>Methodology<a class="anchor-link" href="#Methodology"> </a>
 </h2>
-<p>For this project I used the fastai deep learning library which is based on Pytorch/Python. The dataset lends itself to the approach of <em>image segmentation classification</em> as the classes in the dataset are expressed as shaded regions, as opposed to say multi-label image classification using text labels. For this approach, the <a href="https://towardsdatascience.com/understanding-semantic-segmentation-with-unet-6be4f42d4b47">UNET</a>{:target="_blank"} deep learning architecture has prooven extremely good for image segmentation problems - which is what I chose to use here.</p>
+<p>For this project I used the fastai deep learning library which is based on Pytorch/Python. The dataset lends itself to the approach of <em>image segmentation classification</em> as the classes in the dataset are expressed as shaded regions, as opposed to say multi-label image classification using text labels. For this approach, the <a href="https://towardsdatascience.com/understanding-semantic-segmentation-with-unet-6be4f42d4b47">UNET</a> deep learning architecture has prooven extremely good for image segmentation problems - which is what I chose to use here.</p>
 
 </div>
 </div>
@@ -166,7 +166,8 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">DATA_PATH</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Set path for image files</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">DATA_PATH</span><span class="p">)</span>
 <span class="c1">## Set the text for the classes</span>
 <span class="n">codes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">"building"</span><span class="p">,</span> <span class="s2">"woodland"</span><span class="p">,</span> <span class="s2">"water"</span><span class="p">,</span> <span class="s2">"Background"</span><span class="p">])</span>
 </pre></div>
