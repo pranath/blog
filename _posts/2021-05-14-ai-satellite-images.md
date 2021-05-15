@@ -22,7 +22,7 @@ But how does this technology work? and can you understand the basics of how it w
 
 ## Using AI to automatically recognise Woodlands and Water areas
 
-In a recent project, I used [satellite imagery from Poland](https://landcover.ai){:target="_blank"} to train an AI to automatically recognise areas in the images such as woodlands and water. So AI is just about throwing some data at it and some magic happens? Actually not quite! This is a common myth about how AI actually works. 
+In a [recent project](https://livingdatalab.com/projects/2021/05/14/_05_15_satellite_recognition_buildings_woodland_water_ai.html){:target="_blank"}, I used [satellite imagery from Poland](https://landcover.ai){:target="_blank"} to train an AI to automatically recognise areas in the images such as woodlands and water. So AI is just about throwing some data at it and some magic happens? Actually not quite! This is a common myth about how AI actually works. 
 
 ![]({{ site.baseurl }}/images/sat1.png "Satellite images with different regions, seasons, time of day, weather, lighting conditions, etc.")
 
@@ -41,6 +41,8 @@ So how well does the AI learn to recognise these things? after running the train
 So I'd say the AI has done a pretty good job. You can see in these examples it seems to have recognised the correct water areas (in pink) and woodland areas (in red) pretty well? The AI was only trained for a limited time, most likely if I had trained it for longer it would have done even better. I could now use this AI on any new satellite images, and know it would do quite well at recognising woodland and water areas fairly accurately. Because the labels here are actually coloured dots on the image, we could add up all the dots for water or woodland on an image and get a fairly accurate measure for how much water or woodland there was there.
 
 Just imagine what we could do with even this fairly simple AI. For example, we could use it to estimate the woodland and water areas of different parts of a country quite accurately, anywhere in the world. If we took different satellite photos of the same area over time, we could estimate how the water or woodland areas were changing over time, and by how much, all automatically. The possibilities are endless.
+
+More about the technical details of this project can be found in [this article](https://livingdatalab.com/projects/2021/05/14/_05_15_satellite_recognition_buildings_woodland_water_ai.html){:target="_blank"}
 
 ## Conclusion
 
