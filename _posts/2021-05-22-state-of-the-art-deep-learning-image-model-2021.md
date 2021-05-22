@@ -3,7 +3,7 @@ toc: true
 layout: post
 categories: [deep-learning-theory]
 title: State-of-the-art Deep Learning image model techniques in 2021
-description: In this article we are going to look at some of the most advanced techniques available in 2021 for training deep learning vision models
+description: In this article we are going to look at some of the most advanced techniques available in 2021 for training deep learning vision models.
 comments: true
 image: images/deep1.jpg
 ---
@@ -18,7 +18,7 @@ I will be using the fastai deep learning library for code examples, as well as t
 
 We will define a baseline model here using the dataset to then compare the effect of each advanced technique.
 
-![]({{ site.baseurl }}/images/sota-vision/sota-vision1.png "")
+![]({{ site.baseurl }}/images/sota-vision/sota-vision1.png " ")
 
 ## Normalisation
 
