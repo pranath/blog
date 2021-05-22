@@ -4,12 +4,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>State-of-the-art deep learning image model techniques in 2021 | livingdatalab</title>
+<title>State-of-the-art Deep Learning image model techniques in 2021 | livingdatalab</title>
 <meta name="generator" content="Jekyll v4.1.1" />
-<meta property="og:title" content="State-of-the-art deep learning image model techniques in 2021" />
+<meta property="og:title" content="State-of-the-art Deep Learning image model techniques in 2021" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Descript" />
-<meta property="og:description" content="Descript" />
+<meta name="description" content="In this article we are going to look at some of the most advanced techniques available in 2021 for training deep learning vision models" />
+<meta property="og:description" content="In this article we are going to look at some of the most advanced techniques available in 2021 for training deep learning vision models" />
 <link rel="canonical" href="https://www.livingdatalab.com/deep-learning-theory/2021/05/22/state-of-the-art-deep-learning-image-model-2021.html" />
 <meta property="og:url" content="https://www.livingdatalab.com/deep-learning-theory/2021/05/22/state-of-the-art-deep-learning-image-model-2021.html" />
 <meta property="og:site_name" content="livingdatalab" />
@@ -17,7 +17,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-05-22T00:00:00-05:00" />
 <script type="application/ld+json">
-{"url":"https://www.livingdatalab.com/deep-learning-theory/2021/05/22/state-of-the-art-deep-learning-image-model-2021.html","@type":"BlogPosting","headline":"State-of-the-art deep learning image model techniques in 2021","dateModified":"2021-05-22T00:00:00-05:00","datePublished":"2021-05-22T00:00:00-05:00","image":"https://www.livingdatalab.com/images/deep1.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/deep-learning-theory/2021/05/22/state-of-the-art-deep-learning-image-model-2021.html"},"description":"Descript","@context":"https://schema.org"}</script>
+{"url":"https://www.livingdatalab.com/deep-learning-theory/2021/05/22/state-of-the-art-deep-learning-image-model-2021.html","@type":"BlogPosting","headline":"State-of-the-art Deep Learning image model techniques in 2021","dateModified":"2021-05-22T00:00:00-05:00","datePublished":"2021-05-22T00:00:00-05:00","image":"https://www.livingdatalab.com/images/deep1.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/deep-learning-theory/2021/05/22/state-of-the-art-deep-learning-image-model-2021.html"},"description":"In this article we are going to look at some of the most advanced techniques available in 2021 for training deep learning vision models","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://www.livingdatalab.com/feed.xml" title="livingdatalab" /><!-- the google_analytics_id gets auto inserted from the config file -->
 
@@ -78,7 +78,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">State-of-the-art deep learning image model techniques in 2021</h1><p class="page-description">Descript</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-05-22T00:00:00-05:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">State-of-the-art Deep Learning image model techniques in 2021</h1><p class="page-description">In this article we are going to look at some of the most advanced techniques available in 2021 for training deep learning vision models</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-05-22T00:00:00-05:00" itemprop="datePublished">
         May 22, 2021
       </time>
        • <span class="read-time" title="Estimated read time">
@@ -102,16 +102,26 @@ window.onload = wrap_img;
   <div class="post-content e-content" itemprop="articleBody">
     <ul class="section-nav">
 <li class="toc-entry toc-h2"><a href="#introduction">Introduction</a></li>
+<li class="toc-entry toc-h2"><a href="#library-and-dataset">Library and Dataset</a></li>
 <li class="toc-entry toc-h2"><a href="#normalisation">Normalisation</a></li>
 <li class="toc-entry toc-h2"><a href="#progressive-resizing">Progressive resizing</a></li>
 <li class="toc-entry toc-h2"><a href="#test-time-augmentation">Test time augmentation</a></li>
 <li class="toc-entry toc-h2"><a href="#mixup">Mixup</a></li>
 <li class="toc-entry toc-h2"><a href="#label-smoothing">Label smoothing</a></li>
 <li class="toc-entry toc-h2"><a href="#conclusion">Conclusion</a></li>
-</ul><p><img src="/images/deep2.jpg" alt="" title=" "></p>
-
-<h2 id="introduction">
+</ul><h2 id="introduction">
 <a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>In this article we are going to look at some of the most advanced techniques available in 2021 for training deep learning vision models. These go beyond the basics of mini-batch gradient descent, learning rates, pre-sizing, transfer learning, discriminative learning rates, and mixed-precision training.</p>
+
+<h2 id="library-and-dataset">
+<a class="anchor" href="#library-and-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Library and Dataset</h2>
+
+<p>I will be using the fastai deep learning library for code examples, as well as the fastai curated <em>Imagenette</em> dataset which is a specially curated subset of the well known ImageNet dataet of 1.3 million images from 1,000 categories. The Imagenette dataset consists of a much smaller set of images and just 10 categories of images.</p>
+
+<p>We will define a baseline model here using the dataset to then compare the effect of each advanced technique.</p>
+
+<p>![](/images/sota-vision/sota-vision1.png “”)</p>
 
 <h2 id="normalisation">
 <a class="anchor" href="#normalisation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Normalisation</h2>
