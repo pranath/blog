@@ -84,7 +84,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      1 min read
+      2 min read
     
 </span></p>
 
@@ -125,6 +125,24 @@ window.onload = wrap_img;
 
 <h2 id="normalisation">
 <a class="anchor" href="#normalisation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Normalisation</h2>
+
+<p>When training a model, its helpful to ensure the image data is normalised. This ensures that different images end up with data that is in the same range of values, which helps the model better focus more on the content on the images. So here by normalised we mean we want the image data values to have a mean of 0 and a standard deviation of 1.</p>
+
+<p>The fastai library will automatically normalise images per batch, and this is suitable for models that we might train from scratch. When using transfer learning this default approach is not a good idea, because a pre-trained model has been trained on image data with a particular mean and standard deviation. So to use a pre-trained model with new images, we need to ensure these new images are normalised to the same mean and standard deviation that the original model data was trained with.</p>
+
+<p>We can do this my specifying particular normalisation stats in fastai, which already knows the normalisation stats for many common datasets, including of course fastai’s own Imagenette dataset which makes it much easier.</p>
+
+<p>We can also define a function <strong>get_dls()</strong> which will make it easier to define different types of data loader i.e. with different batch or image sizes.</p>
+
+<p><img src="/images/sota-vision/sota-vision2.png" alt="" title=" "></p>
+
+<p>After applying our normalisation, we can see the mean and standard deviation are approximatly 0 and 1 respectively on a test batch of images.</p>
+
+<p>Lets now try this normalised data and train our model.</p>
+
+<p><img src="/images/sota-vision/sota-vision3png" alt="" title=" "></p>
+
+<p>While normalisation here hasn’t made a huge improvement over our baseline model, normalisation does make a bigger difference especially with bigger models and more data.</p>
 
 <h2 id="progressive-resizing">
 <a class="anchor" href="#progressive-resizing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Progressive resizing</h2>
