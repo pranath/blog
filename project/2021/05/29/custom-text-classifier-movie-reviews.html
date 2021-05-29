@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Creating a custom text classifier for movie reviews | livingdatalab</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Creating a custom text classifier for movie reviews" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In this article we are going to create a deep learning text classifier using the fastai library, and the ULMFit approach" />
+<meta property="og:description" content="In this article we are going to create a deep learning text classifier using the fastai library, and the ULMFit approach" />
+<link rel="canonical" href="https://www.livingdatalab.com/project/2021/05/29/custom-text-classifier-movie-reviews.html" />
+<meta property="og:url" content="https://www.livingdatalab.com/project/2021/05/29/custom-text-classifier-movie-reviews.html" />
+<meta property="og:site_name" content="livingdatalab" />
+<meta property="og:image" content="https://www.livingdatalab.com/images/ulmfit.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-05-29T00:00:00-05:00" />
+<script type="application/ld+json">
+{"url":"https://www.livingdatalab.com/project/2021/05/29/custom-text-classifier-movie-reviews.html","@type":"BlogPosting","headline":"Creating a custom text classifier for movie reviews","dateModified":"2021-05-29T00:00:00-05:00","datePublished":"2021-05-29T00:00:00-05:00","image":"https://www.livingdatalab.com/images/ulmfit.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/project/2021/05/29/custom-text-classifier-movie-reviews.html"},"description":"In this article we are going to create a deep learning text classifier using the fastai library, and the ULMFit approach","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://www.livingdatalab.com/feed.xml" title="livingdatalab" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-91568149-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">livingdatalab</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Livingdatalab</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Creating a custom text classifier for movie reviews</h1><p class="page-description">In this article we are going to create a deep learning text classifier using the fastai library, and the ULMFit approach</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-05-29T00:00:00-05:00" itemprop="datePublished">
+        May 29, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#project">project</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Introduction">Introduction </a></li>
+<li class="toc-entry toc-h2"><a href="#Text-Pre-processing">Text Pre-processing </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Tokenisation">Tokenisation </a></li>
+<li class="toc-entry toc-h3"><a href="#Numericalisation">Numericalisation </a></li>
+<li class="toc-entry toc-h3"><a href="#Create-data-loader">Create data loader </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Training-a-text-classifier">Training a text classifier </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Fine-tune-language-model">Fine tune language model </a></li>
+<li class="toc-entry toc-h3"><a href="#Fine-tune-classifier-model">Fine tune classifier model </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Conclusion">Conclusion </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-05-29-custom-text-classifier-movie-reviews.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h2>
+<p>In this article we are going to train a deep learning text classifier using the fastai library. We will do this for the <a href="http://ai.stanford.edu/~amaas/data/sentiment/">IMDB</a> movie reviews dataset. In particular, we will look at fastai's ULMFit approach which involves fine tuning a language model more with specialised text before using this language model as a basis for a classification model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Text-Pre-processing">
+<a class="anchor" href="#Text-Pre-processing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Text Pre-processing<a class="anchor-link" href="#Text-Pre-processing"> </a>
+</h2>
+<p>So how might we proceed with building a language model, that we can then use for clasisifcation? Consider with one of the simplest neural networks, a <a href="https://livingdatalab.com/deep-learning-theory/2021/05/25/collaberative-filtering-from-scratch.html">collaberative filtering model</a>. This uses embedding matrices to encode different items (such as films) and users, combine these using dot products to calculate a value, which we test against known ratings - and use gradient descent to learn the correct embedding matrices to best predict these ratings.</p>
+<p>Optionally, we can create instead a deep learning model from this by concatinating the embedding matrices instead of the dot product, then putting the result through an activtion function, and more layers etc.</p>
+<p>So we could use a similar approach, where we put a sequence of words through a neural network via encoding them in an embedding martix for words. However a significant difference from the collaberative filtering approach here is the idea of a sequence.</p>
+<p>We can proceed with these 5 steps:</p>
+<ol>
+<li>
+<strong>Tokenisation</strong>: convert words to recognised units</li>
+<li>
+<strong>Numericalisation</strong>: convert tokens to numbers</li>
+<li>
+<strong>Create data loader</strong>: Create a data loader to train the language model which creates a target variable offset by one word from the input variable from the text data</li>
+<li>
+<strong>Train language model</strong>: We need to train a model that can take an amount of text data of variable length, and be able to predict the next word for any word in the sequence.</li>
+<li>
+<strong>Train classifier model</strong>: Using what the language model has learned about the text as a basis, we can build on top of this to create and train a language model.</li>
+</ol>
+<p>This is an approach pioneered by fastai called the Universal Langauage Model Fine-tuining (ULMFit) approach.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/ulmfit.png" alt="" title="The ULMFit methodology"></p>
+<h3 id="Tokenisation">
+<a class="anchor" href="#Tokenisation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tokenisation<a class="anchor-link" href="#Tokenisation"> </a>
+</h3>
+<p>Lets get the data and tokenise it using the fastai library tools.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">untar_data</span><span class="p">(</span><span class="n">URLs</span><span class="o">.</span><span class="n">IMDB</span><span class="p">)</span>
+
+<span class="n">files</span> <span class="o">=</span> <span class="n">get_text_files</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">folders</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'train'</span><span class="p">,</span> <span class="s1">'test'</span><span class="p">,</span> <span class="s1">'unsup'</span><span class="p">])</span>
+<span class="c1"># Show example text data</span>
+<span class="n">txt</span> <span class="o">=</span> <span class="n">files</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">open</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">();</span> <span class="n">txt</span><span class="p">[:</span><span class="mi">75</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'I caught up with this movie on TV after 30 years or more. Several aspects o'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Fastai has an english word tokeniser, lets see how it works.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Test word tokeniser function</span>
+<span class="n">spacy</span> <span class="o">=</span> <span class="n">WordTokenizer</span><span class="p">()</span>
+<span class="n">toks</span> <span class="o">=</span> <span class="n">first</span><span class="p">(</span><span class="n">spacy</span><span class="p">([</span><span class="n">txt</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">coll_repr</span><span class="p">(</span><span class="n">toks</span><span class="p">,</span> <span class="mi">30</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(#626) ['I','caught','up','with','this','movie','on','TV','after','30','years','or','more','.','Several','aspects','of','the','film','stood','out','even','when','viewing','it','so','many','years','after','it'...]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Test word tokeniser class</span>
+<span class="n">tkn</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">(</span><span class="n">spacy</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">coll_repr</span><span class="p">(</span><span class="n">tkn</span><span class="p">(</span><span class="n">txt</span><span class="p">),</span> <span class="mi">31</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(#699) ['xxbos','i','caught','up','with','this','movie','on','xxup','tv','after','30','years','or','more','.','xxmaj','several','aspects','of','the','film','stood','out','even','when','viewing','it','so','many','years'...]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The class goes beyond just converting the text to tokens for words, for example it creates tokens like 'xxbos' which is a special token to indicate the beginning of a new text sequence i.e. 'beggining of stream' standard NLP concept.</p>
+<p>The class applies a series fo rules and transformations to the text, here is a list of them.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="n">defaults</span><span class="o">.</span><span class="n">text_proc_rules</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&lt;function fastai.text.core.fix_html&gt;,
+ &lt;function fastai.text.core.replace_rep&gt;,
+ &lt;function fastai.text.core.replace_wrep&gt;,
+ &lt;function fastai.text.core.spec_add_spaces&gt;,
+ &lt;function fastai.text.core.rm_useless_spaces&gt;,
+ &lt;function fastai.text.core.replace_all_caps&gt;,
+ &lt;function fastai.text.core.replace_maj&gt;,
+ &lt;function fastai.text.core.lowercase&gt;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Numericalisation">
+<a class="anchor" href="#Numericalisation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Numericalisation<a class="anchor-link" href="#Numericalisation"> </a>
+</h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Get first 2000 reviews to test</span>
+<span class="n">txts</span> <span class="o">=</span> <span class="n">L</span><span class="p">(</span><span class="n">o</span><span class="o">.</span><span class="n">open</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">files</span><span class="p">[:</span><span class="mi">2000</span><span class="p">])</span>
+<span class="c1"># Tokenise</span>
+<span class="n">toks</span> <span class="o">=</span> <span class="n">tkn</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+<span class="c1"># Select subset of tokenised reviews</span>
+<span class="n">toks200</span> <span class="o">=</span> <span class="n">txts</span><span class="p">[:</span><span class="mi">200</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">tkn</span><span class="p">)</span>
+<span class="n">num</span> <span class="o">=</span> <span class="n">Numericalize</span><span class="p">()</span>
+<span class="c1"># Numericalise tokens - create a vocab</span>
+<span class="n">num</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">toks200</span><span class="p">)</span>
+<span class="c1"># Show first 20 tokens of vocab</span>
+<span class="n">coll_repr</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">vocab</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>"(#2096) ['xxunk','xxpad','xxbos','xxeos','xxfld','xxrep','xxwrep','xxup','xxmaj','the','.',',','and','a','of','to','is','in','it','i'...]"</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Now we can convert tokens to numbers for example</span>
+<span class="n">nums</span> <span class="o">=</span> <span class="n">num</span><span class="p">(</span><span class="n">toks</span><span class="p">)[:</span><span class="mi">20</span><span class="p">];</span> <span class="n">nums</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>TensorText([   2,   19,  726,   79,   29,   21,   32,   31,    7,  314,  112, 1195,  138,   63,   71,   10,    8,  393, 1524,   14])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Create-data-loader">
+<a class="anchor" href="#Create-data-loader" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create data loader<a class="anchor-link" href="#Create-data-loader"> </a>
+</h3>
+<p>So we need to join all the text together, and then divide it into specific sized batches of multiple lines of text of fixed length, which maintain the correct order of the text within each batch. At every epoch the order of the reviews is shuffled, but we then join these all together and construct mini-batches in order, which our model will process and learn from. This is all done automatically by the fastai library tools.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Get some example numericalised tokens</span>
+<span class="n">nums200</span> <span class="o">=</span> <span class="n">toks200</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+<span class="c1"># Pass to dataloader</span>
+<span class="n">dl</span> <span class="o">=</span> <span class="n">LMDataLoader</span><span class="p">(</span><span class="n">nums200</span><span class="p">)</span>
+<span class="c1"># Get first batch of data and check sizes</span>
+<span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">first</span><span class="p">(</span><span class="n">dl</span><span class="p">)</span>
+<span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(torch.Size([64, 72]), torch.Size([64, 72]))</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Examine example input variable should be start of a text</span>
+<span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">vocab</span><span class="p">[</span><span class="n">o</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">20</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'xxbos i caught up with this movie on xxup tv after 30 years or more . xxmaj several aspects of'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Examine example target variable which is the same plus added next word - this is what we want to predict</span>
+<span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">vocab</span><span class="p">[</span><span class="n">o</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">20</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'i caught up with this movie on xxup tv after 30 years or more . xxmaj several aspects of the'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Training-a-text-classifier">
+<a class="anchor" href="#Training-a-text-classifier" aria-hidden="true"><span class="octicon octicon-link"></span></a>Training a text classifier<a class="anchor-link" href="#Training-a-text-classifier"> </a>
+</h2>
+<h3 id="Fine-tune-language-model">
+<a class="anchor" href="#Fine-tune-language-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fine tune language model<a class="anchor-link" href="#Fine-tune-language-model"> </a>
+</h3>
+<p>We can further simplify the text preparation for training our language model by combining the tokenisation, numericalisation and dataloader creation into one step by creating a TextBlock and then a dataloader.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Create text dataloader for language model training</span>
+<span class="n">dls_lm</span> <span class="o">=</span> <span class="n">DataBlock</span><span class="p">(</span>
+    <span class="n">blocks</span><span class="o">=</span><span class="n">TextBlock</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">is_lm</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+    <span class="n">get_items</span><span class="o">=</span><span class="n">get_imdb</span><span class="p">,</span> <span class="n">splitter</span><span class="o">=</span><span class="n">RandomSplitter</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Create a language model learner, by default will use x-entropy loss</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">language_model_learner</span><span class="p">(</span>
+    <span class="n">dls_lm</span><span class="p">,</span> <span class="n">AWD_LSTM</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> 
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="n">accuracy</span><span class="p">,</span> <span class="n">Perplexity</span><span class="p">()])</span><span class="o">.</span><span class="n">to_fp16</span><span class="p">()</span>
+<span class="c1"># Train model</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2e-2</span><span class="p">)</span>
+<span class="c1"># Save model encoder</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">save_encoder</span><span class="p">(</span><span class="s1">'finetuned'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Fine-tune-classifier-model">
+<a class="anchor" href="#Fine-tune-classifier-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fine tune classifier model<a class="anchor-link" href="#Fine-tune-classifier-model"> </a>
+</h3>
+<p>To fine tune the classifier model we create the data loader in a slightly different way.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Create text dataloader for classifier model training - using lm vocab</span>
+<span class="n">dls_clas</span> <span class="o">=</span> <span class="n">DataBlock</span><span class="p">(</span>
+    <span class="n">blocks</span><span class="o">=</span><span class="p">(</span><span class="n">TextBlock</span><span class="o">.</span><span class="n">from_folder</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">vocab</span><span class="o">=</span><span class="n">dls_lm</span><span class="o">.</span><span class="n">vocab</span><span class="p">),</span><span class="n">CategoryBlock</span><span class="p">),</span>
+    <span class="n">get_y</span> <span class="o">=</span> <span class="n">parent_label</span><span class="p">,</span>
+    <span class="n">get_items</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">get_text_files</span><span class="p">,</span> <span class="n">folders</span><span class="o">=</span><span class="p">[</span><span class="s1">'train'</span><span class="p">,</span> <span class="s1">'test'</span><span class="p">]),</span>
+    <span class="n">splitter</span><span class="o">=</span><span class="n">GrandparentSplitter</span><span class="p">(</span><span class="n">valid_name</span><span class="o">=</span><span class="s1">'test'</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">dataloaders</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">seq_len</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Create classifier learner</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">text_classifier_learner</span><span class="p">(</span><span class="n">dls_clas</span><span class="p">,</span> <span class="n">AWD_LSTM</span><span class="p">,</span> <span class="n">drop_mult</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> 
+                                <span class="n">metrics</span><span class="o">=</span><span class="n">accuracy</span><span class="p">)</span><span class="o">.</span><span class="n">to_fp16</span><span class="p">()</span>
+<span class="c1"># Load encoder from language model</span>
+<span class="n">learn</span> <span class="o">=</span> <span class="n">learn</span><span class="o">.</span><span class="n">load_encoder</span><span class="p">(</span><span class="s1">'finetuned'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When fine tuning the classifier, it is found to be best if we gradually unfreeze layers to train, and this is best done in manual steps. The first fit will just train the last layer.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Train model - last layer only</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2e-2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Unfreeze a few more layers and train some more with discriminative learning rates</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">freeze_to</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="mf">1e-2</span><span class="o">/</span><span class="p">(</span><span class="mf">2.6</span><span class="o">**</span><span class="mi">4</span><span class="p">),</span><span class="mf">1e-2</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Unfreeze more layers and train more</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">freeze_to</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="mf">5e-3</span><span class="o">/</span><span class="p">(</span><span class="mf">2.6</span><span class="o">**</span><span class="mi">4</span><span class="p">),</span><span class="mf">5e-3</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-python"><pre><span></span><span class="c1"># Unfreeze whole model and train more</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">unfreeze</span><span class="p">()</span>
+<span class="n">learn</span><span class="o">.</span><span class="n">fit_one_cycle</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="mf">1e-3</span><span class="o">/</span><span class="p">(</span><span class="mf">2.6</span><span class="o">**</span><span class="mi">4</span><span class="p">),</span><span class="mf">1e-3</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>On this IMDB dataset we can achieve a classification accuracy of around 95% using this approach.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h2>
+<p>In this article we have looked in more detail at how we can train a text classifier using the 3 step ULMFit fastai approach, and achieve a good level of accuracy. We also saw in more detail what the fastai library does under the hood to make this process much easier.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div>
+  
+  <a class="u-url" href="/project/2021/05/29/custom-text-classifier-movie-reviews.html" hidden></a>
+</article><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="pranath/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/pranath" title="pranath"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://www.linkedin.com/in/pranath-fernando" title="pranath-fernando"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg></a></li><li><a rel="me" href="https://twitter.com/livingdatalab" title="livingdatalab"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+<script type="text/javascript" src="/js/lightbox.js"></script>
+<link rel="stylesheet" href="/css/lightbox.css">
+</body>
+
+</html>
