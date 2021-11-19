@@ -45,7 +45,7 @@ minima:
     linkedin: pranath-fernando
     
 # Set this to true to get LaTeX math equation support
-use_math: 
+use_math: true
 
 # Set this to true to display the summary of your blog post under your title on the Home page.
 show_description: true
@@ -120,7 +120,7 @@ kramdown:
 
 # to limit size of xml as it can grow quite large.
 feed:
-  posts_limit: 5 #default posts_limit: 10
+  posts_limit: 10 #default posts_limit: 10
   excerpt_only: true
   
 # Disqus Comments
