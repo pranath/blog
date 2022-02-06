@@ -130,14 +130,14 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h3"><a href="#determine-level-of-dataset-line-or-encounter">Determine Level of Dataset (Line or Encounter)</a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h2"><a href="#2-analyze-dataset">2. Analyze Dataset</a>
+<li class="toc-entry toc-h2"><a href="#analyze-dataset">Analyze Dataset</a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#analysis-key-findings">Analysis key findings</a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h2"><a href="#3-reduce-dimensionality-of-the-ndc-code-feature">3. Reduce Dimensionality of the NDC Code Feature</a></li>
+<li class="toc-entry toc-h2"><a href="#reduce-dimensionality-of-the-ndc-code-feature">Reduce Dimensionality of the NDC Code Feature</a></li>
 <li class="toc-entry toc-h2"><a href="#select-first-encounter-for-each-patient">Select First Encounter for each Patient</a></li>
-<li class="toc-entry toc-h2"><a href="#aggregate-dataset-to-right-level-for-modeling">Aggregate Dataset to Right Level for Modeling</a></li>
+<li class="toc-entry toc-h2"><a href="#aggregate-dataset-to-right-level-for-modelling">Aggregate Dataset to Right Level for Modelling</a></li>
 <li class="toc-entry toc-h2"><a href="#prepare-fields-and-cast-dataset">Prepare Fields and Cast Dataset</a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#feature-selection">Feature Selection</a></li>
@@ -405,8 +405,8 @@ window.onload = wrap_img;
 
 <p>We would also want to aggregate on the primary_diagnosis_code as there is also only one of these per encounter. By aggregating on these 3 columns, we can create a encounter level dataset.</p>
 
-<h2 id="2-analyze-dataset">
-<a class="anchor" href="#2-analyze-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Analyze Dataset</h2>
+<h2 id="analyze-dataset">
+<a class="anchor" href="#analyze-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analyze Dataset</h2>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Look at range of values &amp; key stats for numerical columns
 </span><span class="n">numerical_feature_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">'time_in_hospital'</span><span class="p">,</span>  <span class="s">'number_outpatient'</span><span class="p">,</span> <span class="s">'number_inpatient'</span><span class="p">,</span> <span class="s">'number_emergency'</span><span class="p">,</span> <span class="s">'num_lab_procedures'</span><span class="p">,</span> <span class="s">'number_diagnoses'</span><span class="p">,</span> <span class="s">'num_medications'</span><span class="p">,</span> <span class="s">'num_procedures'</span> <span class="p">]</span>
@@ -635,8 +635,8 @@ window.onload = wrap_img;
   <li>The distribution for the age field is approximately normal, which we would expect. The distribution for the gender field is roughly uniform &amp; equal. In this case we discount the very small number of Unknown/valid cases. Again this is not surprising, as the distribution of genders in the general population is also roughly equal so this seems to be a representitive sample from the general population.</li>
 </ul>
 
-<h2 id="3-reduce-dimensionality-of-the-ndc-code-feature">
-<a class="anchor" href="#3-reduce-dimensionality-of-the-ndc-code-feature" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Reduce Dimensionality of the NDC Code Feature</h2>
+<h2 id="reduce-dimensionality-of-the-ndc-code-feature">
+<a class="anchor" href="#reduce-dimensionality-of-the-ndc-code-feature" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reduce Dimensionality of the NDC Code Feature</h2>
 
 <p>NDC codes are a common format to represent the wide variety of drugs that are prescribed for patient care in the United States. The challenge is that there are many codes that map to the same or similar drug. We are provided with the ndc drug lookup file https://github.com/udacity/nd320-c1-emr-data-starter/blob/master/project/data_schema_references/ndc_lookup_table.csv derived from the National Drug Codes List site(https://ndclist.com/).</p>
 
@@ -787,16 +787,6 @@ window.onload = wrap_img;
 </table>
 </div>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">student_utils</span> <span class="kn">import</span> <span class="n">reduce_dimension_ndc</span>
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">reduce_dim_df</span> <span class="o">=</span> <span class="n">reduce_dimension_ndc</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ndc_code_df</span><span class="p">)</span>
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Number of unique values should be less for the new output field
-</span><span class="k">assert</span> <span class="n">df</span><span class="p">[</span><span class="s">'ndc_code'</span><span class="p">].</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">reduce_dim_df</span><span class="p">[</span><span class="s">'generic_drug_name'</span><span class="p">].</span><span class="n">nunique</span><span class="p">()</span>
-</code></pre></div></div>
-
 <h2 id="select-first-encounter-for-each-patient">
 <a class="anchor" href="#select-first-encounter-for-each-patient" aria-hidden="true"><span class="octicon octicon-link"></span></a>Select First Encounter for each Patient</h2>
 
@@ -818,15 +808,15 @@ window.onload = wrap_img;
 <span class="c1"># number of unique patients should be equal to the number of unique encounters and patients in the final dataset
 </span><span class="k">assert</span> <span class="n">original_unique_patient_number</span> <span class="o">==</span> <span class="n">unique_patients</span>
 <span class="k">assert</span> <span class="n">original_unique_patient_number</span> <span class="o">==</span> <span class="n">unique_encounters</span>
-<span class="k">print</span><span class="p">(</span><span class="s">"Tests passed!!"</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>Number of unique patients:71518
-Number of unique encounters:71518
-Tests passed!!</p>
+<ul>
+  <li>Number of unique patients:71518</li>
+  <li>Number of unique encounters:71518</li>
+</ul>
 
-<h2 id="aggregate-dataset-to-right-level-for-modeling">
-<a class="anchor" href="#aggregate-dataset-to-right-level-for-modeling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Aggregate Dataset to Right Level for Modeling</h2>
+<h2 id="aggregate-dataset-to-right-level-for-modelling">
+<a class="anchor" href="#aggregate-dataset-to-right-level-for-modelling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Aggregate Dataset to Right Level for Modelling</h2>
 
 <p>To make it simpler, we are creating dummy columns for each unique generic drug name and adding those are input features to the model.</p>
 
@@ -848,7 +838,7 @@ Tests passed!!</p>
 </span><span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">"payer_code"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">agg_drug_df</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p><img src="images/diabetes/output_45_0.png" alt="png"></p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/diabetes/output_45_0.png" alt="png"></p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Look at counts for weight categories
 </span><span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">"weight"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">agg_drug_df</span><span class="p">)</span>
