@@ -27,7 +27,10 @@ In this project I build an end-to-end deep learning/AI system which features a m
 
 I used a dataset that contains the segmentations of the right hippocampus and will use the U-Net deep learning architecture to build a segmentation model.
 
-![](https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_mri_ant.png 'Left: Cropped Hippocampus area from MRI image; Right: Predicted by model Hippocampus anterior (front) volume')
+![](https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_mri_ant.png)
+
+- Left: Cropped Hippocampus area from MRI image
+- Right: Predicted by model Hippocampus anterior (front) volume
 
 After the model was built, I proceeded to integrate the model into a working clinical PACS such that it runs on every incoming study and produces a report with volume measurements.
 
