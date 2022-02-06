@@ -124,7 +124,6 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#the-dataset">The Dataset</a></li>
 <li class="toc-entry toc-h2"><a href="#key-files">Key files</a></li>
 <li class="toc-entry toc-h2"><a href="#results">Results</a></li>
-<li class="toc-entry toc-h2"><a href="#model-deployment-in-automated-report-with-predictions-integrated-into-medical-viewer">Model deployment in automated report with predictions integrated into medical viewer</a></li>
 </ul><h2 id="introduction">
 <a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
 <p>In this project I develop a deep learning model to predict Alzheimer’s disease using 3D MRI medical images. Alzheimer’s disease (AD) is a progressive neurodegenerative disorder that results in impaired neuronal (brain cell) function and eventually, cell death. For patients exhibiting early symptoms, quantifying disease progression over time can help direct therapy and disease management.</p>
@@ -137,15 +136,15 @@ window.onload = wrap_img;
 
 <p>But with fewer and fewer trained Radiologists available, and increasing demands for medical imaging services - this presents a huge challenge for medical services.</p>
 
-<p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_shape.png" alt="Size and shape of the Hippocampus"></p>
+<p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_shape.png" alt="" title="Size and shape of the Hippocampus"></p>
 
 <p>In this project I build an end-to-end deep learning/AI system which features a machine learning algorithm that integrates into a clinical-grade viewer and automatically measures hippocampal volumes of new patients from their MRI images, as their studies are committed to the clinical imaging archive.</p>
 
-<p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/brain_mri.png" alt="Axial slice of an MRI image of the brain"></p>
+<p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/brain_mri.png" alt="" title="Axial slice of an MRI image of the brain"></p>
 
 <p>I used a dataset that contains the segmentations of the right hippocampus and will use the U-Net deep learning architecture to build a segmentation model.</p>
 
-<p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_mri_ant.png" alt="Cropped Hippocampus area from MRI image &amp; predicted Hippocampus anterior (front) volume"></p>
+<p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_mri_ant.png" alt="" title="Cropped Hippocampus area from MRI image &amp; predicted Hippocampus anterior (front) volume"></p>
 
 <p>After the model was built, I proceeded to integrate the model into a working clinical PACS such that it runs on every incoming study and produces a report with volume measurements.</p>
 
@@ -169,9 +168,7 @@ window.onload = wrap_img;
 
 <p>The final model achieved a mean dice score of 1.47 and a mean jaccard score of 0.81 in terms of accuracy for correctly classifying the anterior and posterior volumes of the Hippocampus. The model was then integrated into a clinical viewer to generate automated reports and predictions for Hippocampus volumes submitted via brain MRI scans in a PACS environment. This model can then be used by a clinician to assist with diagnosis &amp; prognosis.</p>
 
-<h2 id="model-deployment-in-automated-report-with-predictions-integrated-into-medical-viewer">
-<a class="anchor" href="#model-deployment-in-automated-report-with-predictions-integrated-into-medical-viewer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Model deployment in automated report with predictions integrated into medical viewer</h2>
-<p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/report-ohif-viewer.png" alt="title"></p>
+<p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/report-ohif-viewer.png" alt="" title="Model deployment in automated report with predictions integrated into medical viewer"></p>
 
   </div>
   
