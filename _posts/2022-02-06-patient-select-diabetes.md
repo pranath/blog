@@ -2,7 +2,7 @@
 toc: true
 layout: post
 comments: true
-description: Utilizing a synthetic Diabetes dataset, we will build a deep learning model that predicts the expected days of hospitalisation time and then convert this to a binary prediction of whether to include or exclude that patient from the clinical trial.
+description: Utilizing a synthetic Diabetes patient dataset, we will build a deep learning model that predicts the expected days of hospitalisation time for the clinical trial for a Diabetes drug, and then convert this to a binary prediction of whether to include or exclude that patient.
 categories: [health, deep-learning-theory]
 title: Patient Selection for Diabetes Drug Testing
 image: images/artificial-intelligence-medical.jpg
@@ -710,7 +710,7 @@ ax = sns.countplot(x="weight", data=agg_drug_df)
 ```
 
 
-![png](https://github.com/pranath/blog/raw/master/images/output_46_0.png)
+![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_46_0.png)
 
 
 From the category counts above, we can see that for payer_code while there are many unknown values i.e. '?', there are still many values for other payer codes, these may prove useful predictors for our target variable. For weight, there are so few unknown '?' codes, that this feature is likely to be not very helpful for predicting our target variable.
@@ -818,10 +818,6 @@ patient_group_analysis_df = processed_df[patient_demo_features].groupby('patient
 show_group_stats_viz(patient_group_analysis_df, 'gender')
 ```
 
-- Female             28572
-- Male               25697
-- Unknown/Invalid        2
-
 ![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_68_1.png)
 
 
@@ -830,10 +826,6 @@ show_group_stats_viz(patient_group_analysis_df, 'gender')
 # Training partition
 show_group_stats_viz(d_train, 'gender')
 ```
-
-- Female             17218
-- Male               15344
-- Unknown/Invalid        1
 
 ![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_69_1.png)
 
@@ -844,8 +836,6 @@ show_group_stats_viz(d_train, 'gender')
 show_group_stats_viz(d_test, 'gender')
 ```
 
-- Female    5719
-- Male      5135
 
 ![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_70_1.png)
 
@@ -977,28 +967,6 @@ def build_diabetes_model(train_ds, val_ds,  feature_layer,  epochs=5, loss_metri
 ```python
 diabetes_model, history = build_diabetes_model(diabetes_train_ds, diabetes_val_ds,  claim_feature_layer,  epochs=10)
 ```
-
-    Train for 255 steps, validate for 85 steps
-    Epoch 1/10
-    255/255 [==============================] - 12s 46ms/step - loss: 23.3398 - mse: 21.9805 - val_loss: 16.6591 - val_mse: 15.2821
-    Epoch 2/10
-    255/255 [==============================] - 7s 29ms/step - loss: 14.0923 - mse: 12.7151 - val_loss: 12.1025 - val_mse: 11.1008
-    Epoch 3/10
-    255/255 [==============================] - 7s 29ms/step - loss: 11.7516 - mse: 10.4729 - val_loss: 11.3418 - val_mse: 9.8243
-    Epoch 4/10
-    255/255 [==============================] - 7s 29ms/step - loss: 11.1177 - mse: 9.7876 - val_loss: 10.7256 - val_mse: 9.4355
-    Epoch 5/10
-    255/255 [==============================] - 7s 29ms/step - loss: 10.9138 - mse: 9.6560 - val_loss: 11.0735 - val_mse: 9.6851
-    Epoch 6/10
-    255/255 [==============================] - 7s 29ms/step - loss: 10.9784 - mse: 9.7231 - val_loss: 10.8895 - val_mse: 9.6570
-    Epoch 7/10
-    255/255 [==============================] - 7s 29ms/step - loss: 11.0472 - mse: 9.6741 - val_loss: 11.0071 - val_mse: 9.6353
-    Epoch 8/10
-    255/255 [==============================] - 7s 29ms/step - loss: 11.0732 - mse: 9.6119 - val_loss: 10.6469 - val_mse: 9.5497
-    Epoch 9/10
-    255/255 [==============================] - 7s 29ms/step - loss: 10.9500 - mse: 9.6645 - val_loss: 11.2855 - val_mse: 9.6241
-    Epoch 10/10
-    255/255 [==============================] - 8s 29ms/step - loss: 10.8509 - mse: 9.6483 - val_loss: 11.0490 - val_mse: 9.6274
 
 
 ### Show Model Uncertainty Range with TF Probability
@@ -1191,8 +1159,8 @@ student_binary_prediction.value_counts()
 
 
 
-- 0    8137
-- 1    2717
+- 0:8137
+- 1:2717
 
 
 
@@ -1550,8 +1518,6 @@ bdf = b.get_disparity_predefined_groups(clean_xtab,
 f = Fairness()
 fdf = f.get_group_value_fairness(bdf)
 ```
-
-    get_disparity_predefined_group()
 
 
 ### Race and Gender Bias Analysis for Patient Selection
