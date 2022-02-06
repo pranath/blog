@@ -132,7 +132,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#Split-data-into-training-and-testing-sets">Split data into training and testing sets </a></li>
 <li class="toc-entry toc-h2"><a href="#Model-building-&-training">Model building &amp; training </a>
 <ul>
-<li class="toc-entry toc-h3"><a href="#Perform-some-image-augmentation">Perform some image augmentation </a></li>
+<li class="toc-entry toc-h3"><a href="#Image-Augmentation">Image Augmentation </a></li>
 <li class="toc-entry toc-h3"><a href="#Build-model">Build model </a></li>
 <li class="toc-entry toc-h3"><a href="#Train-model">Train model </a></li>
 </ul>
@@ -155,6 +155,17 @@ window.onload = wrap_img;
 </h2>
 <p>In this project, I will analyze data from the NIH Chest X-ray Dataset and train a CNN to classify a given chest x-ray for the presence or absence of pneumonia. This project will culminate in a model that aims to predict the presence of pneumonia with human radiologist-level accuracy that can be prepared for submission to the FDA for 510(k) clearance as software as a medical device. As part of the submission preparation, I will formally describe my model, the data that it was trained on, and a validation plan that meets FDA criteria.</p>
 <p>The project will use a dataset of 112,000 chest x-rays with disease labels acquired from 30,000 patients.</p>
+<p>The full project code and details are available at <a href="https://github.com/pranath/pneumonia_detection">this github repo</a>.</p>
+<p>Project Highlights:</p>
+<ul>
+<li>Used imaging modalities for common clinical applications of 2D medical imaging</li>
+<li>Performed exploratory data analysis (EDA) on medical imaging data to inform model training and explain model performance</li>
+<li>Established the appropriate ‘ground truth’ methodologies for training algorithms to label medical images</li>
+<li>Extracted images from a DICOM medical format dataset</li>
+<li>Trained common CNN deep learning architectures to classify 2D medical images</li>
+<li>Translated outputs of medical imaging models for use by a clinician</li>
+<li>Planned necessary validations to prepare a medical imaging model for regulatory approval</li>
+</ul>
 
 </div>
 </div>
@@ -1013,9 +1024,12 @@ Name: Pneumonia, dtype: int64</pre>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Perform-some-image-augmentation">
-<a class="anchor" href="#Perform-some-image-augmentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Perform some image augmentation<a class="anchor-link" href="#Perform-some-image-augmentation"> </a>
+<h3 id="Image-Augmentation">
+<a class="anchor" href="#Image-Augmentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Image Augmentation<a class="anchor-link" href="#Image-Augmentation"> </a>
 </h3>
+<p>Deep learning modls need large amount of training data to achieve good performance. To build a powerful image classifier using limited raining data, image augmentation is usually required to boost the performance of deep networks. Image augmentation artificially creates training images through different ways of processing or combination of multiple processing, such as random rotation, shifts, shear and flips, etc.</p>
+<p>Lets now define some Image Augmentation to create more data.</p>
+
 </div>
 </div>
 </div>
@@ -2194,8 +2208,6 @@ Epoch 00020: val_loss did not improve from 0.15575
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>So after trying a few different model variations I have settled for this simpler model, given the limited time for this project. This simplier model made more progress training in a shorter time, due to having fewer trainable parameters.</p>
 <p>Dispite this, the training is still relatively unstable even after 20 epochs, as can be seen from the highly volatile validation accuracy and loss we can see in the charts above.</p>
-<p><em>FOR A REAL MEDICAL APPLICATION, I WOULD NOT SUGGEST THE USE OF THIS PARTICULAR MODEL DUE TO THE POOR RESULTS</em></p>
-<p>However for this demonstration project, we will continue as if we were going to make the best of this model for an application.</p>
 <p>Rather than let the model make fixed predictions on its own assumptions, we can get the best results from our model if we look at the raw probabilities - and then determine what the best threshold value might be to decide between the classes i.e. in our case to decide between Pneumonia and No Pneumonia cases.</p>
 <p>With this in mind, let us first look at a histogram of the distribution of predictions for our validation data.</p>
 
@@ -2496,8 +2508,7 @@ weighted avg       0.98      0.83      0.90      2000
 <h2 id="Conclusion">
 <a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
 </h2>
-<p>As I noted earlier, I would not suggest this model has a good enough performance to be used in a real life medical application setting - it has been difficult to train this model to a high level of performance in such a limited time for a study project.</p>
-<p>However that said, I have looked at how for the model I have made, how we might get the best performance from it for classifying Pneuomonia cases by finding the optimal threshold value to decide between positive and negative cases. In my judgment I have suggested that for this model, a threshold value of 0.1 gives us the best balance of results for the classifier.</p>
+<p>I have looked at how for the model I have made, how we might get the best performance from it for classifying Pneuomonia cases by finding the optimal threshold value to decide between positive and negative cases. In my judgment I have suggested that for this model, a threshold value of 0.1 gives us the best balance of results for the classifier.</p>
 
 </div>
 </div>
