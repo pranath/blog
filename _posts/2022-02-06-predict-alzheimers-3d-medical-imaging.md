@@ -19,15 +19,15 @@ A radiological study via MRI exam is currently one of the most advanced methods 
 
 But with fewer and fewer trained Radiologists available, and increasing demands for medical imaging services - this presents a huge challenge for medical services.
 
-![Size and shape of the Hippocampus](https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_shape.png)
+![](https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_shape.png 'Size and shape of the Hippocampus')
 
 In this project I build an end-to-end deep learning/AI system which features a machine learning algorithm that integrates into a clinical-grade viewer and automatically measures hippocampal volumes of new patients from their MRI images, as their studies are committed to the clinical imaging archive.
 
-![Axial slice of an MRI image of the brain](https://github.com/pranath/predict_alzheimers/raw/master/img/brain_mri.png)
+![](https://github.com/pranath/predict_alzheimers/raw/master/img/brain_mri.png 'Axial slice of an MRI image of the brain')
 
 I used a dataset that contains the segmentations of the right hippocampus and will use the U-Net deep learning architecture to build a segmentation model.
 
-![Cropped Hippocampus area from MRI image & predicted Hippocampus anterior (front) volume](https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_mri_ant.png)
+![](https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_mri_ant.png 'Cropped Hippocampus area from MRI image & predicted Hippocampus anterior (front) volume')
 
 After the model was built, I proceeded to integrate the model into a working clinical PACS such that it runs on every incoming study and produces a report with volume measurements.
 
@@ -46,5 +46,4 @@ Key files from the project located in the [github repo](https://github.com/prana
 
 The final model achieved a mean dice score of 1.47 and a mean jaccard score of 0.81 in terms of accuracy for correctly classifying the anterior and posterior volumes of the Hippocampus. The model was then integrated into a clinical viewer to generate automated reports and predictions for Hippocampus volumes submitted via brain MRI scans in a PACS environment. This model can then be used by a clinician to assist with diagnosis & prognosis.
 
-## Model deployment in automated report with predictions integrated into medical viewer
-![title](https://github.com/pranath/predict_alzheimers/raw/master/img/report-ohif-viewer.png)
+![](https://github.com/pranath/predict_alzheimers/raw/master/img/report-ohif-viewer.png 'Model deployment in automated report with predictions integrated into medical viewer')
