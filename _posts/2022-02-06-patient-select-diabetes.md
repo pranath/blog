@@ -27,43 +27,7 @@ This project will demonstrate the importance of building the right data represen
 
 Due to healthcare PHI regulations (HIPAA, HITECH), there are limited number of publicly available datasets and some datasets require training and approval. So, for the purpose of this study, we are using a dataset from [UC Irvine](https://archive.ics.uci.edu/ml/datasets/Diabetes+130-US+hospitals+for+years+1999-2008) that has been modified.
 
-## Load Libraries
-
-
-```python
-# from __future__ import absolute_import, division, print_function, unicode_literals
-import os
-import numpy as np
-import seaborn as sns
-import tensorflow as tf
-from tensorflow.keras import layers
-import tensorflow_probability as tfp
-import matplotlib.pyplot as plt
-import pandas as pd
-from sklearn.metrics import accuracy_score, f1_score, classification_report, roc_auc_score
-import aequitas as ae
-import warnings
-warnings.filterwarnings('ignore')
-# Put all of the helper functions in utils
-from utils import build_vocab_files, show_group_stats_viz, aggregate_dataset, preprocess_df, df_to_dataset, posterior_mean_field, prior_trainable
-pd.set_option('display.max_columns', 500)
-# this allows you to make changes and save in student_utils.py and the file is reloaded every time you run a code block
-%load_ext autoreload
-%autoreload
-```
-
-    The autoreload extension is already loaded. To reload it, use:
-      %reload_ext autoreload
-
-
-
-```python
-#OPEN ISSUE ON MAC OSX for TF model training
-import os
-os.environ['KMP_DUPLICATE_LIB_OK']='True'
-```
-
-## 1. Dataset Loading and Schema Review
+## Dataset Loading and Schema Review
 
 
 ```python
@@ -264,74 +228,6 @@ df.head()
 </div>
 
 
-
-
-```python
-# See how many null values
-df.info()
-```
-
-    <class 'pandas.core.frame.DataFrame'>
-    RangeIndex: 143424 entries, 0 to 143423
-    Data columns (total 26 columns):
-     #   Column                    Non-Null Count   Dtype
-    ---  ------                    --------------   -----
-     0   encounter_id              143424 non-null  int64
-     1   patient_nbr               143424 non-null  int64
-     2   race                      143424 non-null  object
-     3   gender                    143424 non-null  object
-     4   age                       143424 non-null  object
-     5   weight                    143424 non-null  object
-     6   admission_type_id         143424 non-null  int64
-     7   discharge_disposition_id  143424 non-null  int64
-     8   admission_source_id       143424 non-null  int64
-     9   time_in_hospital          143424 non-null  int64
-     10  payer_code                143424 non-null  object
-     11  medical_specialty         143424 non-null  object
-     12  primary_diagnosis_code    143424 non-null  object
-     13  other_diagnosis_codes     143424 non-null  object
-     14  number_outpatient         143424 non-null  int64
-     15  number_inpatient          143424 non-null  int64
-     16  number_emergency          143424 non-null  int64
-     17  num_lab_procedures        143424 non-null  int64
-     18  number_diagnoses          143424 non-null  int64
-     19  num_medications           143424 non-null  int64
-     20  num_procedures            143424 non-null  int64
-     21  ndc_code                  119962 non-null  object
-     22  max_glu_serum             143424 non-null  object
-     23  A1Cresult                 143424 non-null  object
-     24  change                    143424 non-null  object
-     25  readmitted                143424 non-null  object
-    dtypes: int64(13), object(13)
-    memory usage: 28.5+ MB
-
-
-
-```python
-# Get number of rows
-df.shape
-```
-
-
-
-
-    (143424, 26)
-
-
-
-
-```python
-# Get number of unique encounter id's
-df['encounter_id'].nunique()
-```
-
-
-
-
-    101766
-
-
-
 ### Determine Level of Dataset (Line or Encounter)
 
 Given there are only 101766 unique encounter_id's yet there are 143424 rows that are not nulls, this looks like the dataset is at the line level.
@@ -339,47 +235,6 @@ Given there are only 101766 unique encounter_id's yet there are 143424 rows that
 We would also want to aggregate on the primary_diagnosis_code as there is also only one of these per encounter. By aggregating on these 3 columns, we can create a encounter level dataset.
 
 ## 2. Analyze Dataset
-
-
-```python
-# See how many null values
-df.info()
-```
-
-    <class 'pandas.core.frame.DataFrame'>
-    RangeIndex: 143424 entries, 0 to 143423
-    Data columns (total 26 columns):
-     #   Column                    Non-Null Count   Dtype
-    ---  ------                    --------------   -----
-     0   encounter_id              143424 non-null  int64
-     1   patient_nbr               143424 non-null  int64
-     2   race                      143424 non-null  object
-     3   gender                    143424 non-null  object
-     4   age                       143424 non-null  object
-     5   weight                    143424 non-null  object
-     6   admission_type_id         143424 non-null  int64
-     7   discharge_disposition_id  143424 non-null  int64
-     8   admission_source_id       143424 non-null  int64
-     9   time_in_hospital          143424 non-null  int64
-     10  payer_code                143424 non-null  object
-     11  medical_specialty         143424 non-null  object
-     12  primary_diagnosis_code    143424 non-null  object
-     13  other_diagnosis_codes     143424 non-null  object
-     14  number_outpatient         143424 non-null  int64
-     15  number_inpatient          143424 non-null  int64
-     16  number_emergency          143424 non-null  int64
-     17  num_lab_procedures        143424 non-null  int64
-     18  number_diagnoses          143424 non-null  int64
-     19  num_medications           143424 non-null  int64
-     20  num_procedures            143424 non-null  int64
-     21  ndc_code                  119962 non-null  object
-     22  max_glu_serum             143424 non-null  object
-     23  A1Cresult                 143424 non-null  object
-     24  change                    143424 non-null  object
-     25  readmitted                143424 non-null  object
-    dtypes: int64(13), object(13)
-    memory usage: 28.5+ MB
-
 
 
 ```python
@@ -501,40 +356,6 @@ df[numerical_feature_list].describe()
 
 
 
-
-```python
-# Plot histograms to show distributions for numerical fields
-df.hist(figsize=(20,10))
-```
-
-
-
-
-    array([[<matplotlib.axes._subplots.AxesSubplot object at 0x7f5240018bd0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f5240049450>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f52187d4d90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f521879c450>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x7f52187519d0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f5218707f50>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f5290606ed0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f52906030d0>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x7f52906033d0>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f524031d990>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f5240385990>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f529059a910>],
-           [<matplotlib.axes._subplots.AxesSubplot object at 0x7f52905c9b90>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f5292fd4450>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f5292f60c50>,
-            <matplotlib.axes._subplots.AxesSubplot object at 0x7f52403ac590>]],
-          dtype=object)
-
-
-
-
-![png](output_20_1.png)
-
-
-
 ```python
 # Define utility functions
 def create_cardinality_feature(df):
@@ -642,52 +463,6 @@ categorical_df
   </tbody>
 </table>
 </div>
-
-
-
-
-```python
-# Show unique values for fields of particular interest i.e. why 3 genders?
-print(df['race'].unique())
-print(df['age'].unique())
-print(df['gender'].unique())
-print(df['A1Cresult'].unique())
-print(df['readmitted'].unique())
-print(df['payer_code'].unique())
-print(df['weight'].unique())
-```
-
-    ['Caucasian' 'AfricanAmerican' '?' 'Other' 'Asian' 'Hispanic']
-    ['[0-10)' '[10-20)' '[20-30)' '[30-40)' '[40-50)' '[50-60)' '[60-70)'
-     '[70-80)' '[80-90)' '[90-100)']
-    ['Female' 'Male' 'Unknown/Invalid']
-    ['None' '>7' '>8' 'Norm']
-    ['NO' '>30' '<30']
-    ['?' 'MC' 'MD' 'HM' 'UN' 'BC' 'SP' 'CP' 'SI' 'DM' 'CM' 'CH' 'PO' 'WC' 'OT'
-     'OG' 'MP' 'FR']
-    ['?' '[75-100)' '[50-75)' '[0-25)' '[100-125)' '[25-50)' '[125-150)'
-     '[175-200)' '[150-175)' '>200']
-
-
-
-```python
-# Look at distribution for ages
-ax = sns.countplot(x="age", data=df)
-```
-
-
-![png](output_23_0.png)
-
-
-
-```python
-# Look at distribution for gender
-ax = sns.countplot(x="gender", data=df)
-```
-
-
-![png](output_24_0.png)
-
 
 ### Analysis key findings
 
@@ -886,7 +661,7 @@ reduce_dim_df = reduce_dimension_ndc(df, ndc_code_df)
 assert df['ndc_code'].nunique() > reduce_dim_df['generic_drug_name'].nunique()
 ```
 
-## 4. Select First Encounter for each Patient
+## Select First Encounter for each Patient
 
 In order to simplify the aggregation of data for the model, we will only select the first encounter for each patient in the dataset. This is to reduce the risk of data leakage of future patient encounters and to reduce complexity of the data transformation and modeling steps. We will assume that sorting in numerical order on the encounter_id provides the time horizon for determining which encounters come before and after another.
 
@@ -913,12 +688,12 @@ assert original_unique_patient_number == unique_encounters
 print("Tests passed!!")
 ```
 
-    Number of unique patients:71518
-    Number of unique encounters:71518
-    Tests passed!!
+Number of unique patients:71518
+Number of unique encounters:71518
+Tests passed!!
 
 
-## 5. Aggregate Dataset to Right Level for Modeling
+## Aggregate Dataset to Right Level for Modeling
 
 To make it simpler, we are creating dummy columns for each unique generic drug name and adding those are input features to the model.
 
@@ -934,7 +709,7 @@ agg_drug_df, ndc_col_list = aggregate_dataset(first_encounter_df, grouping_field
 assert len(agg_drug_df) == agg_drug_df['patient_nbr'].nunique() == agg_drug_df['encounter_id'].nunique()
 ```
 
-## 6. Prepare Fields and Cast Dataset
+## Prepare Fields and Cast Dataset
 
 ### Feature Selection
 
@@ -945,7 +720,7 @@ ax = sns.countplot(x="payer_code", data=agg_drug_df)
 ```
 
 
-![png](output_45_0.png)
+![png](images/diabetes/output_45_0.png)
 
 
 
@@ -955,7 +730,7 @@ ax = sns.countplot(x="weight", data=agg_drug_df)
 ```
 
 
-![png](output_46_0.png)
+![png](images/output_46_0.png)
 
 
 From the category counts above, we can see that for payer_code while there are many unknown values i.e. '?', there are still many values for other payer codes, these may prove useful predictors for our target variable. For weight, there are so few unknown '?' codes, that this feature is likely to be not very helpful for predicting our target variable.
@@ -993,7 +768,7 @@ processed_df = preprocess_df(selected_features_df, student_categorical_col_list,
         student_numerical_col_list, PREDICTOR_FIELD, categorical_impute_value='nan', numerical_impute_value=0)
 ```
 
-## 7. Split Dataset into Train, Validation, and Test Partitions
+## Split Dataset into Train, Validation, and Test Partitions
 
 In order to prepare the data for being trained and evaluated by a deep learning model, we will split the dataset into three partitions, with the validation partition used for optimizing the model hyperparameters during training. One of the key parts is that we need to be sure that the data does not accidently leak across partitions.
 
@@ -1011,12 +786,12 @@ from student_utils import patient_dataset_splitter
 d_train, d_val, d_test = patient_dataset_splitter(processed_df, 'patient_nbr')
 ```
 
-    Total number of unique patients in train =  32563
-    Total number of unique patients in validation =  10854
-    Total number of unique patients in test =  10854
-    Training partition has a shape =  (32563, 43)
-    Validation partition has a shape =  (10854, 43)
-    Test partition has a shape =  (10854, 43)
+Total number of unique patients in train =  32563
+Total number of unique patients in validation =  10854
+Total number of unique patients in test =  10854
+Training partition has a shape =  (32563, 43)
+Validation partition has a shape =  (10854, 43)
+Test partition has a shape =  (10854, 43)
 
 
 
@@ -1037,7 +812,7 @@ print("Test passed for number of unique patients being equal!")
     Test passed for number of unique patients being equal!
 
 
-## 8. Demographic Representation Analysis of Split
+## Demographic Representation Analysis of Split
 
 After the split, we should check to see the distribution of key features/groups and make sure that there is representative samples across the partitions.
 
