@@ -100,7 +100,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      30 min read
+      31 min read
     
 </span></p>
 
@@ -127,6 +127,7 @@ window.onload = wrap_img;
 
   <div class="post-content e-content" itemprop="articleBody">
     <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Introduction">Introduction </a></li>
 <li class="toc-entry toc-h2"><a href="#Load,-view-and-clean-dataset">Load, view and clean dataset </a></li>
 <li class="toc-entry toc-h2"><a href="#Split-data-into-training-and-testing-sets">Split data into training and testing sets </a></li>
 <li class="toc-entry toc-h1"><a href="#Model-building-&-training">Model building &amp; training </a>
@@ -135,7 +136,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#Build-model">Build model </a>
 <ul>
 <li class="toc-entry toc-h4"><a href="#Model-1">Model 1 </a></li>
-<li class="toc-entry toc-h3"><a href="#Start-training!">Start training! </a>
+<li class="toc-entry toc-h3"><a href="#Train-model">Train model </a>
 <ul>
 <li class="toc-entry toc-h5"><a href="#After-training-for-some-time,-look-at-the-performance-of-your-model-by-plotting-some-performance-statistics:">After training for some time, look at the performance of your model by plotting some performance statistics: </a></li>
 </ul>
@@ -154,55 +155,18 @@ window.onload = wrap_img;
 
 <div class="container" id="notebook-container">
         
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
+<div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># linear algebra</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> <span class="c1"># data processing, CSV file I/O (e.g. pd.read_csv)</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-<span class="c1">##Import any other stats/DL/ML packages you may need here. E.g. Keras, scikit-learn, etc.</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
-<span class="kn">import</span> <span class="nn">sklearn.model_selection</span> <span class="k">as</span> <span class="nn">skl</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">precision_recall_curve</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">auc</span><span class="p">,</span> <span class="n">roc_curve</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">classification_report</span>
-<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">binarize</span>
-<span class="kn">from</span> <span class="nn">keras.preprocessing.image</span> <span class="kn">import</span> <span class="n">ImageDataGenerator</span>
-<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">GlobalAveragePooling2D</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Flatten</span><span class="p">,</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">MaxPooling2D</span>
-<span class="kn">from</span> <span class="nn">keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span><span class="p">,</span> <span class="n">Model</span>
-<span class="kn">from</span> <span class="nn">keras.applications.vgg16</span> <span class="kn">import</span> <span class="n">VGG16</span>
-<span class="kn">from</span> <span class="nn">keras.applications.resnet</span> <span class="kn">import</span> <span class="n">ResNet50</span> 
-<span class="kn">from</span> <span class="nn">keras.optimizers</span> <span class="kn">import</span> <span class="n">Adam</span>
-<span class="kn">from</span> <span class="nn">keras.callbacks</span> <span class="kn">import</span> <span class="n">ModelCheckpoint</span><span class="p">,</span> <span class="n">LearningRateScheduler</span><span class="p">,</span> <span class="n">EarlyStopping</span><span class="p">,</span> <span class="n">ReduceLROnPlateau</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>Using TensorFlow backend.
-</pre>
-</div>
-</div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h2>
+<p>In this project, I will analyze data from the NIH Chest X-ray Dataset and train a CNN to classify a given chest x-ray for the presence or absence of pneumonia. This project will culminate in a model that aims to predict the presence of pneumonia with human radiologist-level accuracy that can be prepared for submission to the FDA for 510(k) clearance as software as a medical device. As part of the submission preparation, I will formally describe my model, the data that it was trained on, and a validation plan that meets FDA criteria.</p>
+<p>The project will use a dataset of 112,000 chest x-rays with disease labels acquired from 30,000 patients.</p>
 
 </div>
 </div>
-
 </div>
-    
-
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -219,7 +183,8 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Load the NIH data to all_xray_df</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Read full image filepaths into a dataframe for easier manipulation</span>
+<span class="c1">## Load the NIH data to all_xray_df</span>
 <span class="n">all_xray_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'/data/Data_Entry_2017.csv'</span><span class="p">)</span>
 <span class="n">all_image_paths</span> <span class="o">=</span> <span class="p">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">x</span><span class="p">):</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> 
                    <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'/data'</span><span class="p">,</span><span class="s1">'images*'</span><span class="p">,</span> <span class="s1">'*'</span><span class="p">,</span> <span class="s1">'*.png'</span><span class="p">))}</span>
@@ -349,7 +314,8 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_xray_df</span> <span class="o">=</span> <span class="n">all_xray_df</span><span class="p">[</span><span class="n">all_xray_df</span><span class="p">[</span><span class="s1">'Patient Age'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">120</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Drop any unreasonable ages!</span>
+<span class="n">all_xray_df</span> <span class="o">=</span> <span class="n">all_xray_df</span><span class="p">[</span><span class="n">all_xray_df</span><span class="p">[</span><span class="s1">'Patient Age'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">120</span><span class="p">]</span>
 <span class="n">all_xray_df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 </pre></div>
 
@@ -501,7 +467,8 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## rather than working directly with the 'Finding Labels' column</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Create some extra columns in the table with binary indicators of certain diseases </span>
+<span class="c1">## rather than working directly with the 'Finding Labels' column</span>
 
 <span class="c1"># Re-format multi-label column into separate columns for each label binary encoded</span>
 <span class="n">all_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">all_xray_df</span><span class="p">[</span><span class="s1">'Finding Labels'</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'|'</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">())))</span>
@@ -667,7 +634,8 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## images with or without pneumonia for binary classification</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Here we can create a new column called 'pneumonia_class' that will allow us to look at </span>
+<span class="c1">## images with or without pneumonia for binary classification</span>
 <span class="n">all_xray_df</span><span class="p">[</span><span class="s1">'pneumonia_class'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">all_xray_df</span><span class="p">[</span><span class="s1">'Pneumonia'</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'Pneumonia'</span><span class="p">,</span> <span class="s1">'No Pneumonia'</span><span class="p">)</span>
 <span class="n">all_xray_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -875,7 +843,8 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_xray_df</span><span class="p">[</span><span class="s1">'Pneumonia'</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Total Pneumonia cases</span>
+<span class="n">all_xray_df</span><span class="p">[</span><span class="s1">'Pneumonia'</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -975,7 +944,8 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_df</span><span class="p">[</span><span class="s1">'Pneumonia'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># View Pneumonia vs No-Pneumonia counts for training</span>
+<span class="n">train_df</span><span class="p">[</span><span class="s1">'Pneumonia'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -1010,7 +980,8 @@ Name: Pneumonia, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">valid_df</span><span class="p">[</span><span class="s1">'Pneumonia'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># View Pneumonia vs No-Pneumonia counts for validation</span>
+<span class="n">valid_df</span><span class="p">[</span><span class="s1">'Pneumonia'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -1063,7 +1034,8 @@ Name: Pneumonia, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">IMG_SIZE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Define image size</span>
+<span class="n">IMG_SIZE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">224</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1155,7 +1127,8 @@ Name: Pneumonia, dtype: int64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_gen</span> <span class="o">=</span> <span class="n">make_train_gen</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create training image generator</span>
+<span class="n">train_gen</span> <span class="o">=</span> <span class="n">make_train_gen</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span>
 <span class="c1"># Create validation image generator</span>
 <span class="n">val_gen</span> <span class="o">=</span> <span class="n">make_val_gen</span><span class="p">(</span><span class="n">valid_df</span><span class="p">)</span>
 </pre></div>
@@ -1197,7 +1170,8 @@ Found 23833 validated image filenames belonging to 2 classes.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Compare age distributions of training vs validation data</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">train_df</span><span class="p">[</span><span class="s1">'Patient Age'</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 <span class="n">valid_df</span><span class="p">[</span><span class="s1">'Patient Age'</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Distribution of ages for training data'</span><span class="p">)</span>
@@ -1248,7 +1222,8 @@ Found 23833 validated image filenames belonging to 2 classes.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Compare gender between training vs validation data</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">train_df</span><span class="p">[</span><span class="s1">'Patient Gender'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">kind</span><span class="o">=</span><span class="s1">'bar'</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 <span class="n">valid_df</span><span class="p">[</span><span class="s1">'Patient Gender'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">kind</span><span class="o">=</span><span class="s1">'bar'</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Gender count for training data'</span><span class="p">)</span>
@@ -1299,7 +1274,8 @@ Found 23833 validated image filenames belonging to 2 classes.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Compare view position training vs validation data</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">train_df</span><span class="p">[</span><span class="s1">'View Position'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">kind</span><span class="o">=</span><span class="s1">'bar'</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 <span class="n">valid_df</span><span class="p">[</span><span class="s1">'View Position'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">kind</span><span class="o">=</span><span class="s1">'bar'</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'View position count training data'</span><span class="p">)</span>
@@ -1350,7 +1326,8 @@ Found 23833 validated image filenames belonging to 2 classes.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Compare Pneumonia vs No Pneumonia cases between training vs validation data</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">train_df</span><span class="p">[</span><span class="s1">'Pneumonia'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">kind</span><span class="o">=</span><span class="s1">'bar'</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 <span class="n">valid_df</span><span class="p">[</span><span class="s1">'Pneumonia'</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">kind</span><span class="o">=</span><span class="s1">'bar'</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">'Pneumonia vs No Pneumonia for training data'</span><span class="p">)</span>
@@ -1410,7 +1387,8 @@ Found 23833 validated image filenames belonging to 2 classes.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">valX</span><span class="p">,</span> <span class="n">valY</span> <span class="o">=</span> <span class="n">val_gen</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## May want to pull a single large batch of random validation data for testing after each epoch:</span>
+<span class="n">valX</span><span class="p">,</span> <span class="n">valY</span> <span class="o">=</span> <span class="n">val_gen</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -1427,7 +1405,8 @@ Found 23833 validated image filenames belonging to 2 classes.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">t_x</span><span class="p">,</span> <span class="n">t_y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">train_gen</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get a batch of training data</span>
+<span class="n">t_x</span><span class="p">,</span> <span class="n">t_y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">train_gen</span><span class="p">)</span>
 <span class="c1"># Print mean and std dev of training batch</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">'Train mean &amp; std dev'</span><span class="p">,</span> <span class="n">t_x</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">t_x</span><span class="o">.</span><span class="n">std</span><span class="p">())</span>
 </pre></div>
@@ -1460,7 +1439,8 @@ Found 23833 validated image filenames belonging to 2 classes.
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## This is helpful for understanding the extent to which data is being manipulated prior to training, </span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## May want to look at some examples of our augmented training data. </span>
+<span class="c1">## This is helpful for understanding the extent to which data is being manipulated prior to training, </span>
 <span class="c1">## and can be compared with how the raw data look prior to augmentation</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">m_axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
@@ -1965,7 +1945,9 @@ ________________________________________________________________________________
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">weight_path</span><span class="o">=</span><span class="s2">"</span><span class="si">{}</span><span class="s2">_my_model.best.hdf5"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">'xray_class'</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Add checkpoints to model to save the 'best' version of your model by comparing it to previous epochs of training</span>
+
+<span class="n">weight_path</span><span class="o">=</span><span class="s2">"</span><span class="si">{}</span><span class="s2">_my_model.best.hdf5"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">'xray_class'</span><span class="p">)</span>
 
 <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">ModelCheckpoint</span><span class="p">(</span><span class="n">weight_path</span><span class="p">,</span> 
                               <span class="n">monitor</span><span class="o">=</span><span class="s1">'val_loss'</span><span class="p">,</span> 
@@ -1991,8 +1973,8 @@ ________________________________________________________________________________
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Start-training!">
-<a class="anchor" href="#Start-training!" aria-hidden="true"><span class="octicon octicon-link"></span></a>Start training!<a class="anchor-link" href="#Start-training!"> </a>
+<h3 id="Train-model">
+<a class="anchor" href="#Train-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Train model<a class="anchor-link" href="#Train-model"> </a>
 </h3>
 </div>
 </div>
@@ -2004,7 +1986,8 @@ ________________________________________________________________________________
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">history</span> <span class="o">=</span> <span class="n">my_model</span><span class="o">.</span><span class="n">fit_generator</span><span class="p">(</span><span class="n">train_gen</span><span class="p">,</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## train model</span>
+<span class="n">history</span> <span class="o">=</span> <span class="n">my_model</span><span class="o">.</span><span class="n">fit_generator</span><span class="p">(</span><span class="n">train_gen</span><span class="p">,</span> 
                            <span class="n">validation_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">valX</span><span class="p">,</span> <span class="n">valY</span><span class="p">),</span> 
                            <span class="n">epochs</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> 
                            <span class="n">callbacks</span> <span class="o">=</span> <span class="n">callbacks_list</span><span class="p">)</span>
@@ -2128,7 +2111,8 @@ Epoch 00020: val_loss did not improve from 0.15575
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">my_model</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="n">weight_path</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## After training, make some predictions to assess model's overall performance</span>
+<span class="n">my_model</span><span class="o">.</span><span class="n">load_weights</span><span class="p">(</span><span class="n">weight_path</span><span class="p">)</span>
 <span class="n">pred_Y</span> <span class="o">=</span> <span class="n">my_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">valX</span><span class="p">,</span> <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
@@ -2160,7 +2144,9 @@ Epoch 00020: val_loss did not improve from 0.15575
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">plot_history</span><span class="p">(</span><span class="n">history</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Plotting the history of model training:</span>
+
+<span class="k">def</span> <span class="nf">plot_history</span><span class="p">(</span><span class="n">history</span><span class="p">):</span>
     
     <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s2">"loss"</span><span class="p">])</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">"ggplot"</span><span class="p">)</span>
@@ -2221,7 +2207,7 @@ Epoch 00020: val_loss did not improve from 0.15575
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>So after trying a few different model variations I have settled for this simpler model, given the limited time for this project. This simplier model made more progress training in a shorter time, due to having fewer trainable parameters.</p>
 <p>Dispite this, the training is still relatively unstable even after 20 epochs, as can be seen from the highly volatile validation accuracy and loss we can see in the charts above.</p>
-<p><strong>FOR A REAL MEDICAL APPLICATION, I WOULD NOT SUGGEST THE USE OF THIS PARTICULAR MODEL DUE TO THE POOR RESULTS</strong>.</p>
+<p><em>FOR A REAL MEDICAL APPLICATION, I WOULD NOT SUGGEST THE USE OF THIS PARTICULAR MODEL DUE TO THE POOR RESULTS</em></p>
 <p>However for this demonstration project, we will continue as if we were going to make the best of this model for an application.</p>
 <p>Rather than let the model make fixed predictions on its own assumptions, we can get the best results from our model if we look at the raw probabilities - and then determine what the best threshold value might be to decide between the classes i.e. in our case to decide between Pneumonia and No Pneumonia cases.</p>
 <p>With this in mind, let us first look at a histogram of the distribution of predictions for our validation data.</p>
@@ -2236,7 +2222,8 @@ Epoch 00020: val_loss did not improve from 0.15575
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">pred_Y</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Look at the distribution of the prediction probabilities</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">pred_Y</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -2304,7 +2291,8 @@ Epoch 00020: val_loss did not improve from 0.15575
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">valY</span><span class="p">,</span> <span class="n">pred_Y</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get ROC curve FPR and TPR from true labels vs score values</span>
+<span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">valY</span><span class="p">,</span> <span class="n">pred_Y</span><span class="p">)</span>
 
 <span class="c1"># Calculate ROC Area Under the Curve (AUC) from FPR and TPR data points</span>
 <span class="n">roc_auc</span> <span class="o">=</span> <span class="n">auc</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">)</span>
@@ -2534,7 +2522,8 @@ weighted avg       0.98      0.83      0.90      2000
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_json</span> <span class="o">=</span> <span class="n">my_model</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Save model architecture to a .json:</span>
+<span class="n">model_json</span> <span class="o">=</span> <span class="n">my_model</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"my_model.json"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
     <span class="n">json_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">model_json</span><span class="p">)</span>
 </pre></div>
