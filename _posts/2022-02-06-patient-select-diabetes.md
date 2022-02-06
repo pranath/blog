@@ -710,7 +710,7 @@ ax = sns.countplot(x="weight", data=agg_drug_df)
 ```
 
 
-![png](images/output_46_0.png)
+![png](https://github.com/pranath/blog/raw/master/images/output_46_0.png)
 
 
 From the category counts above, we can see that for payer_code while there are many unknown values i.e. '?', there are still many values for other payer codes, these may prove useful predictors for our target variable. For weight, there are so few unknown '?' codes, that this feature is likely to be not very helpful for predicting our target variable.
@@ -766,30 +766,12 @@ from student_utils import patient_dataset_splitter
 d_train, d_val, d_test = patient_dataset_splitter(processed_df, 'patient_nbr')
 ```
 
-Total number of unique patients in train =  32563
-Total number of unique patients in validation =  10854
-Total number of unique patients in test =  10854
-Training partition has a shape =  (32563, 43)
-Validation partition has a shape =  (10854, 43)
-Test partition has a shape =  (10854, 43)
-
-
-
-```python
-assert len(d_train) + len(d_val) + len(d_test) == len(processed_df)
-print("Test passed for number of total rows equal!")
-```
-
-    Test passed for number of total rows equal!
-
-
-
-```python
-assert (d_train['patient_nbr'].nunique() + d_val['patient_nbr'].nunique() + d_test['patient_nbr'].nunique()) == agg_drug_df['patient_nbr'].nunique()
-print("Test passed for number of unique patients being equal!")
-```
-
-    Test passed for number of unique patients being equal!
+- Total number of unique patients in train =  32563
+- Total number of unique patients in validation =  10854
+- Total number of unique patients in test =  10854
+- Training partition has a shape =  (32563, 43)
+- Validation partition has a shape =  (10854, 43)
+- Test partition has a shape =  (10854, 43)
 
 
 ## Demographic Representation Analysis of Split
@@ -805,27 +787,7 @@ Are the histogram distribution shapes similar across partitions?
 show_group_stats_viz(processed_df, PREDICTOR_FIELD)
 ```
 
-    time_in_hospital
-    1.0     7318
-    2.0     9191
-    3.0     9740
-    4.0     7417
-    5.0     5348
-    6.0     3991
-    7.0     3123
-    8.0     2311
-    9.0     1597
-    10.0    1241
-    11.0    1008
-    12.0     783
-    13.0     663
-    14.0     540
-    dtype: int64
-    AxesSubplot(0.125,0.125;0.775x0.755)
-
-
-
-![png](output_63_1.png)
+![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_63_1.png)
 
 
 
@@ -833,27 +795,7 @@ show_group_stats_viz(processed_df, PREDICTOR_FIELD)
 show_group_stats_viz(d_train, PREDICTOR_FIELD)
 ```
 
-    time_in_hospital
-    1.0     4392
-    2.0     5476
-    3.0     5921
-    4.0     4386
-    5.0     3267
-    6.0     2408
-    7.0     1861
-    8.0     1359
-    9.0      945
-    10.0     745
-    11.0     616
-    12.0     470
-    13.0     404
-    14.0     313
-    dtype: int64
-    AxesSubplot(0.125,0.125;0.775x0.755)
-
-
-
-![png](output_64_1.png)
+![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_64_1.png)
 
 
 
@@ -861,27 +803,7 @@ show_group_stats_viz(d_train, PREDICTOR_FIELD)
 show_group_stats_viz(d_test, PREDICTOR_FIELD)
 ```
 
-    time_in_hospital
-    1.0     1478
-    2.0     1819
-    3.0     1909
-    4.0     1519
-    5.0     1027
-    6.0      780
-    7.0      653
-    8.0      490
-    9.0      325
-    10.0     237
-    11.0     205
-    12.0     161
-    13.0     139
-    14.0     112
-    dtype: int64
-    AxesSubplot(0.125,0.125;0.775x0.755)
-
-
-
-![png](output_65_1.png)
+![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_65_1.png)
 
 
 ### Demographic Group Analysis
@@ -896,16 +818,11 @@ patient_group_analysis_df = processed_df[patient_demo_features].groupby('patient
 show_group_stats_viz(patient_group_analysis_df, 'gender')
 ```
 
-    gender
-    Female             28572
-    Male               25697
-    Unknown/Invalid        2
-    dtype: int64
-    AxesSubplot(0.125,0.125;0.775x0.755)
+- Female             28572
+- Male               25697
+- Unknown/Invalid        2
 
-
-
-![png](output_68_1.png)
+![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_68_1.png)
 
 
 
@@ -914,16 +831,11 @@ show_group_stats_viz(patient_group_analysis_df, 'gender')
 show_group_stats_viz(d_train, 'gender')
 ```
 
-    gender
-    Female             17218
-    Male               15344
-    Unknown/Invalid        1
-    dtype: int64
-    AxesSubplot(0.125,0.125;0.775x0.755)
+- Female             17218
+- Male               15344
+- Unknown/Invalid        1
 
-
-
-![png](output_69_1.png)
+![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_69_1.png)
 
 
 
@@ -932,18 +844,13 @@ show_group_stats_viz(d_train, 'gender')
 show_group_stats_viz(d_test, 'gender')
 ```
 
-    gender
-    Female    5719
-    Male      5135
-    dtype: int64
-    AxesSubplot(0.125,0.125;0.775x0.755)
+- Female    5719
+- Male      5135
+
+![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_70_1.png)
 
 
-
-![png](output_70_1.png)
-
-
-## 9. Convert Dataset Splits to TF Dataset
+## Convert Dataset Splits to TF Dataset
 
 
 ```python
@@ -963,7 +870,7 @@ def demo(feature_column, example_batch):
     print(feature_layer(example_batch))
 ```
 
-## 10. Create Features
+## Create Features
 ### Create Categorical Features with TF Feature Columns
 
 Before we can create the TF categorical features, we must first create the vocab files with the unique values for a given field that are from the **training** dataset.
@@ -1023,7 +930,7 @@ print("Example continuous field:\n{}\n".format(test_cont_var1))
 demo(test_cont_var1, diabetes_batch)
 ```
 
-## 11. Build Deep Learning Regression Model with Sequential API and TF Probability Layers
+## Build Deep Learning Regression Model with Sequential API and TF Probability Layers
 
 ### Use DenseFeatures to combine features for model
 
@@ -1284,9 +1191,9 @@ student_binary_prediction.value_counts()
 
 
 
-    0    8137
-    1    2717
-    Name: pred, dtype: int64
+- 0    8137
+- 1    2717
+
 
 
 
@@ -1379,7 +1286,7 @@ pred_test_df[['patient_nbr', 'gender', 'race', 'time_in_hospital', 'score', 'lab
 
 
 
-## 12. Model Evaluation Metrics
+## Model Evaluation Metrics
 
 Now it is time to use the newly created binary labels in the 'pred_test_df' dataframe to evaluate the model with some common classification metrics. We will create a report summary of the performance of the model and give the ROC AUC, F1 score(weighted), class precision and recall scores.
 
@@ -1399,35 +1306,14 @@ accuracy_score(y_true, y_pred)
 
 
 
-    0.5627418463239359
-
-
-
-
-```python
-print(classification_report(y_true, y_pred))
-```
-
-                  precision    recall  f1-score   support
-
-               0       0.62      0.75      0.68      6725
-               1       0.39      0.25      0.31      4129
-
-        accuracy                           0.56     10854
-       macro avg       0.50      0.50      0.49     10854
-    weighted avg       0.53      0.56      0.54     10854
-
-
-
+- 0.5627418463239359
 
 ```python
 roc_auc_score(y_true, y_pred)
 ```
 
 
-
-
-    0.5032089104088319
+- 0.5032089104088319
 
 
 
@@ -1437,7 +1323,7 @@ Areas of imporovement - we could look to engineer new features that might help u
 
 
 
-## 13. Evaluating Potential Model Biases with Aequitas Toolkit
+## Evaluating Potential Model Biases with Aequitas Toolkit
 
 ### Prepare Data For Aequitas Bias Toolkit
 
@@ -1463,7 +1349,7 @@ b = Bias()
 
 ```
 
-    model_id, score_thresholds 1 {'rank_abs': [2717]}
+- model_id, score_thresholds 1 {'rank_abs': [2717]}
 
 
 
@@ -1678,7 +1564,7 @@ fpr_disparity1 = aqp.plot_disparity(bdf, group_metric='fpr_disparity', attribute
 ```
 
 
-![png](output_122_0.png)
+![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_122_0.png)
 
 
 We notice that while with most races, there is no significant indication of bias, there is an indication that Asians are less likely to be itentified by the model, based on the 0.4 disparity in relation to the Caucasian reference group.
@@ -1689,7 +1575,7 @@ fpr_disparity2 = aqp.plot_disparity(bdf, group_metric='fpr_disparity', attribute
 ```
 
 
-![png](output_124_0.png)
+![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_124_0.png)
 
 
 With gender, there does not seem to be any significant indication of bias.
@@ -1703,7 +1589,7 @@ fpr_fairness = aqp.plot_fairness_group(fdf, group_metric='fpr', title=True)
 ```
 
 
-![png](output_127_0.png)
+![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_127_0.png)
 
 
 Here again we can see that there appears to be signficant disparity with the Asian race being under-represented with a magnitude of 0.19.
