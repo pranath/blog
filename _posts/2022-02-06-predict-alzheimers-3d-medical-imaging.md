@@ -13,7 +13,7 @@ title: Predicting Alzheimers disease using 3D MRI medical images
 In this project I develop a deep learning model to predict Alzheimer's disease using 3D MRI medical images. Alzheimer's disease (AD) is a progressive neurodegenerative disorder that results in impaired neuronal (brain cell) function and eventually, cell death. For patients exhibiting early symptoms, quantifying disease progression over time can help direct therapy and disease management.
 
 #### Location of the Hippocampus within the brain
-![title](https://github.com/pranath/predict_alzheimers/blob/master/img/hippo_location.png)
+![title](https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_location.png)
 
 A radiological study via MRI exam is currently one of the most advanced methods to quantify the disease. In particular, the measurement of hippocampal volume has proven useful to diagnose and track progression in several brain disorders, most notably in AD. Studies have shown a reduced volume of the hippocampus in patients with AD.
 
