@@ -3,8 +3,7 @@ toc: true
 layout: post
 comments: true
 description: Utilizing a synthetic Diabetes patient dataset, we will build a deep learning model that predicts the expected days of hospitalisation time for the clinical trial for a Diabetes drug, and then convert this to a binary prediction of whether to include or exclude that patient.
-categories: [health, deep-learning-theory]
-title: Patient Selection for Diabetes Drug Testing
+categories: [health, deep-learning]
 image: images/artificial-intelligence-medical.jpg
 ---
 # Patient Selection for Diabetes Drug Testing
