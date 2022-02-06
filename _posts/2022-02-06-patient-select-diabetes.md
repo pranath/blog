@@ -1,3 +1,4 @@
+# Patient Selection for Diabetes Drug Testing
 ---
 toc: true
 layout: post
@@ -7,7 +8,6 @@ categories: [health, deep-learning]
 image: images/artificial-intelligence-medical.jpg
 title: Patient Selection for Diabetes Drug Testing
 ---
-# Patient Selection for Diabetes Drug Testing
 
 ## Introduction
 
