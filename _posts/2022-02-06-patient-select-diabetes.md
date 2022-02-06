@@ -234,7 +234,7 @@ Given there are only 101766 unique encounter_id's yet there are 143424 rows that
 
 We would also want to aggregate on the primary_diagnosis_code as there is also only one of these per encounter. By aggregating on these 3 columns, we can create a encounter level dataset.
 
-## 2. Analyze Dataset
+## Analyze Dataset
 
 
 ```python
@@ -471,7 +471,7 @@ categorical_df
 - Fields that have a high cardinality are - medical_specialty, primary_diagnosis_code, other_diagnosis_codes, ndc_code, and principal_diagnosis_code. This is because there are many thousands of these codes that correspond to the many disease and diagnosis sub-classes that exist in the medical field.
 - The distribution for the age field is approximately normal, which we would expect. The distribution for the gender field is roughly uniform & equal. In this case we discount the very small number of Unknown/valid cases. Again this is not surprising, as the distribution of genders in the general population is also roughly equal so this seems to be a representitive sample from the general population.
 
-## 3. Reduce Dimensionality of the NDC Code Feature
+## Reduce Dimensionality of the NDC Code Feature
 
 NDC codes are a common format to represent the wide variety of drugs that are prescribed for patient care in the United States. The challenge is that there are many codes that map to the same or similar drug. We are provided with the ndc drug lookup file https://github.com/udacity/nd320-c1-emr-data-starter/blob/master/project/data_schema_references/ndc_lookup_table.csv derived from the National Drug Codes List site(https://ndclist.com/).
 
@@ -644,23 +644,6 @@ ndc_code_df[ndc_code_df.duplicated(subset=['NDC_Code'])]
 </div>
 
 
-
-
-```python
-from student_utils import reduce_dimension_ndc
-```
-
-
-```python
-reduce_dim_df = reduce_dimension_ndc(df, ndc_code_df)
-```
-
-
-```python
-# Number of unique values should be less for the new output field
-assert df['ndc_code'].nunique() > reduce_dim_df['generic_drug_name'].nunique()
-```
-
 ## Select First Encounter for each Patient
 
 In order to simplify the aggregation of data for the model, we will only select the first encounter for each patient in the dataset. This is to reduce the risk of data leakage of future patient encounters and to reduce complexity of the data transformation and modeling steps. We will assume that sorting in numerical order on the encounter_id provides the time horizon for determining which encounters come before and after another.
@@ -685,15 +668,12 @@ original_unique_patient_number = reduce_dim_df['patient_nbr'].nunique()
 # number of unique patients should be equal to the number of unique encounters and patients in the final dataset
 assert original_unique_patient_number == unique_patients
 assert original_unique_patient_number == unique_encounters
-print("Tests passed!!")
 ```
 
-Number of unique patients:71518
-Number of unique encounters:71518
-Tests passed!!
+- Number of unique patients:71518
+- Number of unique encounters:71518
 
-
-## Aggregate Dataset to Right Level for Modeling
+## Aggregate Dataset to Right Level for Modelling
 
 To make it simpler, we are creating dummy columns for each unique generic drug name and adding those are input features to the model.
 
@@ -720,7 +700,7 @@ ax = sns.countplot(x="payer_code", data=agg_drug_df)
 ```
 
 
-![png](images/diabetes/output_45_0.png)
+![png](https://github.com/pranath/blog/raw/master/images/diabetes/output_45_0.png)
 
 
 
