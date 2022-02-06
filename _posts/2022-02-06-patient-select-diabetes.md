@@ -2,7 +2,7 @@
 toc: true
 layout: post
 comments: true
-description: Utilizing a synthetic Diabetes patient dataset, we will build a deep learning model that predicts the expected days of hospitalisation time for the clinical trial for a Diabetes drug, and then convert this to a binary prediction of whether to include or exclude that patient.
+description: Utilizing a synthetic Diabetes patient dataset, we will create a deep learning model trained on EHR data (Electronic Health Records) to find suitable patients for testing a new Diabetes drug.
 categories: [health, deep-learning]
 image: images/artificial-intelligence-medical.jpg
 ---
