@@ -100,7 +100,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      23 min read
+      19 min read
     
 </span></p>
 
@@ -125,8 +125,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#introduction">Introduction</a></li>
 <li class="toc-entry toc-h2"><a href="#approach">Approach</a></li>
 <li class="toc-entry toc-h2"><a href="#dataset">Dataset</a></li>
-<li class="toc-entry toc-h2"><a href="#load-libraries">Load Libraries</a></li>
-<li class="toc-entry toc-h2"><a href="#1-dataset-loading-and-schema-review">1. Dataset Loading and Schema Review</a>
+<li class="toc-entry toc-h2"><a href="#dataset-loading-and-schema-review">Dataset Loading and Schema Review</a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#determine-level-of-dataset-line-or-encounter">Determine Level of Dataset (Line or Encounter)</a></li>
 </ul>
@@ -137,16 +136,16 @@ window.onload = wrap_img;
 </ul>
 </li>
 <li class="toc-entry toc-h2"><a href="#3-reduce-dimensionality-of-the-ndc-code-feature">3. Reduce Dimensionality of the NDC Code Feature</a></li>
-<li class="toc-entry toc-h2"><a href="#4-select-first-encounter-for-each-patient">4. Select First Encounter for each Patient</a></li>
-<li class="toc-entry toc-h2"><a href="#5-aggregate-dataset-to-right-level-for-modeling">5. Aggregate Dataset to Right Level for Modeling</a></li>
-<li class="toc-entry toc-h2"><a href="#6-prepare-fields-and-cast-dataset">6. Prepare Fields and Cast Dataset</a>
+<li class="toc-entry toc-h2"><a href="#select-first-encounter-for-each-patient">Select First Encounter for each Patient</a></li>
+<li class="toc-entry toc-h2"><a href="#aggregate-dataset-to-right-level-for-modeling">Aggregate Dataset to Right Level for Modeling</a></li>
+<li class="toc-entry toc-h2"><a href="#prepare-fields-and-cast-dataset">Prepare Fields and Cast Dataset</a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#feature-selection">Feature Selection</a></li>
 <li class="toc-entry toc-h3"><a href="#preprocess-dataset---casting-and-imputing">Preprocess Dataset - Casting and Imputing</a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h2"><a href="#7-split-dataset-into-train-validation-and-test-partitions">7. Split Dataset into Train, Validation, and Test Partitions</a></li>
-<li class="toc-entry toc-h2"><a href="#8-demographic-representation-analysis-of-split">8. Demographic Representation Analysis of Split</a>
+<li class="toc-entry toc-h2"><a href="#split-dataset-into-train-validation-and-test-partitions">Split Dataset into Train, Validation, and Test Partitions</a></li>
+<li class="toc-entry toc-h2"><a href="#demographic-representation-analysis-of-split">Demographic Representation Analysis of Split</a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#label-distribution-across-partitions">Label Distribution Across Partitions</a></li>
 <li class="toc-entry toc-h3"><a href="#demographic-group-analysis">Demographic Group Analysis</a></li>
@@ -205,41 +204,8 @@ window.onload = wrap_img;
 
 <p>Due to healthcare PHI regulations (HIPAA, HITECH), there are limited number of publicly available datasets and some datasets require training and approval. So, for the purpose of this study, we are using a dataset from <a href="https://archive.ics.uci.edu/ml/datasets/Diabetes+130-US+hospitals+for+years+1999-2008">UC Irvine</a> that has been modified.</p>
 
-<h2 id="load-libraries">
-<a class="anchor" href="#load-libraries" aria-hidden="true"><span class="octicon octicon-link"></span></a>Load Libraries</h2>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># from __future__ import absolute_import, division, print_function, unicode_literals
-</span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
-<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="n">sns</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="n">tf</span>
-<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">layers</span>
-<span class="kn">import</span> <span class="nn">tensorflow_probability</span> <span class="k">as</span> <span class="n">tfp</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">roc_auc_score</span>
-<span class="kn">import</span> <span class="nn">aequitas</span> <span class="k">as</span> <span class="n">ae</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="n">warnings</span><span class="p">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s">'ignore'</span><span class="p">)</span>
-<span class="c1"># Put all of the helper functions in utils
-</span><span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">build_vocab_files</span><span class="p">,</span> <span class="n">show_group_stats_viz</span><span class="p">,</span> <span class="n">aggregate_dataset</span><span class="p">,</span> <span class="n">preprocess_df</span><span class="p">,</span> <span class="n">df_to_dataset</span><span class="p">,</span> <span class="n">posterior_mean_field</span><span class="p">,</span> <span class="n">prior_trainable</span>
-<span class="n">pd</span><span class="p">.</span><span class="n">set_option</span><span class="p">(</span><span class="s">'display.max_columns'</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
-<span class="c1"># this allows you to make changes and save in student_utils.py and the file is reloaded every time you run a code block
-</span><span class="o">%</span><span class="n">load_ext</span> <span class="n">autoreload</span>
-<span class="o">%</span><span class="n">autoreload</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The autoreload extension is already loaded. To reload it, use:
-  %reload_ext autoreload
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#OPEN ISSUE ON MAC OSX for TF model training
-</span><span class="kn">import</span> <span class="nn">os</span>
-<span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">[</span><span class="s">'KMP_DUPLICATE_LIB_OK'</span><span class="p">]</span><span class="o">=</span><span class="s">'True'</span>
-</code></pre></div></div>
-
-<h2 id="1-dataset-loading-and-schema-review">
-<a class="anchor" href="#1-dataset-loading-and-schema-review" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Dataset Loading and Schema Review</h2>
+<h2 id="dataset-loading-and-schema-review">
+<a class="anchor" href="#dataset-loading-and-schema-review" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dataset Loading and Schema Review</h2>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dataset_path</span> <span class="o">=</span> <span class="s">"./data/final_project_dataset.csv"</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">dataset_path</span><span class="p">)</span>
@@ -432,59 +398,6 @@ window.onload = wrap_img;
 </table>
 </div>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># See how many null values
-</span><span class="n">df</span><span class="p">.</span><span class="n">info</span><span class="p">()</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
-RangeIndex: 143424 entries, 0 to 143423
-Data columns (total 26 columns):
- #   Column                    Non-Null Count   Dtype
----  ------                    --------------   -----
- 0   encounter_id              143424 non-null  int64
- 1   patient_nbr               143424 non-null  int64
- 2   race                      143424 non-null  object
- 3   gender                    143424 non-null  object
- 4   age                       143424 non-null  object
- 5   weight                    143424 non-null  object
- 6   admission_type_id         143424 non-null  int64
- 7   discharge_disposition_id  143424 non-null  int64
- 8   admission_source_id       143424 non-null  int64
- 9   time_in_hospital          143424 non-null  int64
- 10  payer_code                143424 non-null  object
- 11  medical_specialty         143424 non-null  object
- 12  primary_diagnosis_code    143424 non-null  object
- 13  other_diagnosis_codes     143424 non-null  object
- 14  number_outpatient         143424 non-null  int64
- 15  number_inpatient          143424 non-null  int64
- 16  number_emergency          143424 non-null  int64
- 17  num_lab_procedures        143424 non-null  int64
- 18  number_diagnoses          143424 non-null  int64
- 19  num_medications           143424 non-null  int64
- 20  num_procedures            143424 non-null  int64
- 21  ndc_code                  119962 non-null  object
- 22  max_glu_serum             143424 non-null  object
- 23  A1Cresult                 143424 non-null  object
- 24  change                    143424 non-null  object
- 25  readmitted                143424 non-null  object
-dtypes: int64(13), object(13)
-memory usage: 28.5+ MB
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Get number of rows
-</span><span class="n">df</span><span class="p">.</span><span class="n">shape</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(143424, 26)
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Get number of unique encounter id's
-</span><span class="n">df</span><span class="p">[</span><span class="s">'encounter_id'</span><span class="p">].</span><span class="n">nunique</span><span class="p">()</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>101766
-</code></pre></div></div>
-
 <h3 id="determine-level-of-dataset-line-or-encounter">
 <a class="anchor" href="#determine-level-of-dataset-line-or-encounter" aria-hidden="true"><span class="octicon octicon-link"></span></a>Determine Level of Dataset (Line or Encounter)</h3>
 
@@ -494,45 +407,6 @@ memory usage: 28.5+ MB
 
 <h2 id="2-analyze-dataset">
 <a class="anchor" href="#2-analyze-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Analyze Dataset</h2>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># See how many null values
-</span><span class="n">df</span><span class="p">.</span><span class="n">info</span><span class="p">()</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
-RangeIndex: 143424 entries, 0 to 143423
-Data columns (total 26 columns):
- #   Column                    Non-Null Count   Dtype
----  ------                    --------------   -----
- 0   encounter_id              143424 non-null  int64
- 1   patient_nbr               143424 non-null  int64
- 2   race                      143424 non-null  object
- 3   gender                    143424 non-null  object
- 4   age                       143424 non-null  object
- 5   weight                    143424 non-null  object
- 6   admission_type_id         143424 non-null  int64
- 7   discharge_disposition_id  143424 non-null  int64
- 8   admission_source_id       143424 non-null  int64
- 9   time_in_hospital          143424 non-null  int64
- 10  payer_code                143424 non-null  object
- 11  medical_specialty         143424 non-null  object
- 12  primary_diagnosis_code    143424 non-null  object
- 13  other_diagnosis_codes     143424 non-null  object
- 14  number_outpatient         143424 non-null  int64
- 15  number_inpatient          143424 non-null  int64
- 16  number_emergency          143424 non-null  int64
- 17  num_lab_procedures        143424 non-null  int64
- 18  number_diagnoses          143424 non-null  int64
- 19  num_medications           143424 non-null  int64
- 20  num_procedures            143424 non-null  int64
- 21  ndc_code                  119962 non-null  object
- 22  max_glu_serum             143424 non-null  object
- 23  A1Cresult                 143424 non-null  object
- 24  change                    143424 non-null  object
- 25  readmitted                143424 non-null  object
-dtypes: int64(13), object(13)
-memory usage: 28.5+ MB
-</code></pre></div></div>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Look at range of values &amp; key stats for numerical columns
 </span><span class="n">numerical_feature_list</span> <span class="o">=</span> <span class="p">[</span><span class="s">'time_in_hospital'</span><span class="p">,</span>  <span class="s">'number_outpatient'</span><span class="p">,</span> <span class="s">'number_inpatient'</span><span class="p">,</span> <span class="s">'number_emergency'</span><span class="p">,</span> <span class="s">'num_lab_procedures'</span><span class="p">,</span> <span class="s">'number_diagnoses'</span><span class="p">,</span> <span class="s">'num_medications'</span><span class="p">,</span> <span class="s">'num_procedures'</span> <span class="p">]</span>
@@ -647,31 +521,6 @@ memory usage: 28.5+ MB
 </table>
 </div>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Plot histograms to show distributions for numerical fields
-</span><span class="n">df</span><span class="p">.</span><span class="n">hist</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array([[&lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f5240018bd0&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f5240049450&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f52187d4d90&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f521879c450&gt;],
-       [&lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f52187519d0&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f5218707f50&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f5290606ed0&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f52906030d0&gt;],
-       [&lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f52906033d0&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f524031d990&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f5240385990&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f529059a910&gt;],
-       [&lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f52905c9b90&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f5292fd4450&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f5292f60c50&gt;,
-        &lt;matplotlib.axes._subplots.AxesSubplot object at 0x7f52403ac590&gt;]],
-      dtype=object)
-</code></pre></div></div>
-
-<p><img src="output_20_1.png" alt="png"></p>
-
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Define utility functions
 </span><span class="k">def</span> <span class="nf">create_cardinality_feature</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
     <span class="n">num_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
@@ -775,40 +624,6 @@ memory usage: 28.5+ MB
   </tbody>
 </table>
 </div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Show unique values for fields of particular interest i.e. why 3 genders?
-</span><span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'race'</span><span class="p">].</span><span class="n">unique</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'age'</span><span class="p">].</span><span class="n">unique</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'gender'</span><span class="p">].</span><span class="n">unique</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'A1Cresult'</span><span class="p">].</span><span class="n">unique</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'readmitted'</span><span class="p">].</span><span class="n">unique</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'payer_code'</span><span class="p">].</span><span class="n">unique</span><span class="p">())</span>
-<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s">'weight'</span><span class="p">].</span><span class="n">unique</span><span class="p">())</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>['Caucasian' 'AfricanAmerican' '?' 'Other' 'Asian' 'Hispanic']
-['[0-10)' '[10-20)' '[20-30)' '[30-40)' '[40-50)' '[50-60)' '[60-70)'
- '[70-80)' '[80-90)' '[90-100)']
-['Female' 'Male' 'Unknown/Invalid']
-['None' '&gt;7' '&gt;8' 'Norm']
-['NO' '&gt;30' '&lt;30']
-['?' 'MC' 'MD' 'HM' 'UN' 'BC' 'SP' 'CP' 'SI' 'DM' 'CM' 'CH' 'PO' 'WC' 'OT'
- 'OG' 'MP' 'FR']
-['?' '[75-100)' '[50-75)' '[0-25)' '[100-125)' '[25-50)' '[125-150)'
- '[175-200)' '[150-175)' '&gt;200']
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Look at distribution for ages
-</span><span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">"age"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span>
-</code></pre></div></div>
-
-<p><img src="output_23_0.png" alt="png"></p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Look at distribution for gender
-</span><span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">"gender"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span>
-</code></pre></div></div>
-
-<p><img src="output_24_0.png" alt="png"></p>
 
 <h3 id="analysis-key-findings">
 <a class="anchor" href="#analysis-key-findings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis key findings</h3>
@@ -982,8 +797,8 @@ memory usage: 28.5+ MB
 </span><span class="k">assert</span> <span class="n">df</span><span class="p">[</span><span class="s">'ndc_code'</span><span class="p">].</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">reduce_dim_df</span><span class="p">[</span><span class="s">'generic_drug_name'</span><span class="p">].</span><span class="n">nunique</span><span class="p">()</span>
 </code></pre></div></div>
 
-<h2 id="4-select-first-encounter-for-each-patient">
-<a class="anchor" href="#4-select-first-encounter-for-each-patient" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. Select First Encounter for each Patient</h2>
+<h2 id="select-first-encounter-for-each-patient">
+<a class="anchor" href="#select-first-encounter-for-each-patient" aria-hidden="true"><span class="octicon octicon-link"></span></a>Select First Encounter for each Patient</h2>
 
 <p>In order to simplify the aggregation of data for the model, we will only select the first encounter for each patient in the dataset. This is to reduce the risk of data leakage of future patient encounters and to reduce complexity of the data transformation and modeling steps. We will assume that sorting in numerical order on the encounter_id provides the time horizon for determining which encounters come before and after another.</p>
 
@@ -1006,13 +821,12 @@ memory usage: 28.5+ MB
 <span class="k">print</span><span class="p">(</span><span class="s">"Tests passed!!"</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Number of unique patients:71518
+<p>Number of unique patients:71518
 Number of unique encounters:71518
-Tests passed!!
-</code></pre></div></div>
+Tests passed!!</p>
 
-<h2 id="5-aggregate-dataset-to-right-level-for-modeling">
-<a class="anchor" href="#5-aggregate-dataset-to-right-level-for-modeling" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. Aggregate Dataset to Right Level for Modeling</h2>
+<h2 id="aggregate-dataset-to-right-level-for-modeling">
+<a class="anchor" href="#aggregate-dataset-to-right-level-for-modeling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Aggregate Dataset to Right Level for Modeling</h2>
 
 <p>To make it simpler, we are creating dummy columns for each unique generic drug name and adding those are input features to the model.</p>
 
@@ -1024,8 +838,8 @@ Tests passed!!
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">agg_drug_df</span><span class="p">)</span> <span class="o">==</span> <span class="n">agg_drug_df</span><span class="p">[</span><span class="s">'patient_nbr'</span><span class="p">].</span><span class="n">nunique</span><span class="p">()</span> <span class="o">==</span> <span class="n">agg_drug_df</span><span class="p">[</span><span class="s">'encounter_id'</span><span class="p">].</span><span class="n">nunique</span><span class="p">()</span>
 </code></pre></div></div>
 
-<h2 id="6-prepare-fields-and-cast-dataset">
-<a class="anchor" href="#6-prepare-fields-and-cast-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>6. Prepare Fields and Cast Dataset</h2>
+<h2 id="prepare-fields-and-cast-dataset">
+<a class="anchor" href="#prepare-fields-and-cast-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prepare Fields and Cast Dataset</h2>
 
 <h3 id="feature-selection">
 <a class="anchor" href="#feature-selection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Feature Selection</h3>
@@ -1034,13 +848,13 @@ Tests passed!!
 </span><span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">"payer_code"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">agg_drug_df</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p><img src="output_45_0.png" alt="png"></p>
+<p><img src="images/diabetes/output_45_0.png" alt="png"></p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Look at counts for weight categories
 </span><span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s">"weight"</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">agg_drug_df</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p><img src="output_46_0.png" alt="png"></p>
+<p><img src="images/output_46_0.png" alt="png"></p>
 
 <p>From the category counts above, we can see that for payer_code while there are many unknown values i.e. ‘?’, there are still many values for other payer codes, these may prove useful predictors for our target variable. For weight, there are so few unknown ‘?’ codes, that this feature is likely to be not very helpful for predicting our target variable.</p>
 
@@ -1070,8 +884,8 @@ Tests passed!!
         <span class="n">student_numerical_col_list</span><span class="p">,</span> <span class="n">PREDICTOR_FIELD</span><span class="p">,</span> <span class="n">categorical_impute_value</span><span class="o">=</span><span class="s">'nan'</span><span class="p">,</span> <span class="n">numerical_impute_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div></div>
 
-<h2 id="7-split-dataset-into-train-validation-and-test-partitions">
-<a class="anchor" href="#7-split-dataset-into-train-validation-and-test-partitions" aria-hidden="true"><span class="octicon octicon-link"></span></a>7. Split Dataset into Train, Validation, and Test Partitions</h2>
+<h2 id="split-dataset-into-train-validation-and-test-partitions">
+<a class="anchor" href="#split-dataset-into-train-validation-and-test-partitions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Split Dataset into Train, Validation, and Test Partitions</h2>
 
 <p>In order to prepare the data for being trained and evaluated by a deep learning model, we will split the dataset into three partitions, with the validation partition used for optimizing the model hyperparameters during training. One of the key parts is that we need to be sure that the data does not accidently leak across partitions.</p>
 
@@ -1089,13 +903,12 @@ Tests passed!!
 <span class="n">d_train</span><span class="p">,</span> <span class="n">d_val</span><span class="p">,</span> <span class="n">d_test</span> <span class="o">=</span> <span class="n">patient_dataset_splitter</span><span class="p">(</span><span class="n">processed_df</span><span class="p">,</span> <span class="s">'patient_nbr'</span><span class="p">)</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Total number of unique patients in train =  32563
+<p>Total number of unique patients in train =  32563
 Total number of unique patients in validation =  10854
 Total number of unique patients in test =  10854
 Training partition has a shape =  (32563, 43)
 Validation partition has a shape =  (10854, 43)
-Test partition has a shape =  (10854, 43)
-</code></pre></div></div>
+Test partition has a shape =  (10854, 43)</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">d_train</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">d_val</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">d_test</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">processed_df</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="s">"Test passed for number of total rows equal!"</span><span class="p">)</span>
@@ -1111,8 +924,8 @@ Test partition has a shape =  (10854, 43)
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Test passed for number of unique patients being equal!
 </code></pre></div></div>
 
-<h2 id="8-demographic-representation-analysis-of-split">
-<a class="anchor" href="#8-demographic-representation-analysis-of-split" aria-hidden="true"><span class="octicon octicon-link"></span></a>8. Demographic Representation Analysis of Split</h2>
+<h2 id="demographic-representation-analysis-of-split">
+<a class="anchor" href="#demographic-representation-analysis-of-split" aria-hidden="true"><span class="octicon octicon-link"></span></a>Demographic Representation Analysis of Split</h2>
 
 <p>After the split, we should check to see the distribution of key features/groups and make sure that there is representative samples across the partitions.</p>
 
