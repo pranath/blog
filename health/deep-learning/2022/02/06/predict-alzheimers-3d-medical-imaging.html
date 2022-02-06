@@ -120,72 +120,58 @@ window.onload = wrap_img;
 
   <div class="post-content e-content" itemprop="articleBody">
     <ul class="section-nav">
-<li class="toc-entry toc-h1"><a href="#predicting-alzheimers-disease-using-3d-mri-medical-images">Predicting Alzheimers disease using 3D MRI medical images</a>
-<ul>
-<li class="toc-entry toc-h2"><a href="#introduction">Introduction</a>
-<ul>
-<li class="toc-entry toc-h4"><a href="#location-of-the-hippocampus-within-the-brain">Location of the Hippocampus within the brain</a></li>
-<li class="toc-entry toc-h4"><a href="#size-and-shape-of-the-hippocampus">Size and shape of the Hippocampus</a></li>
-<li class="toc-entry toc-h4"><a href="#axial-slice-of-an-mri-image-of-the-brain">Axial slice of an MRI image of the brain</a></li>
-<li class="toc-entry toc-h4"><a href="#cropped-hippocampus-area-from-mri-image--predicted-hippocampus-anterior-front-volume">Cropped Hippocampus area from MRI image &amp; predicted Hippocampus anterior (front) volume</a></li>
-</ul>
-</li>
+<li class="toc-entry toc-h2"><a href="#introduction">Introduction</a></li>
+<li class="toc-entry toc-h2"><a href="#location-of-the-hippocampus-within-the-brain">Location of the Hippocampus within the brain</a></li>
+<li class="toc-entry toc-h2"><a href="#size-and-shape-of-the-hippocampus">Size and shape of the Hippocampus</a></li>
+<li class="toc-entry toc-h2"><a href="#axial-slice-of-an-mri-image-of-the-brain">Axial slice of an MRI image of the brain</a></li>
+<li class="toc-entry toc-h2"><a href="#cropped-hippocampus-area-from-mri-image--predicted-hippocampus-anterior-front-volume">Cropped Hippocampus area from MRI image &amp; predicted Hippocampus anterior (front) volume</a></li>
 <li class="toc-entry toc-h2"><a href="#the-dataset">The Dataset</a></li>
-<li class="toc-entry toc-h2"><a href="#key-files">Key files</a>
-<ul>
-<li class="toc-entry toc-h3"><a href="#june-2020">June 2020</a></li>
-</ul>
-</li>
+<li class="toc-entry toc-h2"><a href="#key-files">Key files</a></li>
 <li class="toc-entry toc-h2"><a href="#results">Results</a>
 <ul>
 <li class="toc-entry toc-h4"><a href="#showing-model-deployment-in-automated-report-with-predictions-integrated-into-medical-viewer">Showing model deployment in automated report with predictions integrated into medical viewer</a></li>
 </ul>
 </li>
-</ul>
-</li>
-</ul><h1 id="predicting-alzheimers-disease-using-3d-mri-medical-images">
-<a class="anchor" href="#predicting-alzheimers-disease-using-3d-mri-medical-images" aria-hidden="true"><span class="octicon octicon-link"></span></a>Predicting Alzheimers disease using 3D MRI medical images</h1>
-
-<h2 id="introduction">
+</ul><h2 id="introduction">
 <a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
 <p>In this project I develop a deep learning model to predict Alzheimer’s disease using 3D MRI medical images. Alzheimer’s disease (AD) is a progressive neurodegenerative disorder that results in impaired neuronal (brain cell) function and eventually, cell death. For patients exhibiting early symptoms, quantifying disease progression over time can help direct therapy and disease management.</p>
 
-<h4 id="location-of-the-hippocampus-within-the-brain">
-<a class="anchor" href="#location-of-the-hippocampus-within-the-brain" aria-hidden="true"><span class="octicon octicon-link"></span></a>Location of the Hippocampus within the brain</h4>
+<p>The full code for this project is available at <a href="https://github.com/pranath/predict_alzheimers">this github repository</a>.</p>
+
+<h2 id="location-of-the-hippocampus-within-the-brain">
+<a class="anchor" href="#location-of-the-hippocampus-within-the-brain" aria-hidden="true"><span class="octicon octicon-link"></span></a>Location of the Hippocampus within the brain</h2>
 <p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_location.png" alt="title"></p>
 
 <p>A radiological study via MRI exam is currently one of the most advanced methods to quantify the disease. In particular, the measurement of hippocampal volume has proven useful to diagnose and track progression in several brain disorders, most notably in AD. Studies have shown a reduced volume of the hippocampus in patients with AD.</p>
 
 <p>But with fewer and fewer trained Radiologists available, and increasing demands for medical imaging services - this presents a huge challenge for medical services.</p>
 
-<h4 id="size-and-shape-of-the-hippocampus">
-<a class="anchor" href="#size-and-shape-of-the-hippocampus" aria-hidden="true"><span class="octicon octicon-link"></span></a>Size and shape of the Hippocampus</h4>
+<h2 id="size-and-shape-of-the-hippocampus">
+<a class="anchor" href="#size-and-shape-of-the-hippocampus" aria-hidden="true"><span class="octicon octicon-link"></span></a>Size and shape of the Hippocampus</h2>
 <p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_shape.png" alt="title"></p>
 
-<p>In this project I will build an end-to-end deep learning/AI system which features a machine learning algorithm that integrates into a clinical-grade viewer and automatically measures hippocampal volumes of new patients from their MRI images, as their studies are committed to the clinical imaging archive.</p>
+<p>In this project I build an end-to-end deep learning/AI system which features a machine learning algorithm that integrates into a clinical-grade viewer and automatically measures hippocampal volumes of new patients from their MRI images, as their studies are committed to the clinical imaging archive.</p>
 
-<h4 id="axial-slice-of-an-mri-image-of-the-brain">
-<a class="anchor" href="#axial-slice-of-an-mri-image-of-the-brain" aria-hidden="true"><span class="octicon octicon-link"></span></a>Axial slice of an MRI image of the brain</h4>
+<h2 id="axial-slice-of-an-mri-image-of-the-brain">
+<a class="anchor" href="#axial-slice-of-an-mri-image-of-the-brain" aria-hidden="true"><span class="octicon octicon-link"></span></a>Axial slice of an MRI image of the brain</h2>
 <p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/brain_mri.png" alt="title"></p>
 
-<p>I will use the dataset that contains the segmentations of the right hippocampus and will use the U-Net deep learning architecture to build a segmentation model.</p>
+<p>I used a dataset that contains the segmentations of the right hippocampus and will use the U-Net deep learning architecture to build a segmentation model.</p>
 
-<h4 id="cropped-hippocampus-area-from-mri-image--predicted-hippocampus-anterior-front-volume">
-<a class="anchor" href="#cropped-hippocampus-area-from-mri-image--predicted-hippocampus-anterior-front-volume" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cropped Hippocampus area from MRI image &amp; predicted Hippocampus anterior (front) volume</h4>
+<h2 id="cropped-hippocampus-area-from-mri-image--predicted-hippocampus-anterior-front-volume">
+<a class="anchor" href="#cropped-hippocampus-area-from-mri-image--predicted-hippocampus-anterior-front-volume" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cropped Hippocampus area from MRI image &amp; predicted Hippocampus anterior (front) volume</h2>
 <p><img src="https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_mri_ant.png" alt="title"></p>
 
-<p>After the model is built, I will proceed to integrate the model into a working clinical PACS such that it runs on every incoming study and produces a report with volume measurements.</p>
+<p>After the model was built, I proceeded to integrate the model into a working clinical PACS such that it runs on every incoming study and produces a report with volume measurements.</p>
 
 <h2 id="the-dataset">
 <a class="anchor" href="#the-dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Dataset</h2>
 
-<p>I will be using the “Hippocampus” dataset from the <a href="http://medicaldecathlon.com">Medical Decathlon competition</a>. This dataset is stored as a collection of NIFTI files, with one file per volume, and one file per corresponding segmentation mask. The original images here are T2 MRI scans of the full brain.</p>
+<p>I used the “Hippocampus” dataset from the <a href="http://medicaldecathlon.com">Medical Decathlon competition</a>. This dataset is stored as a collection of NIFTI files, with one file per volume, and one file per corresponding segmentation mask. The original images here are T2 MRI scans of the full brain.</p>
 
 <h2 id="key-files">
 <a class="anchor" href="#key-files" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key files</h2>
-
-<h3 id="june-2020">
-<a class="anchor" href="#june-2020" aria-hidden="true"><span class="octicon octicon-link"></span></a>June 2020</h3>
+<p>Key files from the project located in the github repo are the following:</p>
 
 <ul>
   <li><a href="https://github.com/pranath/predict_alzheimers/blob/master/eda.ipynb">Exploratory Data Analysis of Hippocampus 3D brain MRI images</a></li>
