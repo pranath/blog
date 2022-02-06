@@ -13,7 +13,7 @@ In this project I develop a deep learning model to predict Alzheimer's disease u
 
 The code for this project is available at [this github repository](https://github.com/pranath/predict_alzheimers).
 
-![Location of the Hippocampus within the brain](https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_location.png)
+![](https://github.com/pranath/predict_alzheimers/raw/master/img/hippo_location.png 'Location of the Hippocampus within the brain')
 
 A radiological study via MRI exam is currently one of the most advanced methods to quantify the disease. In particular, the measurement of hippocampal volume has proven useful to diagnose and track progression in several brain disorders, most notably in AD. Studies have shown a reduced volume of the hippocampus in patients with AD.
 
