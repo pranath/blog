@@ -4,7 +4,7 @@ layout: post
 comments: true
 description: In this article, we will learn about the main epidemiological study designs, including cross-sectional and ecological studies, case-control and cohort studies, as well as the more complex nested case-control, case-cohort designs, as well as randomised controlled trials.
 categories: [health, epidemiology]
-image: images/epidemiology.jpg
+image: images/epidemiology2.jpg
 title: Study Designs in Epidemiology
 ---
 ## Introduction
