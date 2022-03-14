@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>The MIMIC-III (EHR) database for Descriptive Analytics | livingdatalab</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="The MIMIC-III (EHR) database for Descriptive Analytics" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In this article we will look at the basic structure of the MIMIC-III database, which is the largest publicly Electronic Health Record (EHR) database available to benchmark machine learning algorithms. In particular, we will learn about the design of this relational database, and what tools are available to query, extract and visualise descriptive analytics." />
+<meta property="og:description" content="In this article we will look at the basic structure of the MIMIC-III database, which is the largest publicly Electronic Health Record (EHR) database available to benchmark machine learning algorithms. In particular, we will learn about the design of this relational database, and what tools are available to query, extract and visualise descriptive analytics." />
+<link rel="canonical" href="https://www.livingdatalab.com/health/electronic-health-records/2022/03/14/using-mimic3-ehr-database.html" />
+<meta property="og:url" content="https://www.livingdatalab.com/health/electronic-health-records/2022/03/14/using-mimic3-ehr-database.html" />
+<meta property="og:site_name" content="livingdatalab" />
+<meta property="og:image" content="https://www.livingdatalab.com/images/ehr2.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-03-14T00:00:00-05:00" />
+<script type="application/ld+json">
+{"url":"https://www.livingdatalab.com/health/electronic-health-records/2022/03/14/using-mimic3-ehr-database.html","@type":"BlogPosting","headline":"The MIMIC-III (EHR) database for Descriptive Analytics","dateModified":"2022-03-14T00:00:00-05:00","datePublished":"2022-03-14T00:00:00-05:00","image":"https://www.livingdatalab.com/images/ehr2.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/health/electronic-health-records/2022/03/14/using-mimic3-ehr-database.html"},"description":"In this article we will look at the basic structure of the MIMIC-III database, which is the largest publicly Electronic Health Record (EHR) database available to benchmark machine learning algorithms. In particular, we will learn about the design of this relational database, and what tools are available to query, extract and visualise descriptive analytics.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://www.livingdatalab.com/feed.xml" title="livingdatalab" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-91568149-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">livingdatalab</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Livingdatalab</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">The MIMIC-III (EHR) database for Descriptive Analytics</h1><p class="page-description">In this article we will look at the basic structure of the MIMIC-III database, which is the largest publicly Electronic Health Record (EHR) database available to benchmark machine learning algorithms. In particular, we will learn about the design of this relational database, and what tools are available to query, extract and visualise descriptive analytics.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-03-14T00:00:00-05:00" itemprop="datePublished">
+        Mar 14, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      19 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#health">health</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#electronic-health-records">electronic-health-records</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Introduction">Introduction </a></li>
+<li class="toc-entry toc-h2"><a href="#MIMIC-III-use-cases">MIMIC-III use cases </a></li>
+<li class="toc-entry toc-h2"><a href="#MIMIC-III-as-a-Relational-Database">MIMIC-III as a Relational Database </a></li>
+<li class="toc-entry toc-h2"><a href="#Calculating-Descriptive-Statistics-for-MIMIC-III">Calculating Descriptive Statistics for MIMIC-III </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Calculating-the-Distribution-of-Heart-rates-of-all-adult-patients">Calculating the Distribution of Heart rates of all adult patients </a></li>
+<li class="toc-entry toc-h3"><a href="#Extract-hospitalisation-numbers">Extract hospitalisation numbers </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#1.-Number-of-distinct-patients-across-care-units">1. Number of distinct patients across care units </a></li>
+<li class="toc-entry toc-h4"><a href="#2.-Number-of-distinct-hospital-admissions-across-care-units">2. Number of distinct hospital admissions across care units </a></li>
+<li class="toc-entry toc-h4"><a href="#3.-Number-of-distinct-ICU-stays-across-care-units">3. Number of distinct ICU stays across care units </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Extract-age-across-care-units">Extract age across care units </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-03-14-using-mimic3-ehr-database.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h2>
+<p>In an <a href="https://livingdatalab.com/health/2022/03/14/data-ehr-healthcare.html">earlier article we looked at how the MIMIC-III EHR database come into being</a> In this article, we're going to overview the main architecture of the MIMIC-III Electronic Health Record (EHR) database and how it links information between ICU units in the hospital records. We're also going to highlight that a key processing step to develop the database was to remove any sensitive fields. When dealing with sensitive health data, we need to particularly pay attention to dates. With MIMIC to protect anonymity, all dates have been shifted relatively to protect the privacy of the subjects. In particular, we will learn about the design of this relational database, and what tools are available to query, extract and visualise descriptive analytics.</p>
+<h2 id="MIMIC-III-use-cases">
+<a class="anchor" href="#MIMIC-III-use-cases" aria-hidden="true"><span class="octicon octicon-link"></span></a>MIMIC-III use cases<a class="anchor-link" href="#MIMIC-III-use-cases"> </a>
+</h2>
+<p>Electronic health records are complicated. This is for several reasons. Some of this information can be medical images, lab tests, natural language diagnosis from doctors, medications, and hospitalization events. During hospitalization there is a number of tests a patient undergoes, blood test, and vital signs checked. It could be medical images and so on. A single patients data are spread over multiple electronic health record with diverse representation. Another important issue is the meaning of measurements. As simple temperature measure may vary depending on whether it is taking from the mouth or the armpit. Putting all this together, we see that electronic health records are irregularly sampled. Their nature is varied and dynamic. So how we can design the schema of a database to encode this information?</p>
+<p>This database should be accessible simultaneously from doctors and other health care providers frequently and in a unified way. Interoperability is a key requirement. This involve enhanced quality, efficiency, and effectiveness of the health care system. Information should be provided in the appropriate format whenever is needed. We should eliminate unnecessary duplications. Database selection and it's matching schema architecture usually influences that effective management of medical data flexibility, scalability, query performance, and interoperability. Non-proprietary standardized models are necessary to build electronic health record systems which comply the requirement of interoperability.</p>
+<p>MIMIC-III is a good example towards this direction. It is the only freely accessible critical care database of its kind. The dataset spans more than a decade, which detailed information about individual patient care. Databases such as MIMIC-III play a key role in accelerating research in machine learning models and end enabling reproducibility studies. MIMIC-III database links the identified information across five intensive units at the hospital of Medical Center in Boston with the hospital electronic health record databases.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/mimic3-patient-timeline.png" alt="" title="MIMIC III - Patient Timeline"></p>
+<p>During ICU stay, there are several signals that are monitored and these are the vital signs, there are waveforms. We have alarms, but there are also fluids and medications as well as progression reports noted from the doctors. On the other hand, data recording from the hospital will include billing details and it includes also International Classification of Disease codes which relates to the pathology and the symptoms of the patient during admission. It will include demographics of the patient, and it will also include other nodes, with relation to medical images, discharge summaries, and so on. All the fields related to patient data identification has been removed. This includes his patient name, telephone number, and addresses. In particular dates, we're shifted into the future by a random offset for each individual patient in a consistent manner. Preserving interval is important. Therefore, dates cannot be completely removed or randomly changed.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/mimic3-overview.jpg" alt="" title="MIMIC III - Overview"></p>
+<h2 id="MIMIC-III-as-a-Relational-Database">
+<a class="anchor" href="#MIMIC-III-as-a-Relational-Database" aria-hidden="true"><span class="octicon octicon-link"></span></a>MIMIC-III as a Relational Database<a class="anchor-link" href="#MIMIC-III-as-a-Relational-Database"> </a>
+</h2>
+<p>MIMIC-III database consists of 26 tables and they're all listed below. The schema of the database reflects the inherent hospital sources of information. Since MIMIC-III links data from a hospital, the overall structure represents closely this row data. As we see here, MIMIC-III tables can be categorized in four groups.</p>
+<p>One of the group is the <strong>patient tracking</strong>. These tables are used to define and track patient stay. The tables under <strong>ICU data</strong> include all the data recorded during icu stays. On the other hand, the data recorded within the table under the <strong>hospital category</strong> includes all the data recorded in the hospital. Recall that the database links data between the ICU unit and the hospital but these are two different entities. Finally, the last category includes <strong>dictionary tables</strong> and they all have a prefix of d.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/mimic3-tables.png" alt="" title="MIMIC III - Overview"></p>
+<p>Here, we're going to look at the basic tables of MIMIC-III, which are the <em>patients</em> table, the <em>admission</em> table, and the <em>icustays</em> table. Several key summary statistics can be extracted based only on these tables.</p>
+<p>The <strong>patient table</strong> has a subject Id identifier that can link it to the admission table, as well as the ICU table. The patient table includes the date of birth. <em>We should pay attention here because the date of birth has been shifted for patients older than 89 years old</em>. We should also note that the table records three different versions of date of death. These are the date of death according to the hospital. The date of death from Social Security database, and a date of death which matches the two dates and gives priority to the date of death at hospital. The patient's table also includes an expired flag, which is a binary flag that records whether the patient has died according to either database.</p>
+<p>The <strong>admissions table</strong> has an additional identifier. The hospital admission identify that links the information with the icustays table. <em>The admissions table records every unique hospitalization for each patient in the database</em>. It includes information about admission time, discharge time, death time, type of admission, hospital expiry flag, diagnosis, and whether the patient has chart events data associated with his record.</p>
+<p>The <strong>icustays table</strong> records every unique ICU stay in the database. The icustay identifier is a generated identifier that is not based on any row data identifier. We should point out that the hospital and the ICU database are not mainly linked, they used to be two separate databases. Therefore they don't have any concept of an ICU and counter identifier. Taking all this together, subject Id refers to a unique patient identifier, hospital admission Id refers to a unique admission to the hospital and icustay identification refers to a unique admission to an intensive care unit.</p>
+<p>Information in the icustays table include the first care unit and the last care unit, which are also information defined in the <strong>transfers table</strong>. It also include the first ward and the last ward, which refers to the physical locations within the hospital. It includes in time and out time of when the patient was transferred in and out of the ICU. It also includes length of stay for the patient. We should point out that the icustays table have been in fact linked with the transfers table. Specifically it groups a transfers stable based on icustay ID and excludes rows where there is no icustay ID. The transfers table, includes additional information of patient movement from bed to bed within the hospital, including ICU admission and discharge.</p>
+<p>Finally, the <strong>callout table</strong> includes information regarding when a patient was cleared from ICU discharge and when the patient was actually discharged. A key table that includes data from the ICU unit is the <strong>chart events table</strong>. Here we can find all chart event observations for patients. The <strong>outputevents stable</strong>, on the other hand, contains all measurements related to output for a given patient. When we work with ICU data and in particular with chart events data, we should consider also the <strong>dictionary tables</strong>. This table provide definitions for identifiers. For example, every row of chart events is associated with a single item ID, which represents the concept measure. In this way, by joining the chart events table with a dictionary items table it is possible to identify the concept represented by a given item ID. The rest of the dictionary's table, they're also used for cross-referencing codes against their respective definitions.</p>
+<p>Now we highlight some of the tables and the hospital data that are used very often, in particular, the <strong>lab events table</strong> containing laboratory test results for a patient. There is some duplication between chart events and lab events. In cases where there is a disagreement between measurements, lab events should be taken as the ground truth. In some cases, it would have been possible to merge tables. For example, we can merge the dictionary of ICT procedures with that CPT events table because both contain details relating to procedures and they could be combined. However, since the data sources are significantly different, they have been kept separately.</p>
+<p>Researchers are advised to develop database views and transform them as appropriately rather than combining the tables within the mimic data model. We should also point out that the patients' procedures recording in the <strong>procedures ICT table</strong> are coded using the International Statistical Classification of Diseases. Similarly, the <strong>diagnosis ICT table</strong>, are hospital assigned diagnosis coded using again, the International Statistical Classification of Diseases System. The corresponding dictionary tables, they hold the relative information with relation to the ICD-9 codes.</p>
+<p>Summarizing, the mimic database holds more than 53,000 distinct hospital admissions for patients age 60 years and above, and they were admitted to critical care between 2001 and 2012. To correctly extract information from an electronic health record database, we need to understand the schema of the database, but also the source of the data. In almost every query, we will see that we can use SQL queries to join information between the basic tables which hold data for the patients' admissions in the hospital and ICU stays. In the next sectionss, we will see how to extract information about the patient characteristics such as age, gender, ICU units, as well as outcomes such as mortality and stay of length. We are also going to discuss the coding system used in mimic, which is based on the International Classification of Diseases, ICD-9 system.</p>
+<p><a href="https://www.nature.com/articles/sdata201635">This is a good article summerising the characteristics of the MIMIC-III database and its tables</a>.</p>
+<h2 id="Calculating-Descriptive-Statistics-for-MIMIC-III">
+<a class="anchor" href="#Calculating-Descriptive-Statistics-for-MIMIC-III" aria-hidden="true"><span class="octicon octicon-link"></span></a>Calculating Descriptive Statistics for MIMIC-III<a class="anchor-link" href="#Calculating-Descriptive-Statistics-for-MIMIC-III"> </a>
+</h2>
+<p>Descriptive statistics are powerful. They can be used in retrospective studies to overview historic data and explain trends. Extracting patients can result in different estimations depending on which table identifier we use. Therefore, we really need to understand the schema of the database and how it encodes the data. Normally, descriptive statistics look into patient characteristics, intensive care unit utilization, and patient outcomes such as mortality. A number of factors should be considered while we extract this data, for example, when we are looking into estimating the number of patients, we will realize that there is more than one way leading to similar but not identical results. We can look into the number of distinct patients across care units. We can also look into unique hospital admissions. Some patients have been admitted more than once. Therefore, we would expect that the number of unique patient admissions is less than the number of unique hospital admissions, since a patient can be hospitalized more than once.</p>
+<p>We can also consider unique admissions to ICUs and this number will be, again, different than the number of distinct patient across intensive care units because some patients have been admitted to more than one intensive care unit. In particular, for MIMIC-III, it is useful to know the age distribution across intensive units. Dßescriptive analytics can provide us a lot of information about historic data. They can be used to explain trends, but they cannot be used to predict future and prevent disease and high rates of mortality. Therefore, they are limited into retrospective studies.</p>
+<p>To calculate some example descriptive statistics we will use the following tools:</p>
+<ul>
+<li><a href="https://physionet.org/content/mimiciii-demo/1.4/">A reduced demo version of the MIMIC-III dataset</a></li>
+<li>A PostgreSQL Database with all the tables from the demo MIMIC-III imported into it</li>
+<li>Python &amp; Pandas</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Import libraries</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
+<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">mc</span>
+<span class="kn">import</span> <span class="nn">colorsys</span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="c1"># Local Database Configuration:</span>
+<span class="n">sqluser</span> <span class="o">=</span> <span class="s1">'pranath'</span>
+<span class="n">dbname</span> <span class="o">=</span> <span class="s1">'mimic'</span>
+<span class="n">schema_name</span> <span class="o">=</span> <span class="s1">'mimiciii'</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Connect to MIMIC-III database:</span>
+<span class="n">con</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dbname</span><span class="o">=</span><span class="n">dbname</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">sqluser</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+<span class="n">cur</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Calculating-the-Distribution-of-Heart-rates-of-all-adult-patients">
+<a class="anchor" href="#Calculating-the-Distribution-of-Heart-rates-of-all-adult-patients" aria-hidden="true"><span class="octicon octicon-link"></span></a>Calculating the Distribution of Heart rates of all adult patients<a class="anchor-link" href="#Calculating-the-Distribution-of-Heart-rates-of-all-adult-patients"> </a>
+</h3>
+<p>Say for example we would like to create a histogram of all adult (age &gt;= 16) patients’ heart rates. Heart rates are registered as two separate charted events, under the label ‘Heart rate’.</p>
+<p>To get all adult patients’ heart rates, we first combine the Patients and Admissions tables again to get the age of each patient (computed from each patient’s date of birth and hospital admission time). We filter out all patients younger than 16 years old, and select the values from the charted events related to the unique identifiers mentioned above.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://github.com/pranath/blog/raw/master/images/mimic3-sql-heartrate.png" alt="" title="MIMIC III - SQL Query to obtain heart rate data"></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For the implementation, we will need to filter on charted events with item ID 211 or 220045, which both correspond to heart rate.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Make sure that we are looking at the right item IDs that correspond to heart rate in the d_items dictionary table:</span>
+<span class="n">query</span> <span class="o">=</span>  <span class="s2">"""</span>
+<span class="s2">SELECT d.itemid, d.label</span>
+<span class="s2">FROM public.d_items d</span>
+<span class="s2">WHERE d.label LIKE '%Heart Rate%'</span>
+<span class="s2">"""</span>
+<span class="n">query_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="n">con</span><span class="p">)</span>
+<span class="n">query_output</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>itemid</th>
+      <th>label</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>211</td>
+      <td>Heart Rate</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3494</td>
+      <td>Lowest Heart Rate</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>220045</td>
+      <td>Heart Rate</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>220047</td>
+      <td>Heart Rate Alarm - Low</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Compose and execute SQL queries to get all adult heart rates</span>
+<span class="c1"># First query: Join patients and admissions table to get the age which is admittime - dob, and filter all ages over 16 only, return table with just list of subject id's</span>
+<span class="c1"># Second query: Filter from chartevents table where subject id's match those we just returned, and with heart rate item ids 211 or 220045</span>
+<span class="n">query</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">WITH subjects_above16 AS </span>
+<span class="s2">(</span>
+<span class="s2">  SELECT a.subject_id</span>
+<span class="s2">  FROM public.admissions a</span>
+<span class="s2">  INNER JOIN public.patients p</span>
+<span class="s2">  ON a.subject_id = p.subject_id</span>
+<span class="s2">  WHERE round((EXTRACT(EPOCH FROM (a.admittime-p.dob))/60/60/24/365.242) :: NUMERIC, 4) &gt;= 16</span>
+<span class="s2">  group by a.subject_id</span>
+<span class="s2">)</span>
+<span class="s2">, heart_rate_table as</span>
+<span class="s2">(</span>
+<span class="s2">  SELECT width_bucket(ce.valuenum, 0, 300, 301) AS bucket</span>
+<span class="s2">  FROM public.chartevents ce</span>
+<span class="s2">  INNER JOIN subjects_above16</span>
+<span class="s2">  ON ce.subject_id = subjects_above16.subject_id</span>
+<span class="s2">  WHERE ce.itemid in (211, 220045)</span>
+<span class="s2">)</span>
+<span class="s2">SELECT bucket as heart_rate</span>
+<span class="s2">FROM heart_rate_table</span>
+<span class="s2">ORDER BY bucket;</span>
+<span class="s2">"""</span>
+
+<span class="n">query_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="n">con</span><span class="p">)</span>
+<span class="n">query_output</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>heart_rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Visualize distribution of heart rate:</span>
+<span class="n">query_output</span><span class="p">[</span><span class="s1">'heart_rate'</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;AxesSubplot:&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Show 5-Number summary of heart rate:</span>
+<span class="n">query_output</span><span class="p">[</span><span class="s1">'heart_rate'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>count    15485.000000
+mean        88.766225
+std         19.175901
+min          1.000000
+25%         76.000000
+50%         88.000000
+75%        101.000000
+max        190.000000
+Name: heart_rate, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Extract-hospitalisation-numbers">
+<a class="anchor" href="#Extract-hospitalisation-numbers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extract hospitalisation numbers<a class="anchor-link" href="#Extract-hospitalisation-numbers"> </a>
+</h3>
+<p>We will now look at the basic operations required to extract descriptive statistics from the MIMIC-III database with relation to hospitalisations, age distribution of patients, gender distribution of patients, length of stay in ICUs and mortality. They use the basic tables of MIMIC-III: Patients, Icustays and Admissions.</p>
+<h4 id="1.-Number-of-distinct-patients-across-care-units">
+<a class="anchor" href="#1.-Number-of-distinct-patients-across-care-units" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Number of distinct patients across care units<a class="anchor-link" href="#1.-Number-of-distinct-patients-across-care-units"> </a>
+</h4>
+<p>We would like to know the number of unique adult (age &gt;= 16) patients admitted to an intensive care unit (ICU), as well as the distribution of those patients across the different ICUs.</p>
+<p>The diagram below visualizes how to get the information that is needed to get those numbers. The Patients table is combined with the Icustays table to get each patient’s unique identifier and the ICU that they were admitted to. Moreover, we use each patient’s date of birth and the time of admission to compute each patient’s age, and select only adult patients (age &gt;= 16).</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/mimic-sql1.png" alt=""></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Compose SQL query</span>
+<span class="n">query</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">SELECT i.subject_id, i.first_careunit</span>
+<span class="s2">  FROM public.patients p</span>
+<span class="s2">  INNER JOIN public.Icustays i ON i.subject_id = p.subject_id</span>
+<span class="s2">  WHERE round((EXTRACT(EPOCH FROM (i.intime-p.dob))/60/60/24/365.242) :: NUMERIC, 4) &gt;= 16</span>
+<span class="s2">"""</span>
+<span class="c1"># Run query</span>
+<span class="n">query_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="n">con</span><span class="p">)</span>
+<span class="c1"># Filter duplicate patients and group by ICU unit</span>
+<span class="n">icu_units</span> <span class="o">=</span> <span class="n">query_output</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">([</span><span class="s1">'subject_id'</span><span class="p">])</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'first_careunit'</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">icu_units</span> <span class="o">=</span> <span class="n">icu_units</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="c1"># Calculate percentage</span>
+<span class="n">icu_units</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'ICU Unit'</span><span class="p">,</span> <span class="s1">'Total Admissions'</span><span class="p">]</span>
+<span class="n">sum_patients</span> <span class="o">=</span> <span class="n">icu_units</span><span class="p">[</span><span class="s1">'Total Admissions'</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">icu_units</span><span class="p">[</span><span class="s1">'Percentage Admissions'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">icu_units</span><span class="p">[</span><span class="s1">'Total Admissions'</span><span class="p">]</span> <span class="o">/</span> <span class="n">sum_patients</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Total Patients: '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sum_patients</span><span class="p">))</span>
+<span class="n">icu_units</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total Patients: 100
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ICU Unit</th>
+      <th>Total Admissions</th>
+      <th>Percentage Admissions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>CCU</td>
+      <td>12</td>
+      <td>12.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>CSRU</td>
+      <td>6</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MICU</td>
+      <td>54</td>
+      <td>54.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>SICU</td>
+      <td>20</td>
+      <td>20.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>TSICU</td>
+      <td>8</td>
+      <td>8.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="2.-Number-of-distinct-hospital-admissions-across-care-units">
+<a class="anchor" href="#2.-Number-of-distinct-hospital-admissions-across-care-units" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Number of distinct hospital admissions across care units<a class="anchor-link" href="#2.-Number-of-distinct-hospital-admissions-across-care-units"> </a>
+</h4>
+<p>Some patients might have been admitted to hospital more than once. Apart from the number of unique patients, we would also like to know the number of unique hospital admissions and the corresponding distribution across ICUs.</p>
+<p>To get the numbers for hospital admissions, we combine the Patients table with the Icustays table based on each patient’s unique subject identifier. We collect each patient’s identifier and date of birth, and all the unique hospital stay identifiers, along with the corresponding ICU and time of admission. Again, we compute each patient’s age and select only adult patients (age &gt;= 16).</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/mimic-sql2.png" alt=""></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Compose SQL query</span>
+<span class="n">query</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">SELECT i.first_careunit, i.hadm_id</span>
+<span class="s2">  FROM public.patients p</span>
+<span class="s2">  INNER JOIN public.Icustays i ON i.subject_id = p.subject_id</span>
+<span class="s2">  WHERE round((EXTRACT(EPOCH FROM (i.intime-p.dob))/60/60/24/365.242) :: NUMERIC, 4) &gt;= 16</span>
+<span class="s2">"""</span>
+<span class="c1"># Run query</span>
+<span class="n">query_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="n">con</span><span class="p">)</span>
+<span class="c1"># Filter duplicate patients and group by ICU unit</span>
+<span class="n">icu_units</span> <span class="o">=</span> <span class="n">query_output</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">([</span><span class="s1">'hadm_id'</span><span class="p">])</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'first_careunit'</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">icu_units</span> <span class="o">=</span> <span class="n">icu_units</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="c1"># Calculate percentage</span>
+<span class="n">icu_units</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'ICU Unit'</span><span class="p">,</span> <span class="s1">'Total Unique Admissions'</span><span class="p">]</span>
+<span class="n">sum_patients</span> <span class="o">=</span> <span class="n">icu_units</span><span class="p">[</span><span class="s1">'Total Unique Admissions'</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">icu_units</span><span class="p">[</span><span class="s1">'Percentage Unique Admissions'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">icu_units</span><span class="p">[</span><span class="s1">'Total Unique Admissions'</span><span class="p">]</span> <span class="o">/</span> <span class="n">sum_patients</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Total Patients: '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sum_patients</span><span class="p">))</span>
+<span class="n">icu_units</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total Patients: 129
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ICU Unit</th>
+      <th>Total Unique Admissions</th>
+      <th>Percentage Unique Admissions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>CCU</td>
+      <td>17</td>
+      <td>13.178295</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>CSRU</td>
+      <td>6</td>
+      <td>4.651163</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MICU</td>
+      <td>73</td>
+      <td>56.589147</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>SICU</td>
+      <td>22</td>
+      <td>17.054264</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>TSICU</td>
+      <td>11</td>
+      <td>8.527132</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="3.-Number-of-distinct-ICU-stays-across-care-units">
+<a class="anchor" href="#3.-Number-of-distinct-ICU-stays-across-care-units" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Number of distinct ICU stays across care units<a class="anchor-link" href="#3.-Number-of-distinct-ICU-stays-across-care-units"> </a>
+</h4>
+<p>Each patient might also have been admitted to multiple ICUs, also within one hospital admission. We would like to know the number of unique admissions to the ICUs and the corresponding distribution of those numbers across the different ICUs.</p>
+<p>Again, we combine the Patients and Icustays tables based on each subject’s unique identifier. We collect each patient’s identifier, date of birth, and hospital admission time. The latter two are used to compute age and filter on adult patients only (age &gt;= 16). We also need the unique ICU stay identifier and the corresponding ICU.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/mimic-sql3.png" alt=""></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Compose SQL query</span>
+<span class="n">query</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">SELECT i.first_careunit, i.icustay_id</span>
+<span class="s2">  FROM public.patients p</span>
+<span class="s2">  INNER JOIN public.Icustays i ON i.subject_id = p.subject_id</span>
+<span class="s2">  WHERE round((EXTRACT(EPOCH FROM (i.intime-p.dob))/60/60/24/365.242) :: NUMERIC, 4) &gt;= 16</span>
+<span class="s2">"""</span>
+<span class="c1"># Run query</span>
+<span class="n">query_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="n">con</span><span class="p">)</span>
+<span class="c1"># Filter duplicate patients and group by ICU unit</span>
+<span class="n">icu_units</span> <span class="o">=</span> <span class="n">query_output</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">([</span><span class="s1">'icustay_id'</span><span class="p">])</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'first_careunit'</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">icu_units</span> <span class="o">=</span> <span class="n">icu_units</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="c1"># Calculate percentage</span>
+<span class="n">icu_units</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'ICU Unit'</span><span class="p">,</span> <span class="s1">'Total Unique ICU Stays'</span><span class="p">]</span>
+<span class="n">sum_patients</span> <span class="o">=</span> <span class="n">icu_units</span><span class="p">[</span><span class="s1">'Total Unique ICU Stays'</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">icu_units</span><span class="p">[</span><span class="s1">'Percentage ICU Stays'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">icu_units</span><span class="p">[</span><span class="s1">'Total Unique ICU Stays'</span><span class="p">]</span> <span class="o">/</span> <span class="n">sum_patients</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Total Patients: '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sum_patients</span><span class="p">))</span>
+<span class="n">icu_units</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total Patients: 136
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ICU Unit</th>
+      <th>Total Unique ICU Stays</th>
+      <th>Percentage ICU Stays</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>CCU</td>
+      <td>19</td>
+      <td>13.970588</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>CSRU</td>
+      <td>6</td>
+      <td>4.411765</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MICU</td>
+      <td>77</td>
+      <td>56.617647</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>SICU</td>
+      <td>23</td>
+      <td>16.911765</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>TSICU</td>
+      <td>11</td>
+      <td>8.088235</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Extract-age-across-care-units">
+<a class="anchor" href="#Extract-age-across-care-units" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extract age across care units<a class="anchor-link" href="#Extract-age-across-care-units"> </a>
+</h3>
+<p>We would like to know the age (in years, with age &gt;= 16) distribution over all care units combined, as well as across the different care units. More specifically, we are interested in the median, lower quartile and upper quartile. It is better not to use the mean here, because, for privacy reasons, age &gt; 89 is set to 300 in the database.</p>
+<p>To obtain age, we need to combine the Patients and the Icustays tables. Age can be computed by subtracting the time of admission to the ICU from a patient’s date of birth. Moreover, to get the age distribution across ICUs, we can use the different care units obtained from the Icustays table.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/mimic-sql4.png" alt=""></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Compose SQL query</span>
+<span class="n">query</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">SELECT i.first_careunit, round((EXTRACT(EPOCH FROM (i.intime-p.dob))/60/60/24/365.242) :: NUMERIC, 4) as age</span>
+<span class="s2">  FROM public.patients p</span>
+<span class="s2">  INNER JOIN public.Icustays i ON i.subject_id = p.subject_id</span>
+<span class="s2">  WHERE round((EXTRACT(EPOCH FROM (i.intime-p.dob))/60/60/24/365.242) :: NUMERIC, 4) &gt;= 16</span>
+<span class="s2">"""</span>
+<span class="c1"># Run query</span>
+<span class="n">query_output</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span><span class="n">con</span><span class="p">)</span>
+<span class="n">query_output</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>first_careunit</th>
+      <th>age</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>MICU</td>
+      <td>70.6378</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>MICU</td>
+      <td>36.1923</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>MICU</td>
+      <td>87.0874</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>CCU</td>
+      <td>73.6875</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>MICU</td>
+      <td>48.9015</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Visualize distribution of age:</span>
+<span class="n">query_output</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;AxesSubplot:&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We know that ages bigger than 89 have been set to 300 for privacy protection.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary all ICU</span>
+<span class="n">query_output</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>count    136.000000
+mean      84.727227
+std       59.526746
+min       17.192000
+25%       63.836575
+50%       74.675500
+75%       83.199950
+max      300.044700
+Name: age, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary - CCU</span>
+<span class="n">icu_df</span> <span class="o">=</span> <span class="n">query_output</span><span class="p">[</span><span class="n">query_output</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'CCU'</span><span class="p">]</span>
+<span class="n">icu_df</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>count     19.000000
+mean      81.153068
+std       54.856342
+min       40.606400
+25%       59.851800
+50%       73.064700
+75%       81.184950
+max      300.002600
+Name: age, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary - CSRU</span>
+<span class="n">icu_df</span> <span class="o">=</span> <span class="n">query_output</span><span class="p">[</span><span class="n">query_output</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'CSRU'</span><span class="p">]</span>
+<span class="n">icu_df</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>count     6.000000
+mean     78.496400
+std       6.423162
+min      70.754500
+25%      73.265675
+50%      79.354650
+75%      82.011550
+max      87.381400
+Name: age, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary - MICU</span>
+<span class="n">icu_df</span> <span class="o">=</span> <span class="n">query_output</span><span class="p">[</span><span class="n">query_output</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'MICU'</span><span class="p">]</span>
+<span class="n">icu_df</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>count     77.000000
+mean      87.760839
+std       63.704415
+min       27.016700
+25%       64.788400
+50%       72.679900
+75%       83.325200
+max      300.044700
+Name: age, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary - SICU</span>
+<span class="n">icu_df</span> <span class="o">=</span> <span class="n">query_output</span><span class="p">[</span><span class="n">query_output</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'SICU'</span><span class="p">]</span>
+<span class="n">icu_df</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>count     23.000000
+mean      83.340996
+std       48.881057
+min       44.106900
+25%       63.841500
+50%       78.453500
+75%       81.537550
+max      300.002000
+Name: age, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary - TSICU</span>
+<span class="n">icu_df</span> <span class="o">=</span> <span class="n">query_output</span><span class="p">[</span><span class="n">query_output</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'TSICU'</span><span class="p">]</span>
+<span class="n">icu_df</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>count     11.000000
+mean      75.962609
+std       78.054324
+min       17.192000
+25%       39.984000
+50%       55.099500
+75%       77.582450
+max      300.003200
+Name: age, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div>
+  
+  <a class="u-url" href="/health/electronic-health-records/2022/03/14/using-mimic3-ehr-database.html" hidden></a>
+</article><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="pranath/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/pranath" target="_blank" title="pranath"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://www.linkedin.com/in/pranath-fernando" target="_blank" title="pranath-fernando"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg></a></li><li><a rel="me" href="https://twitter.com/livingdatalab" target="_blank" title="livingdatalab"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+<script type="text/javascript" src="/js/lightbox.js"></script>
+<link rel="stylesheet" href="/css/lightbox.css">
+</body>
+
+</html>
