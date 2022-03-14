@@ -5,7 +5,7 @@ comments: true
 description:  In this article we will look at MIMIC-III, which is the largest publicly Electronic Health Record (EHR) database available to benchmark machine learning algorithms.
 categories: [health, electronic-health-records]
 image: images/ehr.jpg
-title: The MIMIC-III Electronic Health Record (EHR) databaseß
+title: The MIMIC-III Electronic Health Record (EHR) database
 ---
 ## Introduction
 
