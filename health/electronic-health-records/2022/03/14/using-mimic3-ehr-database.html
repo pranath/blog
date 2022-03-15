@@ -213,6 +213,7 @@ window.onload = wrap_img;
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span>
 <span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">mc</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 <span class="kn">import</span> <span class="nn">colorsys</span>
 <span class="kn">import</span> <span class="nn">psycopg2</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
@@ -1095,8 +1096,27 @@ Name: heart_rate, dtype: float64</pre>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary all ICU</span>
-<span class="n">query_output</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Define function for descriptive stats 5 number summary for a field per icu</span>
+<span class="k">def</span> <span class="nf">icu_descriptive_stats</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">boxplot_title</span><span class="p">):</span>
+    
+    <span class="c1"># Get list of ICUs</span>
+    <span class="n">icu_list</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="c1"># Plot descriptive stats for each ICU</span>
+    <span class="k">for</span> <span class="n">icu</span> <span class="ow">in</span> <span class="n">icu_list</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Descriptive statistics for '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">icu</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' by '</span> <span class="o">+</span> <span class="n">field</span><span class="p">)</span>
+        <span class="n">icu_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span> <span class="o">==</span> <span class="n">icu</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">icu_df</span><span class="p">[</span><span class="n">field</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>   
+       
+    <span class="c1"># Plot box plot of ICU by field</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">'first_careunit'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">field</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">'ICU'</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">boxplot_title</span><span class="p">)</span>
+
+<span class="c1"># 5 number summary all ICUs for age (remove all ages of 300)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">query_output</span><span class="p">[</span><span class="n">query_output</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">]</span>
+<span class="n">icu_descriptive_stats</span><span class="p">(</span><span class="s1">'age'</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="s1">'ICU by Age'</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -1108,96 +1128,32 @@ Name: heart_rate, dtype: float64</pre>
 
 <div class="output_area">
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>count    136.000000
-mean      84.727227
-std       59.526746
-min       17.192000
-25%       63.836575
-50%       74.675500
-75%       83.199950
-max      300.044700
-Name: age, dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary - CCU</span>
-<span class="n">icu_df</span> <span class="o">=</span> <span class="n">query_output</span><span class="p">[</span><span class="n">query_output</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'CCU'</span><span class="p">]</span>
-<span class="n">icu_df</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>count     19.000000
-mean      81.153068
-std       54.856342
-min       40.606400
-25%       59.851800
-50%       73.064700
-75%       81.184950
-max      300.002600
-Name: age, dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary - CSRU</span>
-<span class="n">icu_df</span> <span class="o">=</span> <span class="n">query_output</span><span class="p">[</span><span class="n">query_output</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'CSRU'</span><span class="p">]</span>
-<span class="n">icu_df</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>count     6.000000
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> 
+Descriptive statistics for MICU by age
+count    71.000000
+mean     69.824277
+std      14.777606
+min      27.016700
+25%      64.061050
+50%      70.155800
+75%      82.498550
+max      88.036400
+Name: age, dtype: float64
+ 
+Descriptive statistics for CCU by age
+count    18.000000
+mean     68.994761
+std      14.572275
+min      40.606400
+25%      57.192850
+50%      72.843600
+75%      79.406575
+max      88.642100
+Name: age, dtype: float64
+ 
+Descriptive statistics for CSRU by age
+count     6.000000
 mean     78.496400
 std       6.423162
 min      70.754500
@@ -1205,136 +1161,39 @@ min      70.754500
 50%      79.354650
 75%      82.011550
 max      87.381400
-Name: age, dtype: float64</pre>
+Name: age, dtype: float64
+ 
+Descriptive statistics for SICU by age
+count    22.000000
+mean     73.492768
+std      12.891770
+min      44.106900
+25%      63.048450
+50%      77.671000
+75%      81.437725
+max      88.738100
+Name: age, dtype: float64
+ 
+Descriptive statistics for TSICU by age
+count    10.000000
+mean     53.558550
+std      25.190762
+min      17.192000
+25%      34.653600
+50%      54.343500
+75%      68.308100
+max      88.063500
+Name: age, dtype: float64
+</pre>
 </div>
-
 </div>
-
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary - MICU</span>
-<span class="n">icu_df</span> <span class="o">=</span> <span class="n">query_output</span><span class="p">[</span><span class="n">query_output</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'MICU'</span><span class="p">]</span>
-<span class="n">icu_df</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
 
 <div class="output_area">
 
 
 
-<div class="output_text output_subarea output_execute_result">
-<pre>count     77.000000
-mean      87.760839
-std       63.704415
-min       27.016700
-25%       64.788400
-50%       72.679900
-75%       83.325200
-max      300.044700
-Name: age, dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary - SICU</span>
-<span class="n">icu_df</span> <span class="o">=</span> <span class="n">query_output</span><span class="p">[</span><span class="n">query_output</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'SICU'</span><span class="p">]</span>
-<span class="n">icu_df</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>count     23.000000
-mean      83.340996
-std       48.881057
-min       44.106900
-25%       63.841500
-50%       78.453500
-75%       81.537550
-max      300.002000
-Name: age, dtype: float64</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 5 number summary - TSICU</span>
-<span class="n">icu_df</span> <span class="o">=</span> <span class="n">query_output</span><span class="p">[</span><span class="n">query_output</span><span class="p">[</span><span class="s1">'first_careunit'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'TSICU'</span><span class="p">]</span>
-<span class="n">icu_df</span><span class="p">[</span><span class="s1">'age'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>count     11.000000
-mean      75.962609
-std       78.054324
-min       17.192000
-25%       39.984000
-50%       55.099500
-75%       77.582450
-max      300.003200
-Name: age, dtype: float64</pre>
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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%0A">
 </div>
 
 </div>
