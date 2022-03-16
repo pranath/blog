@@ -3,7 +3,7 @@ toc: true
 layout: post
 comments: true
 description: Utilizing a synthetic Diabetes patient dataset, we will create a deep learning model trained on EHR data (Electronic Health Records) to find suitable patients for testing a new Diabetes drug.
-categories: [health, deep-learning]
+categories: [health, deep-learning, electronic-health-records]
 image: images/artificial-intelligence-medical.jpg
 title: Patient Selection for Diabetes Drug Testing
 ---
