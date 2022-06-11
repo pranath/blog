@@ -968,12 +968,7 @@ Skew of test set field1 after transformation: 0.1371
 <ul>
 <li>The c-index measures the discriminatory power of a risk score. </li>
 <li>Intuitively, a higher c-index indicates that the model's prediction is in agreement with the actual outcomes of a pair of patients.</li>
-<li>The formula for the c-index is</li>
-</ul>
-<p>
-$$ \mbox{cindex} = \frac{\mbox{concordant} + 0.5 \times \mbox{ties}}{\mbox{permissible}} $$
-</p>
-<ul>
+<li>The formula for the c-index is: cindex = (concordant + 0.5 * ties) / permissible</li>
 <li>A permissible pair is a pair of patients who have different outcomes.</li>
 <li>A concordant pair is a permissible pair in which the patient with the higher risk score also has the worse outcome.</li>
 <li>A tie is a permissible pair where the patients have the same risk score.</li>
@@ -1618,7 +1613,7 @@ Output without interaction: 	0.9965
 <a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
 </h2>
 <p>In this project, we will built a prognostic risk score model for retinopathy in diabetes patients using logistic regression.</p>
-<p>We will considered the following topics:</p>
+<p>We considered the following topics:</p>
 <ul>
 <li>Data preprocessing<ul>
 <li>Log transformations</li>
