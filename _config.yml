@@ -40,11 +40,10 @@ baseurl: ""
 # Github and twitter are optional:
 minima:
   social_links:
-    - { platform: github,  user_url: "https://github.com/jekyll/jekyll" }
-    - { platform: twitter, user_url: "https://twitter.com/jekyllrb" }
-    twitter: livingdatalab
-    github: pranath
-    linkedin: pranath-fernando
+    - { platform: rss, user_url: "/feed.xml" }
+    - { platform: github, user_url: "https://github.com/pranath/" }
+    - { platform: twitter, user_url: "https://twitter.com/livingdatalab" }
+    - { platform: linkedin, user_url: "https://www.linkedin.com/in/pranath-fernando/" }
     
 # Set this to true to get LaTeX math equation support
 use_math: true
