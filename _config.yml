@@ -40,6 +40,8 @@ baseurl: ""
 # Github and twitter are optional:
 minima:
   social_links:
+    - { platform: github,  user_url: "https://github.com/jekyll/jekyll" }
+    - { platform: twitter, user_url: "https://twitter.com/jekyllrb" }
     twitter: livingdatalab
     github: pranath
     linkedin: pranath-fernando
