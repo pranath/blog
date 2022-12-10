@@ -153,9 +153,8 @@ window.onload = wrap_img;
 <h2 id="Introduction">
 <a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
 </h2>
-<p>In this series of articles I will be re-visiting the <a href="https://course.fast.ai/">FastAI Practical Deep Learning for Coders</a> for <a href="https://livingdatalab.com/categories/#fastai-2022">this year 2022</a> which I have completed in <a href="https://livingdatalab.com/categories/#fastai">previous years</a>. This article covers lesson 4 of this years course, which I will use to create model that can associate short phrases with the correct US patent classification.</p>
-<p>While this is based on a fastai training course, in this particular project we will not actually be using the fastai library, we will be using the <a href="https://huggingface.co/docs/transformers/index">Hugging Face Transformers Library</a> which is a python library of state of the art deep learning models, including the very powerful <a href="https://www.quantamagazine.org/will-transformers-take-over-artificial-intelligence-20220310/">transformers model architecture</a> behind so many of the recent advances in AI.</p>
-<p>Fastai does also integrate <a href="https://docs.fast.ai/tutorial.transformers.html">transfomer models</a> as well.</p>
+<p>In this series of articles I will be re-visiting the <a href="https://course.fast.ai/">FastAI Practical Deep Learning for Coders</a> course for <a href="https://livingdatalab.com/categories/#fastai-2022">this year 2022</a> which I have completed in <a href="https://livingdatalab.com/categories/#fastai">previous years</a>. This article covers lesson 4 of this years course, which I will use to create model that can associate short phrases with the correct US patent classification.</p>
+<p>While this is based on a fastai training course, in this particular project we will not actually be using the fastai library, we will be using the <a href="https://huggingface.co/docs/transformers/index">Hugging Face Transformers Library</a> which is a python library of state of the art deep learning models, including the very powerful <a href="https://www.quantamagazine.org/will-transformers-take-over-artificial-intelligence-20220310/">transformers model architecture</a> behind so many of the recent advances in AI. Fastai does also integrate <a href="https://docs.fast.ai/tutorial.transformers.html">transfomer models</a> as well.</p>
 <p>First we will import the required libraries.</p>
 <h2 id="Import-Libraries">
 <a class="anchor" href="#Import-Libraries" aria-hidden="true"><span class="octicon octicon-link"></span></a>Import Libraries<a class="anchor-link" href="#Import-Libraries"> </a>
@@ -711,7 +710,7 @@ Name: input, dtype: object</pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>So we have our text data, but there is a problem. Machine learning and AI models don't actually understand text! They can only understand numbers. So we need a way to convert our text data into a numerical representation.</p>
-<p>The branch of machine learning and AI concerned with understanding language is called <em>Natural Language Processing or NLP</em>. In NLP to prepare text data for machine learning by converting it into numbers, two common steps are followed:</p>
+<p>The branch of machine learning and AI concerned with understanding language is called <em>Natural Language Processing or NLP</em>. In NLP we prepare text data for machine learning by converting it into numbers, two common steps are followed:</p>
 <ul>
 <li>
 <strong>Tokenization</strong>: Split each text up into words (or actually, as we'll see, into tokens)</li>
@@ -719,7 +718,7 @@ Name: input, dtype: object</pre>
 <strong>Numericalization</strong>: Convert each word (or token) into a number.</li>
 </ul>
 <p>The details about how this is done actually depends on the particular model we use. So first we'll need to pick a model. There are thousands of models available, but a reasonable starting point for nearly any NLP problem is to use a smaller model, then working up to a bigger model later.</p>
-<p>Why? It's true that generally in deep learning and AI, a larger model generally does better than a smaller model. However a smaller model is quicker to train and experiment with multiple times which is better when we are just trying things out, and can give an idea of some kind of baseline we can expect to improve on with a bigger model.</p>
+<p>Why? It's true that in deep learning and AI, a larger model generally does better than a smaller model. However a smaller model is quicker to train and experiment with multiple times which is better when we are just trying things out at the start and need to iterate rapidly, and can give an idea of some kind of baseline we can expect to improve on with a bigger model.</p>
 <p>We will use this small model.</p>
 
 </div>
@@ -969,7 +968,7 @@ Special tokens have been added in the vocabulary, make sure the associated word 
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>o, what are those IDs and where do they come from? The secret is that there's a list called vocab in the tokenizer which contains a unique integer for every possible token string. We can look them up like this, for instance to find the token for the word "of":</p>
+<p>So, what are those IDs and where do they come from? The secret is that there's a list called vocab in the tokenizer which contains a unique integer for every possible token string. We can look them up like this, for instance to find the token for the word "of":</p>
 
 </div>
 </div>
@@ -1271,7 +1270,7 @@ Special tokens have been added in the vocabulary, make sure the associated word 
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you see above, the validation set here is called test and not validate, so be careful!</p>
+<p>As you see above, the validation set here is called test and not validate, so we need to be careful we don't confuse ourselves with terminology!</p>
 <p>We will use the separate test set at the end to check our predictions, whereas the validation set will be used during the model training to check our progress.</p>
 <p>We'll use <strong>eval</strong> as our name for the test set, to avoid confusion with the test dataset that was created above.</p>
 
@@ -1329,7 +1328,7 @@ Special tokens have been added in the vocabulary, make sure the associated word 
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The most important hyperparameter for model training is the learning rate. fastai provides a learning rate finder to help you figure this out, but Hugging Face Transformers doesn't, so we just have to use trial and error. The idea is to find the largest value you can, but which doesn't result in training failing.</p>
+<p>The most important hyperparameter for model training is the learning rate. Fastai provides a learning rate finder to help you figure this out, but Hugging Face Transformers doesn't, so we just have to use trial and error. The idea is to find the largest value you can, but which doesn't result in training failing.</p>
 <p>We will also need to define some functions for our model metric, which is how we measure how well our model is performing. For this we will be using <em>Pearsons Correlation Coefficient</em> as a measure of similarity between the anchor and target texts.</p>
 
 </div>
