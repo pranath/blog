@@ -1042,7 +1042,7 @@ dtype: int64</pre>
 <p>The values of the independant variables themselves are represented by $x_{1}$ to $x_{n}$.</p>
 <p>Linear models generate their predictions by multiplying the values of each variable by its coefficient, then summing the values. So for our multiple linear regression model that would mean summing $b_{1}$ <em> $x_{1}$ to $b_{n}$ </em> $x_{n}$ then adding the constant term $b_{0}$ to get the value for the dependant variable y.</p>
 <p>You can read more about <a href="https://levelup.gitconnected.com/beginners-guide-to-simple-and-multiple-linear-regression-models-d2d5dbe9e704">linear regression here</a>.</p>
-<p><img src="https://github.com/pranath/blog/raw/master/images/linear_reg.png" alt="" title="Linear Regression"></p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/linear_reg.png" alt="" title="Simple &amp; Multiple Linear Regression"></p>
 <p>For our titanic dataset, we have multiple independant variables such as passenger id, name, fare etc - so we will need to use a multiple linear regression model, which will have a coefficient for each variable we have.</p>
 <p>Let's set up some coefficient's for each variable with some random initial values.</p>
 
@@ -1293,7 +1293,7 @@ dtype: int64</pre>
 <p>In essence, <strong>Gradient Descent is an algorithm that can be used to find values for the coefficients of a function that reduce a separate loss function</strong>. So as long as we can define an appropriate loss function, we can use this algorithm.</p>
 <p>What would be an appropriate loss function that we would want to minimise the value of? Well we would like our predictions ultimately to be as close to the actual values we want to predict. So here the loss would be <em>a measure of how wrong our predictions are</em>. A high loss value would mean many mistakes, and a low loss value would mean fewer mistakes. This would then be a good function for us to minimise using Gradient Descent.</p>
 <p>So in our case, a good loss function might be:</p>
-<p><em>Loss = (predictions - values we want to predict) </em> absolute value*</p>
+<p><em>Loss = predictions - values we want to predict</em></p>
 <p>So we will have a different loss value for each value and its prediction, so if we took the mean value of all of these different loss values, that would be a way to capture the overall loss for all predictions. It would also be helpful for these differences to be always positive values.</p>
 <p>Lets calculate what this loss would be on our current predictions.</p>
 
@@ -2488,10 +2488,10 @@ dtype: int64</pre>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>So what is a Neural Network? In <a href="https://en.wikipedia.org/wiki/Artificial_neural_network">simple terms</a></p>
 <blockquote>
-<p><em>Artificial neural networks (ANNs), usually simply called neural networks (NNs) or neural nets,[1] are computing systems inspired by the biological neural networks that constitute animal brains. An ANN is based on a collection of connected units or nodes called artificial neurons, which loosely model the neurons in a biological brain</em></p>
+<p><em>Artificial neural networks (ANNs), usually simply called neural networks (NNs) or neural nets are computing systems inspired by the biological neural networks that constitute animal brains. An ANN is based on a collection of connected units or nodes called artificial neurons, which loosely model the neurons in a biological brain</em></p>
 </blockquote>
-<p>One key difference between Neural Networks (NN) and Linear Regression (LR), is that while LR has model parameters/coefficients one for each input variable, NN's have many model parameters, many of which do not correspond to specific input variables which are often called <em>hidden layers</em>.</p>
-<p><img src="https://github.com/pranath/blog/raw/master/images/simple_nn.png" alt="" title="Linear Regression">
+<p><strong>One key difference between Neural Networks (NN) and Linear Regression (LR), is that while LR has model parameters/coefficients one for each input variable, NN's have many model parameters, many of which do not correspond to specific input variables which are often called 'hidden layers'</strong>.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/simple_nn.png" alt="" title="A Simple Neural Network">
 You can read more about <a href="https://www.investopedia.com/terms/n/neuralnetwork.asp#:~:text=A%20neural%20network%20is%20a,organic%20or%20artificial%20in%20nature.">Neural Networks here</a>.</p>
 <p>To create a Neural Network we'll need to create coefficients for each of our layers. Our first set of coefficients will take our n_coeff inputs, and create n_hidden outputs for our hidden layers. We can choose whatever n_hidden we like -- a higher number gives our network more flexibility, but makes it slower and harder to train. So we need a matrix of size n_coeff by n_hidden. We'll divide these coefficients by n_hidden so that when we sum them up in the next layer we'll end up with similar magnitude numbers to what we started with.</p>
 <p>Then our second layer will need to take the n_hidden inputs and create a single output, so that means we need a n_hidden by 1 matrix there. The second layer will also need a constant term added.</p>
@@ -2692,7 +2692,7 @@ You can read more about <a href="https://www.investopedia.com/terms/n/neuralnetw
 <h2 id="Creating-a-Deep-Learning-Model">
 <a class="anchor" href="#Creating-a-Deep-Learning-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating a Deep Learning Model<a class="anchor-link" href="#Creating-a-Deep-Learning-Model"> </a>
 </h2>
-<p>The neural net in the previous section only uses one hidden layer, so it doesn't count as "deep" learning. But we can use the exact same technique to make our neural net deep, by adding more matrix multiplications.</p>
+<p>The neural net in the previous section only uses one hidden layer, so it doesn't count as "deep" learning. But we can use the exact same technique to make our neural net deep, by adding more 'hidden layers'.</p>
 <p>First, we'll need to create additional coefficients for each layer:</p>
 
 </div>
