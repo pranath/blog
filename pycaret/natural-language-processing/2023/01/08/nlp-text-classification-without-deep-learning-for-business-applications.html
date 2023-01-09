@@ -514,8 +514,8 @@ Wall time: 1min 15s
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>So we now have our topic model. Notice we have set 'num_topics=4' - this means the model tries to discover the 4 topics that seem most relevant to the reviews. We could set this to a different number if we wanted to.</p>
-<p>Now we have discovered our 4 topics for the reviews and trained a model to recognise them, we can use this model to predict each of these 4 topics for all our reviews using the <em>assign_model()</em> function.</p>
+<p>So we now have our topic model. Notice we have set 'num_topics=4' - this means the model tries to discover the 4 topics that seem most relevant to the loan applications. We could set this to a different number if we wanted to.</p>
+<p>Now we have discovered our 4 topics for the loan applications and trained a model to recognise them, we can use this model to predict each of these 4 topics for all our applications using the <em>assign_model()</em> function.</p>
 
 </div>
 </div>
@@ -672,7 +672,7 @@ Wall time: 1min 15s
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We can see the topic model has given us several new things. Firstly, for each review it has given us a measure of how much of each of the 4 topics that review scores for - which would be a value between 0 and 1. Secondly, for each review <em>Dominant_Topic</em> tells us which is the most important topic. Finally, <em>Perc_Dominant_Topic</em> tells hows how highly that review scores for its dominant topic.</p>
+<p>We can see the topic model has given us several new things. Firstly, for each loan application it has given us a measure of how much of each of the 4 topics that loan application scores for - which would be a value between 0 and 1. Secondly, for each loan application <em>Dominant_Topic</em> tells us which is the most important topic. Finally, <em>Perc_Dominant_Topic</em> tells hows how highly that loan application scores for its dominant topic.</p>
 <p>Lets have a look at how many loan applications are within each of the 4 topics, Pycaret makes this very easy using the <em>plot_model()</em> function.</p>
 <p><strong>plot_model(lda_topic_model, plot = 'topic_distribution')</strong></p>
 
