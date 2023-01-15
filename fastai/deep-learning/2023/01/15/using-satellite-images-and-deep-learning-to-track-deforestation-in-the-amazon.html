@@ -128,7 +128,7 @@ window.onload = wrap_img;
   <div class="post-content e-content" itemprop="articleBody">
     <ul class="section-nav">
 <li class="toc-entry toc-h2"><a href="#Introduction">Introduction </a></li>
-<li class="toc-entry toc-h2"><a href="#Using-Fastai-to-prepare-data-for-the-Amazon-task">Using Fastai to prepare data for the Amazon task </a></li>
+<li class="toc-entry toc-h2"><a href="#Using-Fastai-to-prepare-data-for-the-Amazon-Image-classification-task">Using Fastai to prepare data for the Amazon Image classification task </a></li>
 <li class="toc-entry toc-h2"><a href="#Loading-and-examining-the-data">Loading and examining the data </a></li>
 <li class="toc-entry toc-h2"><a href="#The-Fastai-layered-API">The Fastai layered API </a>
 <ul>
@@ -157,14 +157,18 @@ window.onload = wrap_img;
 <a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
 </h2>
 <p>In this project we will be using a deep learning model to help classify satellite images of the amazon rain forest. <strong>Here the main objective is not actually to get the best results for this task, rather to use this dataset to illustrate the use of the Fastai deep learning library</strong> - in particular to demonstrate the uses of the high-level api as well as the mid-level api and show how this can be used to configure different types of datasets for different types of problems.</p>
-<h2 id="Using-Fastai-to-prepare-data-for-the-Amazon-task">
-<a class="anchor" href="#Using-Fastai-to-prepare-data-for-the-Amazon-task" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using Fastai to prepare data for the Amazon task<a class="anchor-link" href="#Using-Fastai-to-prepare-data-for-the-Amazon-task"> </a>
+<h2 id="Using-Fastai-to-prepare-data-for-the-Amazon-Image-classification-task">
+<a class="anchor" href="#Using-Fastai-to-prepare-data-for-the-Amazon-Image-classification-task" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using Fastai to prepare data for the Amazon Image classification task<a class="anchor-link" href="#Using-Fastai-to-prepare-data-for-the-Amazon-Image-classification-task"> </a>
 </h2>
 <p>The amazon dataset comes from the <a href="https://www.kaggle.com/competitions/planet-understanding-the-amazon-from-space">Understanding the Amazon from Space</a> project, which aims:</p>
 <blockquote>
 <p>'...to label satellite image chips with atmospheric conditions and various classes of land cover/land use. Resulting algorithms will help the global community better understand where, how, and why deforestation happens all over the world - and ultimately how to respond.'</p>
 </blockquote>
-<p>Key aspects of this task include:- Our data consists of images as well as multiple labels for each image- Our task is <em>Multi-label Classification</em> i.e. to be able to predict one or more labels for a given image</p>
+<p>Key aspects of this task include.</p>
+<ul>
+<li>Our data consists of images as well as multiple labels for each image</li>
+<li>Our task is <em>Multi-label Classification</em> i.e. to be able to predict one or more labels for a given image</li>
+</ul>
 <p>While the main dataset has over 40,000 images - we will be using a small subset of this of just 200 images.</p>
 <p>In an earlier project I looked at a different dataset of satellite images, in this case for an <a href="https://livingdatalab.com/opinion/2021/05/14/ai-satellite-images.html">image segmentation task rather than classification</a>.</p>
 <h2 id="Loading-and-examining-the-data">
@@ -1704,7 +1708,7 @@ window.onload = wrap_img;
 <li>do we want to apply a function to a given sample? Yes, we need to resize everything to a given size.</li>
 <li>do we want to apply a function to a batch after it’s created? Yes, we want data augmentation.</li>
 </ul>
-<p>So while our model input(x -images) and outputs(y - labels) are in the dataframe, we need to do need to do a little processing on these dataframe columns before being able to use them, for example the filenames need filepaths added, and the labels need splitting.</p>
+<p>So while our model input (x -images) and outputs (y - labels) are in the dataframe, we need to do need to do a little processing on these dataframe columns before being able to use them, for example the filenames need filepaths added, and the labels need splitting.</p>
 <p>We can create a datablock this way to address these needs.</p>
 
 </div>
@@ -1863,7 +1867,7 @@ window.onload = wrap_img;
 <h3 id="Using-the-Mid-Level-API---Version-4">
 <a class="anchor" href="#Using-the-Mid-Level-API---Version-4" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using the Mid Level API - Version 4<a class="anchor-link" href="#Using-the-Mid-Level-API---Version-4"> </a>
 </h3>
-<p>Both of these previous methods would involve iterating over all the rows of the dataframe. For large datasets &amp; dataframes, this could prove very costly in terms of time - not the idea way for Fastai !</p>
+<p>Both of these previous methods would involve iterating over all the rows of the dataframe. For large datasets &amp; dataframes, this could prove very costly in terms of time - not the ideal way for Fastai !</p>
 <p>A better and faster way would be to use the <em>from_columns()</em> Datablock method. This uses a user-defined function passed in the <em>get_items</em> parameter to convert the columns into numpy arrays and work with these which would be quicker.</p>
 
 </div>
@@ -1916,7 +1920,7 @@ window.onload = wrap_img;
 <h3 id="Training-our-Model-More">
 <a class="anchor" href="#Training-our-Model-More" aria-hidden="true"><span class="octicon octicon-link"></span></a>Training our Model More<a class="anchor-link" href="#Training-our-Model-More"> </a>
 </h3>
-<p>Let's now traing our model for a few more epochs and observe the progress.</p>
+<p>Let's now train our model for a few more epochs and observe the progress.</p>
 
 </div>
 </div>
