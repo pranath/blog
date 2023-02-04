@@ -13,11 +13,11 @@
 <link rel="canonical" href="https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/03/loading-transforming-clothes-reviews-text-aws.html" />
 <meta property="og:url" content="https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/03/loading-transforming-clothes-reviews-text-aws.html" />
 <meta property="og:site_name" content="livingdatalab" />
-<meta property="og:image" content="https://www.livingdatalab.com/images/aws1.png" />
+<meta property="og:image" content="https://www.livingdatalab.com/images/aws.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2023-02-03T00:00:00-06:00" />
 <script type="application/ld+json">
-{"url":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/03/loading-transforming-clothes-reviews-text-aws.html","@type":"BlogPosting","headline":"Loading &amp; Transforming Clothing Reviews Text Data with AWS","dateModified":"2023-02-03T00:00:00-06:00","datePublished":"2023-02-03T00:00:00-06:00","image":"https://www.livingdatalab.com/images/aws1.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/03/loading-transforming-clothes-reviews-text-aws.html"},"description":"In this project we will explore text reviews for clothing products using tools from the cloud data science service AWS Sagemaker to load and visualise the data and to gain key insights from it.","@context":"https://schema.org"}</script>
+{"url":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/03/loading-transforming-clothes-reviews-text-aws.html","@type":"BlogPosting","headline":"Loading &amp; Transforming Clothing Reviews Text Data with AWS","dateModified":"2023-02-03T00:00:00-06:00","datePublished":"2023-02-03T00:00:00-06:00","image":"https://www.livingdatalab.com/images/aws.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/03/loading-transforming-clothes-reviews-text-aws.html"},"description":"In this project we will explore text reviews for clothing products using tools from the cloud data science service AWS Sagemaker to load and visualise the data and to gain key insights from it.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://www.livingdatalab.com/feed.xml" title="livingdatalab" /><!-- the google_analytics_id gets auto inserted from the config file -->
 
@@ -153,7 +153,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h3"><a href="#Create-default-S3-bucket-for-Amazon-Athena">Create default S3 bucket for Amazon Athena </a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h2"><a href="#Visualize-data">Visualize data </a>
+<li class="toc-entry toc-h2"><a href="#Visualising-the-Data-and-Answering-Questions">Visualising the Data and Answering Questions </a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#Preparation-for-data-visualization">Preparation for data visualization </a></li>
 <li class="toc-entry toc-h3"><a href="#Plotting-key-stats-using-bar-charts">Plotting key stats using bar charts </a></li>
@@ -212,7 +212,7 @@ window.onload = wrap_img;
 <a class="anchor" href="#Using-AWS-for-Cloud-Data-Science" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using AWS for Cloud Data Science<a class="anchor-link" href="#Using-AWS-for-Cloud-Data-Science"> </a>
 </h3>
 <p>AWS offers a range of different services that can help at different stages of the machine learning development cycle.</p>
-<p><img src="https://github.com/pranath/blog/raw/master/images/aws_ds_workflow.png" alt="" title="Why use the cloud for Data Science"></p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/aws_ds_workflow.png" alt="" title="The AWS Data Science Workflow"></p>
 <p>In this article we will be demonstrating how we can use AWS for the <strong>Ingesting and Analysing stage</strong>, so we will be using the following services:</p>
 <ul>
 <li>Amazon S3: A simple storage service</li>
@@ -226,6 +226,7 @@ window.onload = wrap_img;
 <p>The dataset we will use is the <a href="https://www.kaggle.com/nicapotato/womens-ecommerce-clothing-reviews">Women's Clothing Reviews</a> a public dataset available on kaggle.</p>
 <p>It is shared in a public Amazon S3 bucket, and is available as a comma-separated value (CSV) text format:</p>
 <p><code>s3://dlai-practical-data-science/data/raw/womens_clothing_ecommerce_reviews.csv</code></p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/aws_s3.png" alt="" title="Amazon S3"></p>
 
 </div>
 </div>
@@ -1007,6 +1008,7 @@ Account ID: &lt;bound method Session.account_id of &lt;sagemaker.session.Session
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Import AWS Data Wrangler</strong></p>
 <p><a href="https://github.com/awslabs/aws-data-wrangler">AWS Data Wrangler</a> is an AWS Professional Service open source python initiative part of Amazon Sagemaker - that extends the power of Pandas library to AWS connecting dataframes and AWS data related services (Amazon Redshift, AWS Glue, Amazon Athena, Amazon EMR, Amazon QuickSight, etc).</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/aws_data_wrangler.png" alt="" title="AWS Data Wrangler"></p>
 <p>Built on top of other open-source projects like Pandas, Apache Arrow, Boto3, SQLAlchemy, Psycopg2 and PyMySQL, it offers abstracted functions to execute usual ETL tasks like load/unload data from data lakes, data warehouses and databases.</p>
 
 </div>
@@ -1036,6 +1038,7 @@ Account ID: &lt;bound method Session.account_id of &lt;sagemaker.session.Session
 <a class="anchor" href="#Create-AWS-Glue-Catalog-database" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create AWS Glue Catalog database<a class="anchor-link" href="#Create-AWS-Glue-Catalog-database"> </a>
 </h3>
 <p>The data catalog features of <strong>AWS Glue</strong> and the inbuilt integration to Amazon S3 simplify the process of identifying data and deriving the schema definition out of the discovered data. Using AWS Glue crawlers within our data catalog, we can traverse the data stored in Amazon S3 and build out the metadata tables that are defined in our data catalog.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/aws_glue.png" alt="" title="AWS Glue"></p>
 <p>Here we will use the <code>wr.catalog.create_database</code> function to create a database with the name <code>dsoaws_deep_learning</code> ("dsoaws" stands for "Data Science on AWS").</p>
 
 </div>
@@ -1229,7 +1232,7 @@ Account ID: &lt;bound method Session.account_id of &lt;sagemaker.session.Session
 <h3 id="Create-default-S3-bucket-for-Amazon-Athena">
 <a class="anchor" href="#Create-default-S3-bucket-for-Amazon-Athena" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create default S3 bucket for Amazon Athena<a class="anchor-link" href="#Create-default-S3-bucket-for-Amazon-Athena"> </a>
 </h3>
-<p>Amazon Athena requires this S3 bucket to store temporary query results and improve performance of subsequent queries.</p>
+<p>We can use Amazon Athena to query our results. Amazon Athena requires this S3 bucket to store temporary query results and improve performance of subsequent queries.</p>
 <p>The contents of this bucket are mostly binary and human-unreadable.</p>
 
 </div>
@@ -1271,8 +1274,8 @@ Account ID: &lt;bound method Session.account_id of &lt;sagemaker.session.Session
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Visualize-data">
-<a class="anchor" href="#Visualize-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualize data<a class="anchor-link" href="#Visualize-data"> </a>
+<h2 id="Visualising-the-Data-and-Answering-Questions">
+<a class="anchor" href="#Visualising-the-Data-and-Answering-Questions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Visualising the Data and Answering Questions<a class="anchor-link" href="#Visualising-the-Data-and-Answering-Questions"> </a>
 </h2>
 <p>Let's review the columns we have selected from our reviews dataset.</p>
 <ul>
@@ -1407,7 +1410,10 @@ Account ID: &lt;bound method Session.account_id of &lt;sagemaker.session.Session
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Amazon Athena</strong> lets you query data in Amazon S3 using a standard SQL interface. It reflects the databases and tables in the AWS Glue Catalog. You can create interactive queries and perform any data manipulations required for further downstream processing.</p>
+<p><strong>Amazon Athena</strong> lets you query data in Amazon S3 using a standard SQL interface. It reflects the databases and tables in the AWS Glue Catalog.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/aws_athena2.png" alt="" title="AWS Athena - Overview"></p>
+<p>You can create interactive queries and perform any data manipulations required for further downstream processing.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/aws_athena1.png" alt="" title="AWS Athena - Overview"></p>
 
 </div>
 </div>
