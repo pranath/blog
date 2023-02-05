@@ -8,8 +8,8 @@
 <meta name="generator" content="Jekyll v4.1.1" />
 <meta property="og:title" content="Detect data bias with Amazon SageMaker Clarify" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Bias can be present in data before any model training occurs. Inspecting a dataset for bias can help detect collection gaps, inform your feature engineering, and understand biases the dataset may reflect. In this article we will analyze bias on a dataset, generate and analyze bias reports, and prepare the dataset for the model training." />
-<meta property="og:description" content="Bias can be present in data before any model training occurs. Inspecting a dataset for bias can help detect collection gaps, inform your feature engineering, and understand biases the dataset may reflect. In this article we will analyze bias on a dataset, generate and analyze bias reports, and prepare the dataset for the model training." />
+<meta name="description" content="In Data Science and machine learning, bias can be present in data before any model training occurs. In this article we will analyze bias on a dataset, generate and analyze bias reports, and prepare the dataset for the model training." />
+<meta property="og:description" content="In Data Science and machine learning, bias can be present in data before any model training occurs. In this article we will analyze bias on a dataset, generate and analyze bias reports, and prepare the dataset for the model training." />
 <link rel="canonical" href="https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/04/detecting-bias-with-aws-sagemaker-clarify.html" />
 <meta property="og:url" content="https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/04/detecting-bias-with-aws-sagemaker-clarify.html" />
 <meta property="og:site_name" content="livingdatalab" />
@@ -17,7 +17,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2023-02-04T00:00:00-06:00" />
 <script type="application/ld+json">
-{"url":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/04/detecting-bias-with-aws-sagemaker-clarify.html","@type":"BlogPosting","headline":"Detect data bias with Amazon SageMaker Clarify","dateModified":"2023-02-04T00:00:00-06:00","datePublished":"2023-02-04T00:00:00-06:00","image":"https://www.livingdatalab.com/images/aws2.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/04/detecting-bias-with-aws-sagemaker-clarify.html"},"description":"Bias can be present in data before any model training occurs. Inspecting a dataset for bias can help detect collection gaps, inform your feature engineering, and understand biases the dataset may reflect. In this article we will analyze bias on a dataset, generate and analyze bias reports, and prepare the dataset for the model training.","@context":"https://schema.org"}</script>
+{"url":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/04/detecting-bias-with-aws-sagemaker-clarify.html","@type":"BlogPosting","headline":"Detect data bias with Amazon SageMaker Clarify","dateModified":"2023-02-04T00:00:00-06:00","datePublished":"2023-02-04T00:00:00-06:00","image":"https://www.livingdatalab.com/images/aws2.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/04/detecting-bias-with-aws-sagemaker-clarify.html"},"description":"In Data Science and machine learning, bias can be present in data before any model training occurs. In this article we will analyze bias on a dataset, generate and analyze bias reports, and prepare the dataset for the model training.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://www.livingdatalab.com/feed.xml" title="livingdatalab" /><!-- the google_analytics_id gets auto inserted from the config file -->
 
@@ -94,7 +94,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Detect data bias with Amazon SageMaker Clarify</h1><p class="page-description">Bias can be present in data before any model training occurs. Inspecting a dataset for bias can help detect collection gaps, inform your feature engineering, and understand biases the dataset may reflect. In this article we will analyze bias on a dataset, generate and analyze bias reports, and prepare the dataset for the model training.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-02-04T00:00:00-06:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">Detect data bias with Amazon SageMaker Clarify</h1><p class="page-description">In Data Science and machine learning, bias can be present in data before any model training occurs. In this article we will analyze bias on a dataset, generate and analyze bias reports, and prepare the dataset for the model training.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-02-04T00:00:00-06:00" itemprop="datePublished">
         Feb 4, 2023
       </time>
        • <span class="read-time" title="Estimated read time">
@@ -149,7 +149,7 @@ window.onload = wrap_img;
 </ul>
 </li>
 <li class="toc-entry toc-h2"><a href="#Balance-the-dataset-by-product_category-and-sentiment">Balance the dataset by product_category and sentiment </a></li>
-<li class="toc-entry toc-h2"><a href="#Analyze-bias-on-balanced-dataset-with-Amazon-SageMaker-Clarify">Analyze bias on balanced dataset with Amazon SageMaker Clarify </a>
+<li class="toc-entry toc-h2"><a href="#Analyze-bias-on-balanced-dataset-with-AWS-SageMaker-Clarify">Analyze bias on balanced dataset with AWS SageMaker Clarify </a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#Configure-a-DataConfig">Configure a DataConfig </a></li>
 <li class="toc-entry toc-h3"><a href="#Configure-BiasConfig">Configure BiasConfig </a></li>
@@ -158,6 +158,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h3"><a href="#Analyze-balanced-bias-report">Analyze balanced bias report </a></li>
 </ul>
 </li>
+<li class="toc-entry toc-h2"><a href="#Acknowledgements">Acknowledgements </a></li>
 </ul><!--
 #################################################
 ### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
@@ -173,7 +174,7 @@ window.onload = wrap_img;
 <h2 id="Introduction">
 <a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
 </h2>
-<p>Bias can be present in data before any model training occurs. Inspecting a dataset for bias can help detect collection gaps, inform your feature engineering, and understand biases the dataset may reflect. In this article we will analyze bias on a dataset, generate and analyze bias reports, and prepare the dataset for the model training.</p>
+<p>In Data Science and machine learning, bias can be present in data before any model training occurs. Inspecting a dataset for bias can help detect collection gaps, inform your feature engineering, and understand biases the dataset may reflect. In this article we will analyze bias on a dataset, generate and analyze bias reports, and prepare the dataset for the model training.</p>
 
 </div>
 </div>
@@ -1108,8 +1109,8 @@ download: s3://sagemaker-us-east-1-763519884484/bias/generated_bias_report/unbal
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Analyze-bias-on-balanced-dataset-with-Amazon-SageMaker-Clarify">
-<a class="anchor" href="#Analyze-bias-on-balanced-dataset-with-Amazon-SageMaker-Clarify" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analyze bias on balanced dataset with Amazon SageMaker Clarify<a class="anchor-link" href="#Analyze-bias-on-balanced-dataset-with-Amazon-SageMaker-Clarify"> </a>
+<h2 id="Analyze-bias-on-balanced-dataset-with-AWS-SageMaker-Clarify">
+<a class="anchor" href="#Analyze-bias-on-balanced-dataset-with-AWS-SageMaker-Clarify" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analyze bias on balanced dataset with AWS SageMaker Clarify<a class="anchor-link" href="#Analyze-bias-on-balanced-dataset-with-AWS-SageMaker-Clarify"> </a>
 </h2>
 <p>Let's now analyze bias in <code>sentiment</code> with respect to the <code>product_category</code> facet on the balanced dataset.</p>
 
@@ -1455,6 +1456,10 @@ Wall time: 6min 20s
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In this run, we analyzed bias for <code>sentiment</code> relative to the <code>product_category</code> for the balanced data.  Note that the Class Imbalance (CI) metric is equal across all product categories for the target label, <code>sentiment</code>. And Difference in Positive Proportions in Labels (DPL) metric values are zero.</p>
+<h2 id="Acknowledgements">
+<a class="anchor" href="#Acknowledgements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acknowledgements<a class="anchor-link" href="#Acknowledgements"> </a>
+</h2>
+<p>I'd like to express my thanks to the great <a href="https://www.deeplearning.ai/courses/practical-data-science-specialization/">Deep Learning AI Practical Data Science on AWS Specialisation Course</a> which i completed, and acknowledge the use of some images and other materials from the training course in this article.</p>
 
 </div>
 </div>
