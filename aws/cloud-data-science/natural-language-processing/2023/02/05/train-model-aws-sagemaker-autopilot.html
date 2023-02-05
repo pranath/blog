@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Train a model quickly with Amazon SageMaker Autopilot | livingdatalab</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Train a model quickly with Amazon SageMaker Autopilot" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="We will use Amazon Sagemaker Autopilot to automatically train a natural language processing (NLP) model. The model will analyze customer feedback and classify the messages into positive (1), neutral (0) and negative (-1) sentiment." />
+<meta property="og:description" content="We will use Amazon Sagemaker Autopilot to automatically train a natural language processing (NLP) model. The model will analyze customer feedback and classify the messages into positive (1), neutral (0) and negative (-1) sentiment." />
+<link rel="canonical" href="https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/05/train-model-aws-sagemaker-autopilot.html" />
+<meta property="og:url" content="https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/05/train-model-aws-sagemaker-autopilot.html" />
+<meta property="og:site_name" content="livingdatalab" />
+<meta property="og:image" content="https://www.livingdatalab.com/images/aws3.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-02-05T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/05/train-model-aws-sagemaker-autopilot.html","@type":"BlogPosting","headline":"Train a model quickly with Amazon SageMaker Autopilot","dateModified":"2023-02-05T00:00:00-06:00","datePublished":"2023-02-05T00:00:00-06:00","image":"https://www.livingdatalab.com/images/aws3.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/05/train-model-aws-sagemaker-autopilot.html"},"description":"We will use Amazon Sagemaker Autopilot to automatically train a natural language processing (NLP) model. The model will analyze customer feedback and classify the messages into positive (1), neutral (0) and negative (-1) sentiment.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://www.livingdatalab.com/feed.xml" title="livingdatalab" /><!-- the google_analytics_id gets auto inserted from the config file -->
+
+
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create','UA-91568149-1','auto');ga('require','displayfeatures');ga('send','pageview');</script>
+
+<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">livingdatalab</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About Livingdatalab</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Train a model quickly with Amazon SageMaker Autopilot</h1><p class="page-description">We will use Amazon Sagemaker Autopilot to automatically train a natural language processing (NLP) model. The model will analyze customer feedback and classify the messages into positive (1), neutral (0) and negative (-1) sentiment.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-02-05T00:00:00-06:00" itemprop="datePublished">
+        Feb 5, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      27 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#aws">aws</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#cloud-data-science">cloud-data-science</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#natural-language-processing">natural-language-processing</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-02-05-train-model-aws-sagemaker-autopilot.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>In an <a href="https://livingdatalab.com/aws/cloud-data-science/natural-language-processing/2023/02/03/loading-transforming-clothes-reviews-text-aws.html">earlier article we introduced AWS cloud services for data science</a>, and how it can help with different stages of the data science &amp; machine learning workflow.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/aws_ds_workflow.png" alt="" title="The AWS Data Science Workflow" /></p>
+<p>In this article, we will use <strong>Amazon Sagemaker Autopilot</strong> to train a natural language processing (NLP) model. The model will analyze customer feedback and classify the messages into positive (1), neutral (0) and negative (-1) sentiment.</p>
+<p>Amazon SageMaker Autopilot automatically trains and tunes the best machine learning models for classification or regression, based on your data while allowing to maintain full control and visibility.</p>
+<p>SageMaker Autopilot is an example of <strong>AutoML</strong>, much like <a href="https://livingdatalab.com/categories/#pycaret">Pycaret</a> which I have written about previously. In comparison, not only is Autopilot even more automated than Pycaret, it is also designed to work at large scale as is possible with <a href="https://livingdatalab.com/categories/#cloud-data-science">cloud data science solutions</a>.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/aws_automl.png" alt="" title="Amazon Sagemaker Autopilot - Solutions" /></p>
+<p>SageMaker Autopilot will inspect the raw dataset, apply feature processors, pick the best set of algorithms, train and tune multiple models, and then rank the models based on performance - all with just a few clicks.  Autopilot transparently generates a set of Python scripts and notebooks for a complete end-to-end pipeline including data analysis, candidate generation, feature engineering, and model training/tuning.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/aws_automl2.png" alt="" title="Amazon Sagemaker Autopilot - Details" /></p>
+<p>SageMaker Autopilot job consists of the following high-level steps:</p>
+<ul>
+<li><em>Data analysis</em> where the data is summarized and analyzed to determine which feature engineering techniques, hyper-parameters, and models to explore.</li>
+<li><em>Feature engineering</em> where the data is scrubbed, balanced, combined, and split into train and validation.</li>
+<li><em>Model training and tuning</em> where the top performing features, hyper-parameters, and models are selected and trained.</li>
+</ul>
+<p>These re-usable scripts and notebooks give us full visibility into how the model candidates were created.  Since Autopilot integrates natively with SageMaker Studio, we can visually explore the different models generated by SageMaker Autopilot.</p>
+<p><img src="https://github.com/pranath/blog/raw/master/images/aws_automl3.png" alt="" title="Amazon Sagemaker Autopilot - Overview" /></p>
+<p>SageMaker Autopilot can be used by people without machine learning experience to automatically train a model from a dataset.  Additionally, experienced developers can use Autopilot to train a baseline model from which they can iterate and manually improve.</p>
+<p>Autopilot is available through the SageMaker Studio UI and AWS Python SDK.  In this project, we will use the AWS Python SDK to train a series of text-classification models and deploy the model with the highest accuracy.</p>
+<p>For more details on Autopilot, please refer to this <a href="https://www.amazon.science/publications/amazon-sagemaker-autopilot-a-white-box-automl-solution-at-scale"><strong>Amazon Science Publication</strong></a>.</p>
+<h2 id="Use-case:-Analyze-Customer-Sentiment">Use case: Analyze Customer Sentiment<a class="anchor-link" href="#Use-case:-Analyze-Customer-Sentiment"> </a></h2><p>Customer feedback appears across many channels including social media and partner websites.  As a company, you want to capture this valuable product feedback to spot negative trends and improve the situation, if needed. Here we will train a model to classify the feedback messages into positive (1), neutral (0) and negative (-1) sentiment.</p>
+<p>First, let's install and import required modules.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">boto3</span>
+<span class="kn">import</span> <span class="nn">sagemaker</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">botocore</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">botocore</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">Config</span><span class="p">(</span><span class="n">user_agent_extra</span><span class="o">=</span><span class="s1">&#39;dlai-pds/c1/w3&#39;</span><span class="p">)</span>
+
+<span class="c1"># low-level service client of the boto3 session</span>
+<span class="n">sm</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="n">service_name</span><span class="o">=</span><span class="s1">&#39;sagemaker&#39;</span><span class="p">,</span> 
+                  <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+
+<span class="n">sm_runtime</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;sagemaker-runtime&#39;</span><span class="p">,</span>
+                          <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+
+<span class="n">sess</span> <span class="o">=</span> <span class="n">sagemaker</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">sagemaker_client</span><span class="o">=</span><span class="n">sm</span><span class="p">,</span>
+                         <span class="n">sagemaker_runtime_client</span><span class="o">=</span><span class="n">sm_runtime</span><span class="p">)</span>
+
+<span class="n">bucket</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">default_bucket</span><span class="p">()</span>
+<span class="n">role</span> <span class="o">=</span> <span class="n">sagemaker</span><span class="o">.</span><span class="n">get_execution_role</span><span class="p">()</span>
+<span class="n">region</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">boto_region_name</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="o">%</span><span class="k">config</span> InlineBackend.figure_format=&#39;retina&#39;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Review-transformed-dataset">Review transformed dataset<a class="anchor-link" href="#Review-transformed-dataset"> </a></h2><p>Let's transform the dataset into a format that Autopilot recognizes.  Specifically, a comma-separated file of <code>label,features</code> as shown here:</p>
+
+<pre><code>sentiment,review_body
+-1,"this is bad"
+0,"this is ok"
+1,"this is great"
+...</code></pre>
+<p>Sentiment is one of three classes: negative (-1), neutral (0), or positive (1).  Autopilot requires that the target variable, <code>sentiment</code> is first and the set of features, just <code>review_body</code> in this case, come next.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>aws s3 cp <span class="s1">&#39;s3://dlai-practical-data-science/data/balanced/womens_clothing_ecommerce_reviews_balanced.csv&#39;</span> ./
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>download: s3://dlai-practical-data-science/data/balanced/womens_clothing_ecommerce_reviews_balanced.csv to ./womens_clothing_ecommerce_reviews_balanced.csv
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./womens_clothing_ecommerce_reviews_balanced.csv&#39;</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>sentiment</th>
+      <th>review_body</th>
+      <th>product_category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-1</td>
+      <td>This suit did nothing for me. the top has zero...</td>
+      <td>Swim</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-1</td>
+      <td>Like other reviewers  i saw this dress on the ...</td>
+      <td>Dresses</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-1</td>
+      <td>I wish i had read the reviews before purchasin...</td>
+      <td>Knits</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-1</td>
+      <td>I ordered these pants in my usual size (xl) an...</td>
+      <td>Legwear</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-1</td>
+      <td>I noticed this top on one of the sales associa...</td>
+      <td>Knits</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path_autopilot</span> <span class="o">=</span> <span class="s1">&#39;./womens_clothing_ecommerce_reviews_balanced_for_autopilot.csv&#39;</span>
+
+<span class="n">df</span><span class="p">[[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">,</span> <span class="s1">&#39;review_body&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path_autopilot</span><span class="p">,</span> 
+                                        <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> 
+                                        <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Configure-the-Autopilot-job">Configure the Autopilot job<a class="anchor-link" href="#Configure-the-Autopilot-job"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Upload-data-to-S3-bucket">Upload data to S3 bucket<a class="anchor-link" href="#Upload-data-to-S3-bucket"> </a></h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">autopilot_train_s3_uri</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">upload_data</span><span class="p">(</span><span class="n">bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">key_prefix</span><span class="o">=</span><span class="s1">&#39;autopilot/data&#39;</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path_autopilot</span><span class="p">)</span>
+<span class="n">autopilot_train_s3_uri</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;s3://sagemaker-us-east-1-491783890788/autopilot/data/womens_clothing_ecommerce_reviews_balanced_for_autopilot.csv&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Check the existence of the dataset in this S3 bucket folder:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>aws s3 ls <span class="nv">$autopilot_train_s3_uri</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2023-02-05 14:47:43    2253749 womens_clothing_ecommerce_reviews_balanced_for_autopilot.csv
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="S3-output-for-generated-assets">S3 output for generated assets<a class="anchor-link" href="#S3-output-for-generated-assets"> </a></h3><p>Set the S3 output path for the Autopilot outputs. This includes Jupyter notebooks (analysis), Python scripts (feature engineering), and trained models.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_output_s3_uri</span> <span class="o">=</span> <span class="s1">&#39;s3://</span><span class="si">{}</span><span class="s1">/autopilot&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bucket</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">model_output_s3_uri</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>s3://sagemaker-us-east-1-491783890788/autopilot
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Configure-the-Autopilot-job">Configure the Autopilot job<a class="anchor-link" href="#Configure-the-Autopilot-job"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's now create the Autopilot job name.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+
+<span class="n">auto_ml_job_name</span> <span class="o">=</span> <span class="s1">&#39;automl-dm-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When configuring our Autopilot job, we need to specify the maximum number of candidates, <code>max_candidates</code>, to explore as well as the input/output S3 locations and target column to predict. In this case, we want to predict <code>sentiment</code> from the review text.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will create an instance of the <code>sagemaker.automl.automl.AutoML</code> estimator class passing the required configuration parameters. Target attribute for predictions here is <code>sentiment</code>.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">max_candidates</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="n">automl</span> <span class="o">=</span> <span class="n">sagemaker</span><span class="o">.</span><span class="n">automl</span><span class="o">.</span><span class="n">automl</span><span class="o">.</span><span class="n">AutoML</span><span class="p">(</span>
+    <span class="n">target_attribute_name</span><span class="o">=</span><span class="s1">&#39;sentiment&#39;</span><span class="p">,</span> 
+    <span class="n">base_job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">,</span> 
+    <span class="n">output_path</span><span class="o">=</span><span class="n">model_output_s3_uri</span><span class="p">,</span> 
+    <span class="n">max_candidates</span><span class="o">=</span><span class="n">max_candidates</span><span class="p">,</span>
+    <span class="n">sagemaker_session</span><span class="o">=</span><span class="n">sess</span><span class="p">,</span>
+    <span class="n">role</span><span class="o">=</span><span class="n">role</span><span class="p">,</span>
+    <span class="n">max_runtime_per_training_job_in_seconds</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span>
+    <span class="n">total_job_runtime_in_seconds</span><span class="o">=</span><span class="mi">7200</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Launch-the-Autopilot-job">Launch the Autopilot job<a class="anchor-link" href="#Launch-the-Autopilot-job"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we call the  <code>fit</code> function of the configured estimator passing the S3 bucket input data path and the Autopilot job name.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">automl</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">autopilot_train_s3_uri</span><span class="p">,</span> 
+    <span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">,</span> 
+    <span class="n">wait</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+    <span class="n">logs</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Track-Autopilot-job-progress">Track Autopilot job progress<a class="anchor-link" href="#Track-Autopilot-job-progress"> </a></h2><p>Once the Autopilot job has been launched, we can track the job progress directly from the notebook using the SDK capabilities.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Autopilot-job-description">Autopilot job description<a class="anchor-link" href="#Autopilot-job-description"> </a></h3><p>Function <code>describe_auto_ml_job</code> of the Amazon SageMaker service returns the information about the AutoML job in dictionary format. We can review the response syntax and response elements in the <a href="https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJob.html"><strong>documentation</strong></a>.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Autopilot-job-status">Autopilot job status<a class="anchor-link" href="#Autopilot-job-status"> </a></h3><p>To track the job progress we can use two response elements: <code>AutoMLJobStatus</code> and <code>AutoMLJobSecondaryStatus</code>, which correspond to the primary (Completed | InProgress | Failed | Stopped | Stopping) and secondary (AnalyzingData | FeatureEngineering | ModelTuning etc.) job states respectively. To see if the AutoML job has started, we can check the existence of the <code>AutoMLJobStatus</code> and <code>AutoMLJobSecondaryStatus</code> elements in the job description response.</p>
+<p>We will use the following scheme to track the job progress:</p>
+<div class="highlight"><pre><span></span><span class="c1"># check if the job is still at certain stage</span>
+<span class="k">while</span> <span class="p">[</span><span class="n">check</span> <span class="s1">&#39;AutoMLJobStatus&#39;</span> <span class="ow">and</span> <span class="s1">&#39;AutoMLJobSecondaryStatus&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">job_description_response</span><span class="p">:</span>
+    <span class="c1"># update the job description response</span>
+    <span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">AutoMLJobName</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+    <span class="c1"># print the message the Autopilot job is in the stage ...</span>
+    <span class="nb">print</span><span class="p">([</span><span class="n">message</span><span class="p">])</span>
+    <span class="c1"># get a time step to check the status again</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Autopilot job complete...&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">while</span> <span class="s1">&#39;AutoMLJobStatus&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">job_description_response</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="s1">&#39;AutoMLJobSecondaryStatus&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">job_description_response</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[INFO] Autopilot job has not yet started. Please wait. &#39;</span><span class="p">)</span>
+    <span class="c1"># function `json.dumps` encodes JSON string for printing.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">job_description_response</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[INFO] Waiting for Autopilot job to start...&#39;</span><span class="p">)</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] AutoML job started.&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[OK] AutoML job started.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Review-the-SageMaker-processing-jobs">Review the SageMaker processing jobs<a class="anchor-link" href="#Review-the-SageMaker-processing-jobs"> </a></h3><p>The Autopilot creates the required SageMaker processing jobs during the run:</p>
+<ul>
+<li>First processing job (data splitter) checks the data sanity, performs stratified shuffling and splits the data into training and validation. </li>
+<li>Second processing job (candidate generator) first streams through the data to compute statistics for the dataset. Then, uses these statistics to identify the problem type, and possible types of every column-predictor: numeric, categorical, natural language, etc.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Wait-for-the-data-analysis-step-to-finish">Wait for the data analysis step to finish<a class="anchor-link" href="#Wait-for-the-data-analysis-step-to-finish"> </a></h3><p>Here we will use the same scheme as above to check the completion of the data analysis step. This step can be identified with the (primary) job status value <code>InProgress</code> and secondary job status values <code>Starting</code> and then <code>AnalyzingData</code>.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
+
+<span class="n">job_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobStatus&#39;</span><span class="p">]</span>
+<span class="n">job_sec_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobSecondaryStatus&#39;</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="n">job_status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Stopped&#39;</span><span class="p">,</span> <span class="s1">&#39;Failed&#39;</span><span class="p">):</span>
+    <span class="k">while</span> <span class="n">job_status</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;InProgress&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">job_sec_status</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Starting&#39;</span><span class="p">,</span> <span class="s1">&#39;AnalyzingData&#39;</span><span class="p">):</span>
+        <span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+        <span class="n">job_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobStatus&#39;</span><span class="p">]</span>
+        <span class="n">job_sec_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobSecondaryStatus&#39;</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">job_status</span><span class="p">,</span> <span class="n">job_sec_status</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] Data analysis phase completed.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">job_description_response</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>InProgress FeatureEngineering
+[OK] Data analysis phase completed.
+
+{
+    &#34;AutoMLJobArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:automl-job/automl-dm-1675608463&#34;,
+    &#34;AutoMLJobArtifacts&#34;: {
+        &#34;CandidateDefinitionNotebookLocation&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/sagemaker-automl-candidates/automl-dm-1675608463-pr-1-210c7900f5854fdc89ce01c59579c034fb883/notebooks/SageMakerAutopilotCandidateDefinitionNotebook.ipynb&#34;,
+        &#34;DataExplorationNotebookLocation&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/sagemaker-automl-candidates/automl-dm-1675608463-pr-1-210c7900f5854fdc89ce01c59579c034fb883/notebooks/SageMakerAutopilotDataExplorationNotebook.ipynb&#34;
+    },
+    &#34;AutoMLJobConfig&#34;: {
+        &#34;CompletionCriteria&#34;: {
+            &#34;MaxAutoMLJobRuntimeInSeconds&#34;: 7200,
+            &#34;MaxCandidates&#34;: 3,
+            &#34;MaxRuntimePerTrainingJobInSeconds&#34;: 1200
+        },
+        &#34;SecurityConfig&#34;: {
+            &#34;EnableInterContainerTrafficEncryption&#34;: false
+        }
+    },
+    &#34;AutoMLJobName&#34;: &#34;automl-dm-1675608463&#34;,
+    &#34;AutoMLJobSecondaryStatus&#34;: &#34;FeatureEngineering&#34;,
+    &#34;AutoMLJobStatus&#34;: &#34;InProgress&#34;,
+    &#34;CreationTime&#34;: &#34;2023-02-05 14:47:43.853000+00:00&#34;,
+    &#34;GenerateCandidateDefinitionsOnly&#34;: false,
+    &#34;InputDataConfig&#34;: [
+        {
+            &#34;ChannelType&#34;: &#34;training&#34;,
+            &#34;ContentType&#34;: &#34;text/csv;header=present&#34;,
+            &#34;DataSource&#34;: {
+                &#34;S3DataSource&#34;: {
+                    &#34;S3DataType&#34;: &#34;S3Prefix&#34;,
+                    &#34;S3Uri&#34;: &#34;s3://sagemaker-us-east-1-491783890788/auto-ml-input-data/womens_clothing_ecommerce_reviews_balanced_for_autopilot.csv&#34;
+                }
+            },
+            &#34;TargetAttributeName&#34;: &#34;sentiment&#34;
+        }
+    ],
+    &#34;LastModifiedTime&#34;: &#34;2023-02-05 14:56:15.134000+00:00&#34;,
+    &#34;OutputDataConfig&#34;: {
+        &#34;S3OutputPath&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot&#34;
+    },
+    &#34;ResolvedAttributes&#34;: {
+        &#34;AutoMLJobObjective&#34;: {
+            &#34;MetricName&#34;: &#34;Accuracy&#34;
+        },
+        &#34;CompletionCriteria&#34;: {
+            &#34;MaxAutoMLJobRuntimeInSeconds&#34;: 7200,
+            &#34;MaxCandidates&#34;: 3,
+            &#34;MaxRuntimePerTrainingJobInSeconds&#34;: 1200
+        },
+        &#34;ProblemType&#34;: &#34;MulticlassClassification&#34;
+    },
+    &#34;ResponseMetadata&#34;: {
+        &#34;HTTPHeaders&#34;: {
+            &#34;content-length&#34;: &#34;1815&#34;,
+            &#34;content-type&#34;: &#34;application/x-amz-json-1.1&#34;,
+            &#34;date&#34;: &#34;Sun, 05 Feb 2023 14:56:16 GMT&#34;,
+            &#34;x-amzn-requestid&#34;: &#34;0faeba6e-7645-46d4-a41d-658ebc1167e8&#34;
+        },
+        &#34;HTTPStatusCode&#34;: 200,
+        &#34;RequestId&#34;: &#34;0faeba6e-7645-46d4-a41d-658ebc1167e8&#34;,
+        &#34;RetryAttempts&#34;: 0
+    },
+    &#34;RoleArn&#34;: &#34;arn:aws:iam::491783890788:role/sagemaker-studio-vpc-firewall-us-east-1-sagemaker-execution-role&#34;
+}
+CPU times: user 26.6 ms, sys: 43 µs, total: 26.7 ms
+Wall time: 15.2 s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="View-generated-notebooks">View generated notebooks<a class="anchor-link" href="#View-generated-notebooks"> </a></h3><p>Once data analysis is complete, SageMaker AutoPilot generates two notebooks:</p>
+<ul>
+<li><a href="https://nbviewer.org/github/pranath/pds/blob/main/SageMakerAutopilotDataExplorationNotebook.ipynb">Data exploration</a></li>
+<li><a href="https://nbviewer.org/github/pranath/pds/blob/main/SageMakerAutopilotCandidateDefinitionNotebook.ipynb">Candidate definition</a></li>
+</ul>
+<p>Notebooks are included in the AutoML job artifacts generated during the run. Before checking the existence of the notebooks, we can check if the artifacts have been generated.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will use the status check scheme described above. The generation of artifacts can be identified by existence of <code>AutoMLJobArtifacts</code> element in the keys of the job description response.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>  
+
+<span class="c1"># keep in the while loop until the Autopilot job artifacts will be generated</span>
+<span class="k">while</span> <span class="s1">&#39;AutoMLJobArtifacts&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">job_description_response</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> 
+    <span class="c1"># update the information about the running Autopilot job</span>
+    <span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span> 
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[INFO] Autopilot job has not yet generated the artifacts. Please wait. &#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">job_description_response</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[INFO] Waiting for AutoMLJobArtifacts...&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] AutoMLJobArtifacts generated.&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[OK] AutoMLJobArtifacts generated.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We need to wait for Autopilot to make the notebooks available.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will again use the status check scheme described above. Notebooks creation can be identified by existence of <code>DataExplorationNotebookLocation</code> element in the keys of the <code>job_description_response['AutoMLJobArtifacts']</code> dictionary.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span> 
+
+<span class="c1"># keep in the while loop until the notebooks will be created</span>
+<span class="k">while</span> <span class="s1">&#39;DataExplorationNotebookLocation&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobArtifacts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span> 
+    <span class="c1"># update the information about the running Autopilot job</span>
+    <span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span> 
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[INFO] Autopilot job has not yet generated the notebooks. Please wait. &#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">job_description_response</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[INFO] Waiting for DataExplorationNotebookLocation...&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] DataExplorationNotebookLocation found.&#39;</span><span class="p">)</span>   
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[OK] DataExplorationNotebookLocation found.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We could review the generated resources in S3 directly. We can find the notebooks in the folder <code>notebooks</code> and download them by clicking on object <code>Actions</code>/<code>Object actions</code> -&gt; <code>Download as</code>/<code>Download</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Feature-engineering">Feature engineering<a class="anchor-link" href="#Feature-engineering"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will use the status check scheme described above. The feature engineering step can be identified with the (primary) job status value <code>InProgress</code> and secondary job status value <code>FeatureEngineering</code>.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
+
+<span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+<span class="n">job_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobStatus&#39;</span><span class="p">]</span>
+<span class="n">job_sec_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobSecondaryStatus&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">job_status</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">job_sec_status</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">job_status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Stopped&#39;</span><span class="p">,</span> <span class="s1">&#39;Failed&#39;</span><span class="p">):</span>
+    <span class="k">while</span> <span class="n">job_status</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;InProgress&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">job_sec_status</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;FeatureEngineering&#39;</span><span class="p">):</span> 
+        <span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+        <span class="n">job_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobStatus&#39;</span><span class="p">]</span>
+        <span class="n">job_sec_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobSecondaryStatus&#39;</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">job_status</span><span class="p">,</span> <span class="n">job_sec_status</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] Feature engineering phase completed.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">job_description_response</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>InProgress
+FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress FeatureEngineering
+InProgress ModelTuning
+[OK] Feature engineering phase completed.
+
+{
+    &#34;AutoMLJobArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:automl-job/automl-dm-1675608463&#34;,
+    &#34;AutoMLJobArtifacts&#34;: {
+        &#34;CandidateDefinitionNotebookLocation&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/sagemaker-automl-candidates/automl-dm-1675608463-pr-1-210c7900f5854fdc89ce01c59579c034fb883/notebooks/SageMakerAutopilotCandidateDefinitionNotebook.ipynb&#34;,
+        &#34;DataExplorationNotebookLocation&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/sagemaker-automl-candidates/automl-dm-1675608463-pr-1-210c7900f5854fdc89ce01c59579c034fb883/notebooks/SageMakerAutopilotDataExplorationNotebook.ipynb&#34;
+    },
+    &#34;AutoMLJobConfig&#34;: {
+        &#34;CompletionCriteria&#34;: {
+            &#34;MaxAutoMLJobRuntimeInSeconds&#34;: 7200,
+            &#34;MaxCandidates&#34;: 3,
+            &#34;MaxRuntimePerTrainingJobInSeconds&#34;: 1200
+        },
+        &#34;SecurityConfig&#34;: {
+            &#34;EnableInterContainerTrafficEncryption&#34;: false
+        }
+    },
+    &#34;AutoMLJobName&#34;: &#34;automl-dm-1675608463&#34;,
+    &#34;AutoMLJobSecondaryStatus&#34;: &#34;ModelTuning&#34;,
+    &#34;AutoMLJobStatus&#34;: &#34;InProgress&#34;,
+    &#34;CreationTime&#34;: &#34;2023-02-05 14:47:43.853000+00:00&#34;,
+    &#34;GenerateCandidateDefinitionsOnly&#34;: false,
+    &#34;InputDataConfig&#34;: [
+        {
+            &#34;ChannelType&#34;: &#34;training&#34;,
+            &#34;ContentType&#34;: &#34;text/csv;header=present&#34;,
+            &#34;DataSource&#34;: {
+                &#34;S3DataSource&#34;: {
+                    &#34;S3DataType&#34;: &#34;S3Prefix&#34;,
+                    &#34;S3Uri&#34;: &#34;s3://sagemaker-us-east-1-491783890788/auto-ml-input-data/womens_clothing_ecommerce_reviews_balanced_for_autopilot.csv&#34;
+                }
+            },
+            &#34;TargetAttributeName&#34;: &#34;sentiment&#34;
+        }
+    ],
+    &#34;LastModifiedTime&#34;: &#34;2023-02-05 15:04:28.632000+00:00&#34;,
+    &#34;OutputDataConfig&#34;: {
+        &#34;S3OutputPath&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot&#34;
+    },
+    &#34;ResolvedAttributes&#34;: {
+        &#34;AutoMLJobObjective&#34;: {
+            &#34;MetricName&#34;: &#34;Accuracy&#34;
+        },
+        &#34;CompletionCriteria&#34;: {
+            &#34;MaxAutoMLJobRuntimeInSeconds&#34;: 7200,
+            &#34;MaxCandidates&#34;: 3,
+            &#34;MaxRuntimePerTrainingJobInSeconds&#34;: 1200
+        },
+        &#34;ProblemType&#34;: &#34;MulticlassClassification&#34;
+    },
+    &#34;ResponseMetadata&#34;: {
+        &#34;HTTPHeaders&#34;: {
+            &#34;content-length&#34;: &#34;1808&#34;,
+            &#34;content-type&#34;: &#34;application/x-amz-json-1.1&#34;,
+            &#34;date&#34;: &#34;Sun, 05 Feb 2023 15:04:28 GMT&#34;,
+            &#34;x-amzn-requestid&#34;: &#34;eecffe9b-ef5e-4e69-b4ca-d0b0b3a95be7&#34;
+        },
+        &#34;HTTPStatusCode&#34;: 200,
+        &#34;RequestId&#34;: &#34;eecffe9b-ef5e-4e69-b4ca-d0b0b3a95be7&#34;,
+        &#34;RetryAttempts&#34;: 0
+    },
+    &#34;RoleArn&#34;: &#34;arn:aws:iam::491783890788:role/sagemaker-studio-vpc-firewall-us-east-1-sagemaker-execution-role&#34;
+}
+CPU times: user 378 ms, sys: 49.3 ms, total: 427 ms
+Wall time: 7min 7s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Model-training-and-tuning">Model training and tuning<a class="anchor-link" href="#Model-training-and-tuning"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can use the status check scheme described above. the model tuning step can be identified with the (primary) job status value <code>InProgress</code> and secondary job status value <code>ModelTuning</code>.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
+
+<span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+<span class="n">job_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobStatus&#39;</span><span class="p">]</span>
+<span class="n">job_sec_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobSecondaryStatus&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">job_status</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">job_sec_status</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">job_status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Stopped&#39;</span><span class="p">,</span> <span class="s1">&#39;Failed&#39;</span><span class="p">):</span>
+    <span class="k">while</span> <span class="n">job_status</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;InProgress&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">job_sec_status</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ModelTuning&#39;</span><span class="p">):</span> 
+        <span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+        <span class="n">job_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobStatus&#39;</span><span class="p">]</span>
+        <span class="n">job_sec_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobSecondaryStatus&#39;</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">job_status</span><span class="p">,</span> <span class="n">job_sec_status</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] Model tuning phase completed.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">job_description_response</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>InProgress
+ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress ModelTuning
+InProgress MaxCandidatesReached
+[OK] Model tuning phase completed.
+
+{
+    &#34;AutoMLJobArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:automl-job/automl-dm-1675608463&#34;,
+    &#34;AutoMLJobArtifacts&#34;: {
+        &#34;CandidateDefinitionNotebookLocation&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/sagemaker-automl-candidates/automl-dm-1675608463-pr-1-210c7900f5854fdc89ce01c59579c034fb883/notebooks/SageMakerAutopilotCandidateDefinitionNotebook.ipynb&#34;,
+        &#34;DataExplorationNotebookLocation&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/sagemaker-automl-candidates/automl-dm-1675608463-pr-1-210c7900f5854fdc89ce01c59579c034fb883/notebooks/SageMakerAutopilotDataExplorationNotebook.ipynb&#34;
+    },
+    &#34;AutoMLJobConfig&#34;: {
+        &#34;CompletionCriteria&#34;: {
+            &#34;MaxAutoMLJobRuntimeInSeconds&#34;: 7200,
+            &#34;MaxCandidates&#34;: 3,
+            &#34;MaxRuntimePerTrainingJobInSeconds&#34;: 1200
+        },
+        &#34;SecurityConfig&#34;: {
+            &#34;EnableInterContainerTrafficEncryption&#34;: false
+        }
+    },
+    &#34;AutoMLJobName&#34;: &#34;automl-dm-1675608463&#34;,
+    &#34;AutoMLJobSecondaryStatus&#34;: &#34;MaxCandidatesReached&#34;,
+    &#34;AutoMLJobStatus&#34;: &#34;InProgress&#34;,
+    &#34;BestCandidate&#34;: {
+        &#34;CandidateName&#34;: &#34;automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#34;,
+        &#34;CandidateProperties&#34;: {
+            &#34;CandidateMetrics&#34;: [
+                {
+                    &#34;MetricName&#34;: &#34;F1macro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;F1macro&#34;,
+                    &#34;Value&#34;: 0.6152600049972534
+                },
+                {
+                    &#34;MetricName&#34;: &#34;PrecisionMacro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;PrecisionMacro&#34;,
+                    &#34;Value&#34;: 0.6158699989318848
+                },
+                {
+                    &#34;MetricName&#34;: &#34;Accuracy&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;Accuracy&#34;,
+                    &#34;Value&#34;: 0.6150500178337097
+                },
+                {
+                    &#34;MetricName&#34;: &#34;BalancedAccuracy&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;BalancedAccuracy&#34;,
+                    &#34;Value&#34;: 0.6150500178337097
+                },
+                {
+                    &#34;MetricName&#34;: &#34;LogLoss&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;LogLoss&#34;,
+                    &#34;Value&#34;: 0.843940019607544
+                },
+                {
+                    &#34;MetricName&#34;: &#34;RecallMacro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;RecallMacro&#34;,
+                    &#34;Value&#34;: 0.6150500178337097
+                }
+            ]
+        },
+        &#34;CandidateStatus&#34;: &#34;Completed&#34;,
+        &#34;CandidateSteps&#34;: [
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:processing-job/automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::ProcessingJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TrainingJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:transform-job/automl-dm-1675608463-dpp2-rpb-1-fd31c8d697b34a02a3472ce6d7557cd&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-dpp2-rpb-1-fd31c8d697b34a02a3472ce6d7557cd&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TransformJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TrainingJob&#34;
+            }
+        ],
+        &#34;CreationTime&#34;: &#34;2023-02-05 15:06:01+00:00&#34;,
+        &#34;EndTime&#34;: &#34;2023-02-05 15:07:54+00:00&#34;,
+        &#34;FinalAutoMLJobObjectiveMetric&#34;: {
+            &#34;MetricName&#34;: &#34;validation:accuracy&#34;,
+            &#34;Value&#34;: 0.6150500178337097
+        },
+        &#34;InferenceContainers&#34;: [
+            {
+                &#34;Environment&#34;: {
+                    &#34;AUTOML_SPARSE_ENCODE_RECORDIO_PROTOBUF&#34;: &#34;1&#34;,
+                    &#34;AUTOML_TRANSFORM_MODE&#34;: &#34;feature-transform&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;application/x-recordio-protobuf&#34;,
+                    &#34;SAGEMAKER_PROGRAM&#34;: &#34;sagemaker_serve&#34;,
+                    &#34;SAGEMAKER_SUBMIT_DIRECTORY&#34;: &#34;/opt/ml/model/code&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a/output/model.tar.gz&#34;
+            },
+            {
+                &#34;Environment&#34;: {
+                    &#34;MAX_CONTENT_LENGTH&#34;: &#34;20971520&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;text/csv&#34;,
+                    &#34;SAGEMAKER_INFERENCE_OUTPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_SUPPORTED&#34;: &#34;predicted_label,probability,probabilities&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgboost:1.3-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/tuning/automl-dm--dpp2-xgb/automl-dm-1675608463sujxUg8wYQX0-002-657fba80/output/model.tar.gz&#34;
+            },
+            {
+                &#34;Environment&#34;: {
+                    &#34;AUTOML_TRANSFORM_MODE&#34;: &#34;inverse-label-transform&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;text/csv&#34;,
+                    &#34;SAGEMAKER_INFERENCE_INPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_OUTPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_SUPPORTED&#34;: &#34;predicted_label,probability,labels,probabilities&#34;,
+                    &#34;SAGEMAKER_PROGRAM&#34;: &#34;sagemaker_serve&#34;,
+                    &#34;SAGEMAKER_SUBMIT_DIRECTORY&#34;: &#34;/opt/ml/model/code&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a/output/model.tar.gz&#34;
+            }
+        ],
+        &#34;LastModifiedTime&#34;: &#34;2023-02-05 15:09:06.585000+00:00&#34;,
+        &#34;ObjectiveStatus&#34;: &#34;Succeeded&#34;
+    },
+    &#34;CreationTime&#34;: &#34;2023-02-05 14:47:43.853000+00:00&#34;,
+    &#34;GenerateCandidateDefinitionsOnly&#34;: false,
+    &#34;InputDataConfig&#34;: [
+        {
+            &#34;ChannelType&#34;: &#34;training&#34;,
+            &#34;ContentType&#34;: &#34;text/csv;header=present&#34;,
+            &#34;DataSource&#34;: {
+                &#34;S3DataSource&#34;: {
+                    &#34;S3DataType&#34;: &#34;S3Prefix&#34;,
+                    &#34;S3Uri&#34;: &#34;s3://sagemaker-us-east-1-491783890788/auto-ml-input-data/womens_clothing_ecommerce_reviews_balanced_for_autopilot.csv&#34;
+                }
+            },
+            &#34;TargetAttributeName&#34;: &#34;sentiment&#34;
+        }
+    ],
+    &#34;LastModifiedTime&#34;: &#34;2023-02-05 15:09:06.661000+00:00&#34;,
+    &#34;OutputDataConfig&#34;: {
+        &#34;S3OutputPath&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot&#34;
+    },
+    &#34;ResolvedAttributes&#34;: {
+        &#34;AutoMLJobObjective&#34;: {
+            &#34;MetricName&#34;: &#34;Accuracy&#34;
+        },
+        &#34;CompletionCriteria&#34;: {
+            &#34;MaxAutoMLJobRuntimeInSeconds&#34;: 7200,
+            &#34;MaxCandidates&#34;: 3,
+            &#34;MaxRuntimePerTrainingJobInSeconds&#34;: 1200
+        },
+        &#34;ProblemType&#34;: &#34;MulticlassClassification&#34;
+    },
+    &#34;ResponseMetadata&#34;: {
+        &#34;HTTPHeaders&#34;: {
+            &#34;content-length&#34;: &#34;5731&#34;,
+            &#34;content-type&#34;: &#34;application/x-amz-json-1.1&#34;,
+            &#34;date&#34;: &#34;Sun, 05 Feb 2023 15:09:06 GMT&#34;,
+            &#34;x-amzn-requestid&#34;: &#34;d6af6156-cd79-4bf4-8025-52c85f36afa3&#34;
+        },
+        &#34;HTTPStatusCode&#34;: 200,
+        &#34;RequestId&#34;: &#34;d6af6156-cd79-4bf4-8025-52c85f36afa3&#34;,
+        &#34;RetryAttempts&#34;: 0
+    },
+    &#34;RoleArn&#34;: &#34;arn:aws:iam::491783890788:role/sagemaker-studio-vpc-firewall-us-east-1-sagemaker-execution-role&#34;
+}
+CPU times: user 241 ms, sys: 24.9 ms, total: 266 ms
+Wall time: 4min 12s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally, we can check the completion of the Autopilot job looking for the <code>Completed</code> job status.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
+
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+<span class="n">pprint</span><span class="p">(</span><span class="n">job_description_response</span><span class="p">)</span>
+<span class="n">job_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobStatus&#39;</span><span class="p">]</span>
+<span class="n">job_sec_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobSecondaryStatus&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Job status:  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job_status</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Secondary job status:  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job_sec_status</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">job_status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Stopped&#39;</span><span class="p">,</span> <span class="s1">&#39;Failed&#39;</span><span class="p">):</span>
+    <span class="k">while</span> <span class="n">job_status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;Completed&#39;</span><span class="p">):</span>
+        <span class="n">job_description_response</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">describe_auto_ml_job</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+        <span class="n">job_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobStatus&#39;</span><span class="p">]</span>
+        <span class="n">job_sec_status</span> <span class="o">=</span> <span class="n">job_description_response</span><span class="p">[</span><span class="s1">&#39;AutoMLJobSecondaryStatus&#39;</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Job status:  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job_status</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Secondary job status:  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job_sec_status</span><span class="p">))</span>        
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] Autopilot job completed.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Job status: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job_status</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Secondary job status: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">job_status</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{&#39;AutoMLJobArn&#39;: &#39;arn:aws:sagemaker:us-east-1:491783890788:automl-job/automl-dm-1675608463&#39;,
+ &#39;AutoMLJobArtifacts&#39;: {&#39;CandidateDefinitionNotebookLocation&#39;: &#39;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/sagemaker-automl-candidates/automl-dm-1675608463-pr-1-210c7900f5854fdc89ce01c59579c034fb883/notebooks/SageMakerAutopilotCandidateDefinitionNotebook.ipynb&#39;,
+                        &#39;DataExplorationNotebookLocation&#39;: &#39;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/sagemaker-automl-candidates/automl-dm-1675608463-pr-1-210c7900f5854fdc89ce01c59579c034fb883/notebooks/SageMakerAutopilotDataExplorationNotebook.ipynb&#39;},
+ &#39;AutoMLJobConfig&#39;: {&#39;CompletionCriteria&#39;: {&#39;MaxAutoMLJobRuntimeInSeconds&#39;: 7200,
+                                            &#39;MaxCandidates&#39;: 3,
+                                            &#39;MaxRuntimePerTrainingJobInSeconds&#39;: 1200},
+                     &#39;SecurityConfig&#39;: {&#39;EnableInterContainerTrafficEncryption&#39;: False}},
+ &#39;AutoMLJobName&#39;: &#39;automl-dm-1675608463&#39;,
+ &#39;AutoMLJobSecondaryStatus&#39;: &#39;MergingAutoMLTaskReports&#39;,
+ &#39;AutoMLJobStatus&#39;: &#39;InProgress&#39;,
+ &#39;BestCandidate&#39;: {&#39;CandidateName&#39;: &#39;automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#39;,
+                   &#39;CandidateProperties&#39;: {&#39;CandidateMetrics&#39;: [{&#39;MetricName&#39;: &#39;F1macro&#39;,
+                                                                 &#39;Set&#39;: &#39;Validation&#39;,
+                                                                 &#39;StandardMetricName&#39;: &#39;F1macro&#39;,
+                                                                 &#39;Value&#39;: 0.6152600049972534},
+                                                                {&#39;MetricName&#39;: &#39;PrecisionMacro&#39;,
+                                                                 &#39;Set&#39;: &#39;Validation&#39;,
+                                                                 &#39;StandardMetricName&#39;: &#39;PrecisionMacro&#39;,
+                                                                 &#39;Value&#39;: 0.6158699989318848},
+                                                                {&#39;MetricName&#39;: &#39;Accuracy&#39;,
+                                                                 &#39;Set&#39;: &#39;Validation&#39;,
+                                                                 &#39;StandardMetricName&#39;: &#39;Accuracy&#39;,
+                                                                 &#39;Value&#39;: 0.6150500178337097},
+                                                                {&#39;MetricName&#39;: &#39;BalancedAccuracy&#39;,
+                                                                 &#39;Set&#39;: &#39;Validation&#39;,
+                                                                 &#39;StandardMetricName&#39;: &#39;BalancedAccuracy&#39;,
+                                                                 &#39;Value&#39;: 0.6150500178337097},
+                                                                {&#39;MetricName&#39;: &#39;LogLoss&#39;,
+                                                                 &#39;Set&#39;: &#39;Validation&#39;,
+                                                                 &#39;StandardMetricName&#39;: &#39;LogLoss&#39;,
+                                                                 &#39;Value&#39;: 0.843940019607544},
+                                                                {&#39;MetricName&#39;: &#39;RecallMacro&#39;,
+                                                                 &#39;Set&#39;: &#39;Validation&#39;,
+                                                                 &#39;StandardMetricName&#39;: &#39;RecallMacro&#39;,
+                                                                 &#39;Value&#39;: 0.6150500178337097}]},
+                   &#39;CandidateStatus&#39;: &#39;Completed&#39;,
+                   &#39;CandidateSteps&#39;: [{&#39;CandidateStepArn&#39;: &#39;arn:aws:sagemaker:us-east-1:491783890788:processing-job/automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#39;,
+                                       &#39;CandidateStepName&#39;: &#39;automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#39;,
+                                       &#39;CandidateStepType&#39;: &#39;AWS::SageMaker::ProcessingJob&#39;},
+                                      {&#39;CandidateStepArn&#39;: &#39;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a&#39;,
+                                       &#39;CandidateStepName&#39;: &#39;automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a&#39;,
+                                       &#39;CandidateStepType&#39;: &#39;AWS::SageMaker::TrainingJob&#39;},
+                                      {&#39;CandidateStepArn&#39;: &#39;arn:aws:sagemaker:us-east-1:491783890788:transform-job/automl-dm-1675608463-dpp2-rpb-1-fd31c8d697b34a02a3472ce6d7557cd&#39;,
+                                       &#39;CandidateStepName&#39;: &#39;automl-dm-1675608463-dpp2-rpb-1-fd31c8d697b34a02a3472ce6d7557cd&#39;,
+                                       &#39;CandidateStepType&#39;: &#39;AWS::SageMaker::TransformJob&#39;},
+                                      {&#39;CandidateStepArn&#39;: &#39;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#39;,
+                                       &#39;CandidateStepName&#39;: &#39;automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#39;,
+                                       &#39;CandidateStepType&#39;: &#39;AWS::SageMaker::TrainingJob&#39;}],
+                   &#39;CreationTime&#39;: datetime.datetime(2023, 2, 5, 15, 6, 1, tzinfo=tzlocal()),
+                   &#39;EndTime&#39;: datetime.datetime(2023, 2, 5, 15, 7, 54, tzinfo=tzlocal()),
+                   &#39;FinalAutoMLJobObjectiveMetric&#39;: {&#39;MetricName&#39;: &#39;validation:accuracy&#39;,
+                                                     &#39;Value&#39;: 0.6150500178337097},
+                   &#39;InferenceContainers&#39;: [{&#39;Environment&#39;: {&#39;AUTOML_SPARSE_ENCODE_RECORDIO_PROTOBUF&#39;: &#39;1&#39;,
+                                                            &#39;AUTOML_TRANSFORM_MODE&#39;: &#39;feature-transform&#39;,
+                                                            &#39;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#39;: &#39;application/x-recordio-protobuf&#39;,
+                                                            &#39;SAGEMAKER_PROGRAM&#39;: &#39;sagemaker_serve&#39;,
+                                                            &#39;SAGEMAKER_SUBMIT_DIRECTORY&#39;: &#39;/opt/ml/model/code&#39;},
+                                            &#39;Image&#39;: &#39;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#39;,
+                                            &#39;ModelDataUrl&#39;: &#39;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a/output/model.tar.gz&#39;},
+                                           {&#39;Environment&#39;: {&#39;MAX_CONTENT_LENGTH&#39;: &#39;20971520&#39;,
+                                                            &#39;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#39;: &#39;text/csv&#39;,
+                                                            &#39;SAGEMAKER_INFERENCE_OUTPUT&#39;: &#39;predicted_label&#39;,
+                                                            &#39;SAGEMAKER_INFERENCE_SUPPORTED&#39;: &#39;predicted_label,probability,probabilities&#39;},
+                                            &#39;Image&#39;: &#39;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgboost:1.3-1-cpu-py3&#39;,
+                                            &#39;ModelDataUrl&#39;: &#39;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/tuning/automl-dm--dpp2-xgb/automl-dm-1675608463sujxUg8wYQX0-002-657fba80/output/model.tar.gz&#39;},
+                                           {&#39;Environment&#39;: {&#39;AUTOML_TRANSFORM_MODE&#39;: &#39;inverse-label-transform&#39;,
+                                                            &#39;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#39;: &#39;text/csv&#39;,
+                                                            &#39;SAGEMAKER_INFERENCE_INPUT&#39;: &#39;predicted_label&#39;,
+                                                            &#39;SAGEMAKER_INFERENCE_OUTPUT&#39;: &#39;predicted_label&#39;,
+                                                            &#39;SAGEMAKER_INFERENCE_SUPPORTED&#39;: &#39;predicted_label,probability,labels,probabilities&#39;,
+                                                            &#39;SAGEMAKER_PROGRAM&#39;: &#39;sagemaker_serve&#39;,
+                                                            &#39;SAGEMAKER_SUBMIT_DIRECTORY&#39;: &#39;/opt/ml/model/code&#39;},
+                                            &#39;Image&#39;: &#39;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#39;,
+                                            &#39;ModelDataUrl&#39;: &#39;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a/output/model.tar.gz&#39;}],
+                   &#39;LastModifiedTime&#39;: datetime.datetime(2023, 2, 5, 15, 9, 6, 585000, tzinfo=tzlocal()),
+                   &#39;ObjectiveStatus&#39;: &#39;Succeeded&#39;},
+ &#39;CreationTime&#39;: datetime.datetime(2023, 2, 5, 14, 47, 43, 853000, tzinfo=tzlocal()),
+ &#39;GenerateCandidateDefinitionsOnly&#39;: False,
+ &#39;InputDataConfig&#39;: [{&#39;ChannelType&#39;: &#39;training&#39;,
+                      &#39;ContentType&#39;: &#39;text/csv;header=present&#39;,
+                      &#39;DataSource&#39;: {&#39;S3DataSource&#39;: {&#39;S3DataType&#39;: &#39;S3Prefix&#39;,
+                                                      &#39;S3Uri&#39;: &#39;s3://sagemaker-us-east-1-491783890788/auto-ml-input-data/womens_clothing_ecommerce_reviews_balanced_for_autopilot.csv&#39;}},
+                      &#39;TargetAttributeName&#39;: &#39;sentiment&#39;}],
+ &#39;LastModifiedTime&#39;: datetime.datetime(2023, 2, 5, 15, 9, 7, 862000, tzinfo=tzlocal()),
+ &#39;OutputDataConfig&#39;: {&#39;S3OutputPath&#39;: &#39;s3://sagemaker-us-east-1-491783890788/autopilot&#39;},
+ &#39;ResolvedAttributes&#39;: {&#39;AutoMLJobObjective&#39;: {&#39;MetricName&#39;: &#39;Accuracy&#39;},
+                        &#39;CompletionCriteria&#39;: {&#39;MaxAutoMLJobRuntimeInSeconds&#39;: 7200,
+                                               &#39;MaxCandidates&#39;: 3,
+                                               &#39;MaxRuntimePerTrainingJobInSeconds&#39;: 1200},
+                        &#39;ProblemType&#39;: &#39;MulticlassClassification&#39;},
+ &#39;ResponseMetadata&#39;: {&#39;HTTPHeaders&#39;: {&#39;content-length&#39;: &#39;5735&#39;,
+                                      &#39;content-type&#39;: &#39;application/x-amz-json-1.1&#39;,
+                                      &#39;date&#39;: &#39;Sun, 05 Feb 2023 15:09:27 GMT&#39;,
+                                      &#39;x-amzn-requestid&#39;: &#39;5577738e-56f0-40ea-8ae0-9f4f512ecae8&#39;},
+                      &#39;HTTPStatusCode&#39;: 200,
+                      &#39;RequestId&#39;: &#39;5577738e-56f0-40ea-8ae0-9f4f512ecae8&#39;,
+                      &#39;RetryAttempts&#39;: 0},
+ &#39;RoleArn&#39;: &#39;arn:aws:iam::491783890788:role/sagemaker-studio-vpc-firewall-us-east-1-sagemaker-execution-role&#39;}
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  InProgress
+Secondary job status:  MergingAutoMLTaskReports
+Job status:  Completed
+Secondary job status:  Completed
+[OK] Autopilot job completed.
+
+CPU times: user 719 ms, sys: 63.7 ms, total: 783 ms
+Wall time: 7min 59s
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Compare-model-candidates">Compare model candidates<a class="anchor-link" href="#Compare-model-candidates"> </a></h3><p>Once model tuning is complete, we can view all the candidates (pipeline evaluations with different hyperparameter combinations) that were explored by AutoML and sort them by their final performance metric.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will list candidates generated by Autopilot sorted by accuracy from highest to lowest.</p>
+<p>To do this we will use the <code>list_candidates</code> function passing the Autopilot job name <code>auto_ml_job_name</code> with the accuracy field <code>FinalObjectiveMetricValue</code>. It returns the list of candidates with the information about them.</p>
+<div class="highlight"><pre><span></span><span class="n">candidates</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">list_candidates</span><span class="p">(</span>
+    <span class="n">job_name</span><span class="o">=...</span><span class="p">,</span> <span class="c1"># Autopilot job name</span>
+    <span class="n">sort_by</span><span class="o">=</span><span class="s1">&#39;...&#39;</span> <span class="c1"># accuracy field name</span>
+<span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">candidates</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">list_candidates</span><span class="p">(</span>
+    <span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">,</span> 
+    <span class="n">sort_by</span><span class="o">=</span><span class="s1">&#39;FinalObjectiveMetricValue&#39;</span> 
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can review the response syntax and response elements of the function <code>list_candidates</code> in the <a href="https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLCandidate.html"><strong>documentation</strong></a>. Now let's put the candidate existence check into the loop:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">while</span> <span class="n">candidates</span> <span class="o">==</span> <span class="p">[]:</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">list_candidates</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[INFO] Autopilot job is generating the candidates. Please wait.&#39;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] Candidates generated.&#39;</span><span class="p">)</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[OK] Candidates generated.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The information about each of the candidates is in the dictionary with the following keys:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>dict_keys([&#39;CandidateName&#39;, &#39;FinalAutoMLJobObjectiveMetric&#39;, &#39;ObjectiveStatus&#39;, &#39;CandidateSteps&#39;, &#39;CandidateStatus&#39;, &#39;InferenceContainers&#39;, &#39;CreationTime&#39;, &#39;EndTime&#39;, &#39;LastModifiedTime&#39;, &#39;CandidateProperties&#39;])
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>CandidateName</code> contains the candidate name and the <code>FinalAutoMLJobObjectiveMetric</code> element contains the metric information which can be used to identify the best candidate later. Let's check that they were generated.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">while</span> <span class="s1">&#39;CandidateName&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">list_candidates</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[INFO] Autopilot job is generating CandidateName. Please wait. &#39;</span><span class="p">)</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] CandidateName generated.&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[OK] CandidateName generated.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">while</span> <span class="s1">&#39;FinalAutoMLJobObjectiveMetric&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">list_candidates</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[INFO] Autopilot job is generating FinalAutoMLJobObjectiveMetric. Please wait. &#39;</span><span class="p">)</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] FinalAutoMLJobObjectiveMetric generated.&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[OK] FinalAutoMLJobObjectiveMetric generated.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[
+    {
+        &#34;CandidateName&#34;: &#34;automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#34;,
+        &#34;CandidateProperties&#34;: {
+            &#34;CandidateArtifactLocations&#34;: {
+                &#34;Explainability&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/documentation/explainability/output&#34;,
+                &#34;ModelInsights&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/documentation/model_monitor/output&#34;
+            },
+            &#34;CandidateMetrics&#34;: [
+                {
+                    &#34;MetricName&#34;: &#34;F1macro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;F1macro&#34;,
+                    &#34;Value&#34;: 0.6152600049972534
+                },
+                {
+                    &#34;MetricName&#34;: &#34;PrecisionMacro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;PrecisionMacro&#34;,
+                    &#34;Value&#34;: 0.6158699989318848
+                },
+                {
+                    &#34;MetricName&#34;: &#34;Accuracy&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;Accuracy&#34;,
+                    &#34;Value&#34;: 0.6150500178337097
+                },
+                {
+                    &#34;MetricName&#34;: &#34;BalancedAccuracy&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;BalancedAccuracy&#34;,
+                    &#34;Value&#34;: 0.6150500178337097
+                },
+                {
+                    &#34;MetricName&#34;: &#34;LogLoss&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;LogLoss&#34;,
+                    &#34;Value&#34;: 0.843940019607544
+                },
+                {
+                    &#34;MetricName&#34;: &#34;RecallMacro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;RecallMacro&#34;,
+                    &#34;Value&#34;: 0.6150500178337097
+                }
+            ]
+        },
+        &#34;CandidateStatus&#34;: &#34;Completed&#34;,
+        &#34;CandidateSteps&#34;: [
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:processing-job/automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::ProcessingJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TrainingJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:transform-job/automl-dm-1675608463-dpp2-rpb-1-fd31c8d697b34a02a3472ce6d7557cd&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-dpp2-rpb-1-fd31c8d697b34a02a3472ce6d7557cd&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TransformJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TrainingJob&#34;
+            }
+        ],
+        &#34;CreationTime&#34;: &#34;2023-02-05 15:06:01+00:00&#34;,
+        &#34;EndTime&#34;: &#34;2023-02-05 15:07:54+00:00&#34;,
+        &#34;FinalAutoMLJobObjectiveMetric&#34;: {
+            &#34;MetricName&#34;: &#34;validation:accuracy&#34;,
+            &#34;Value&#34;: 0.6150500178337097
+        },
+        &#34;InferenceContainers&#34;: [
+            {
+                &#34;Environment&#34;: {
+                    &#34;AUTOML_SPARSE_ENCODE_RECORDIO_PROTOBUF&#34;: &#34;1&#34;,
+                    &#34;AUTOML_TRANSFORM_MODE&#34;: &#34;feature-transform&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;application/x-recordio-protobuf&#34;,
+                    &#34;SAGEMAKER_PROGRAM&#34;: &#34;sagemaker_serve&#34;,
+                    &#34;SAGEMAKER_SUBMIT_DIRECTORY&#34;: &#34;/opt/ml/model/code&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a/output/model.tar.gz&#34;
+            },
+            {
+                &#34;Environment&#34;: {
+                    &#34;MAX_CONTENT_LENGTH&#34;: &#34;20971520&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;text/csv&#34;,
+                    &#34;SAGEMAKER_INFERENCE_OUTPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_SUPPORTED&#34;: &#34;predicted_label,probability,probabilities&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgboost:1.3-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/tuning/automl-dm--dpp2-xgb/automl-dm-1675608463sujxUg8wYQX0-002-657fba80/output/model.tar.gz&#34;
+            },
+            {
+                &#34;Environment&#34;: {
+                    &#34;AUTOML_TRANSFORM_MODE&#34;: &#34;inverse-label-transform&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;text/csv&#34;,
+                    &#34;SAGEMAKER_INFERENCE_INPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_OUTPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_SUPPORTED&#34;: &#34;predicted_label,probability,labels,probabilities&#34;,
+                    &#34;SAGEMAKER_PROGRAM&#34;: &#34;sagemaker_serve&#34;,
+                    &#34;SAGEMAKER_SUBMIT_DIRECTORY&#34;: &#34;/opt/ml/model/code&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a/output/model.tar.gz&#34;
+            }
+        ],
+        &#34;LastModifiedTime&#34;: &#34;2023-02-05 15:09:06.585000+00:00&#34;,
+        &#34;ObjectiveStatus&#34;: &#34;Succeeded&#34;
+    },
+    {
+        &#34;CandidateName&#34;: &#34;automl-dm-1675608463sujxUg8wYQX0-001-5d775b4b&#34;,
+        &#34;CandidateProperties&#34;: {
+            &#34;CandidateMetrics&#34;: [
+                {
+                    &#34;MetricName&#34;: &#34;F1macro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;F1macro&#34;,
+                    &#34;Value&#34;: 0.6157000064849854
+                },
+                {
+                    &#34;MetricName&#34;: &#34;PrecisionMacro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;PrecisionMacro&#34;,
+                    &#34;Value&#34;: 0.6168199777603149
+                },
+                {
+                    &#34;MetricName&#34;: &#34;Accuracy&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;Accuracy&#34;,
+                    &#34;Value&#34;: 0.6149100065231323
+                },
+                {
+                    &#34;MetricName&#34;: &#34;BalancedAccuracy&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;BalancedAccuracy&#34;,
+                    &#34;Value&#34;: 0.6149100065231323
+                },
+                {
+                    &#34;MetricName&#34;: &#34;LogLoss&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;LogLoss&#34;,
+                    &#34;Value&#34;: 0.8395400047302246
+                },
+                {
+                    &#34;MetricName&#34;: &#34;RecallMacro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;RecallMacro&#34;,
+                    &#34;Value&#34;: 0.6149100065231323
+                }
+            ]
+        },
+        &#34;CandidateStatus&#34;: &#34;Completed&#34;,
+        &#34;CandidateSteps&#34;: [
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:processing-job/automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::ProcessingJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463-dpp0-1-b325f697683a4300957f609440a1906660e&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-dpp0-1-b325f697683a4300957f609440a1906660e&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TrainingJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:transform-job/automl-dm-1675608463-dpp0-rpb-1-57a73878e9f24b9dbe23bf82b200317&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-dpp0-rpb-1-57a73878e9f24b9dbe23bf82b200317&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TransformJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463sujxUg8wYQX0-001-5d775b4b&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463sujxUg8wYQX0-001-5d775b4b&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TrainingJob&#34;
+            }
+        ],
+        &#34;CreationTime&#34;: &#34;2023-02-05 15:05:53+00:00&#34;,
+        &#34;EndTime&#34;: &#34;2023-02-05 15:07:46+00:00&#34;,
+        &#34;FinalAutoMLJobObjectiveMetric&#34;: {
+            &#34;MetricName&#34;: &#34;validation:accuracy&#34;,
+            &#34;Value&#34;: 0.6149100065231323
+        },
+        &#34;InferenceContainers&#34;: [
+            {
+                &#34;Environment&#34;: {
+                    &#34;AUTOML_SPARSE_ENCODE_RECORDIO_PROTOBUF&#34;: &#34;1&#34;,
+                    &#34;AUTOML_TRANSFORM_MODE&#34;: &#34;feature-transform&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;application/x-recordio-protobuf&#34;,
+                    &#34;SAGEMAKER_PROGRAM&#34;: &#34;sagemaker_serve&#34;,
+                    &#34;SAGEMAKER_SUBMIT_DIRECTORY&#34;: &#34;/opt/ml/model/code&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp0-1-b325f697683a4300957f609440a1906660e/output/model.tar.gz&#34;
+            },
+            {
+                &#34;Environment&#34;: {
+                    &#34;MAX_CONTENT_LENGTH&#34;: &#34;20971520&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;text/csv&#34;,
+                    &#34;SAGEMAKER_INFERENCE_OUTPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_SUPPORTED&#34;: &#34;predicted_label,probability,probabilities&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgboost:1.3-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/tuning/automl-dm--dpp0-xgb/automl-dm-1675608463sujxUg8wYQX0-001-5d775b4b/output/model.tar.gz&#34;
+            },
+            {
+                &#34;Environment&#34;: {
+                    &#34;AUTOML_TRANSFORM_MODE&#34;: &#34;inverse-label-transform&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;text/csv&#34;,
+                    &#34;SAGEMAKER_INFERENCE_INPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_OUTPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_SUPPORTED&#34;: &#34;predicted_label,probability,labels,probabilities&#34;,
+                    &#34;SAGEMAKER_PROGRAM&#34;: &#34;sagemaker_serve&#34;,
+                    &#34;SAGEMAKER_SUBMIT_DIRECTORY&#34;: &#34;/opt/ml/model/code&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp0-1-b325f697683a4300957f609440a1906660e/output/model.tar.gz&#34;
+            }
+        ],
+        &#34;LastModifiedTime&#34;: &#34;2023-02-05 15:09:06.515000+00:00&#34;,
+        &#34;ObjectiveStatus&#34;: &#34;Succeeded&#34;
+    },
+    {
+        &#34;CandidateName&#34;: &#34;automl-dm-1675608463sujxUg8wYQX0-003-a2d5723e&#34;,
+        &#34;CandidateProperties&#34;: {
+            &#34;CandidateMetrics&#34;: [
+                {
+                    &#34;MetricName&#34;: &#34;F1macro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;F1macro&#34;,
+                    &#34;Value&#34;: 0.39879000186920166
+                },
+                {
+                    &#34;MetricName&#34;: &#34;PrecisionMacro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;PrecisionMacro&#34;,
+                    &#34;Value&#34;: 0.39879998564720154
+                },
+                {
+                    &#34;MetricName&#34;: &#34;Accuracy&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;Accuracy&#34;,
+                    &#34;Value&#34;: 0.3990600109100342
+                },
+                {
+                    &#34;MetricName&#34;: &#34;BalancedAccuracy&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;BalancedAccuracy&#34;,
+                    &#34;Value&#34;: 0.3990600109100342
+                },
+                {
+                    &#34;MetricName&#34;: &#34;LogLoss&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;LogLoss&#34;,
+                    &#34;Value&#34;: 1.2047499418258667
+                },
+                {
+                    &#34;MetricName&#34;: &#34;RecallMacro&#34;,
+                    &#34;Set&#34;: &#34;Validation&#34;,
+                    &#34;StandardMetricName&#34;: &#34;RecallMacro&#34;,
+                    &#34;Value&#34;: 0.3990600109100342
+                }
+            ]
+        },
+        &#34;CandidateStatus&#34;: &#34;Completed&#34;,
+        &#34;CandidateSteps&#34;: [
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:processing-job/automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::ProcessingJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463-dpp1-1-8b1885df2d2546b0abb07a329d1fb466b29&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-dpp1-1-8b1885df2d2546b0abb07a329d1fb466b29&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TrainingJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:transform-job/automl-dm-1675608463-dpp1-csv-1-24672b27ae4440179a3b7b3070f05ec&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-dpp1-csv-1-24672b27ae4440179a3b7b3070f05ec&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TransformJob&#34;
+            },
+            {
+                &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463sujxUg8wYQX0-003-a2d5723e&#34;,
+                &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463sujxUg8wYQX0-003-a2d5723e&#34;,
+                &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TrainingJob&#34;
+            }
+        ],
+        &#34;CreationTime&#34;: &#34;2023-02-05 15:06:13+00:00&#34;,
+        &#34;EndTime&#34;: &#34;2023-02-05 15:08:50+00:00&#34;,
+        &#34;FinalAutoMLJobObjectiveMetric&#34;: {
+            &#34;MetricName&#34;: &#34;validation:accuracy&#34;,
+            &#34;Value&#34;: 0.3990600109100342
+        },
+        &#34;InferenceContainers&#34;: [
+            {
+                &#34;Environment&#34;: {
+                    &#34;AUTOML_TRANSFORM_MODE&#34;: &#34;feature-transform&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;application/x-recordio-protobuf&#34;,
+                    &#34;SAGEMAKER_PROGRAM&#34;: &#34;sagemaker_serve&#34;,
+                    &#34;SAGEMAKER_SUBMIT_DIRECTORY&#34;: &#34;/opt/ml/model/code&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp1-1-8b1885df2d2546b0abb07a329d1fb466b29/output/model.tar.gz&#34;
+            },
+            {
+                &#34;Environment&#34;: {
+                    &#34;MAX_CONTENT_LENGTH&#34;: &#34;20971520&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;text/csv&#34;,
+                    &#34;SAGEMAKER_INFERENCE_OUTPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_SUPPORTED&#34;: &#34;predicted_label,probability,probabilities&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgboost:1.3-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/tuning/automl-dm--dpp1-xgb/automl-dm-1675608463sujxUg8wYQX0-003-a2d5723e/output/model.tar.gz&#34;
+            },
+            {
+                &#34;Environment&#34;: {
+                    &#34;AUTOML_TRANSFORM_MODE&#34;: &#34;inverse-label-transform&#34;,
+                    &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;text/csv&#34;,
+                    &#34;SAGEMAKER_INFERENCE_INPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_OUTPUT&#34;: &#34;predicted_label&#34;,
+                    &#34;SAGEMAKER_INFERENCE_SUPPORTED&#34;: &#34;predicted_label,probability,labels,probabilities&#34;,
+                    &#34;SAGEMAKER_PROGRAM&#34;: &#34;sagemaker_serve&#34;,
+                    &#34;SAGEMAKER_SUBMIT_DIRECTORY&#34;: &#34;/opt/ml/model/code&#34;
+                },
+                &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#34;,
+                &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp1-1-8b1885df2d2546b0abb07a329d1fb466b29/output/model.tar.gz&#34;
+            }
+        ],
+        &#34;LastModifiedTime&#34;: &#34;2023-02-05 15:09:06.513000+00:00&#34;,
+        &#34;ObjectiveStatus&#34;: &#34;Succeeded&#34;
+    }
+]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can print the names of the candidates with their metric values:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;metric &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;FinalAutoMLJobObjectiveMetric&#39;</span><span class="p">][</span><span class="s1">&#39;MetricName&#39;</span><span class="p">]))</span>
+
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">candidates</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;  &quot;</span> 
+        <span class="o">+</span> <span class="n">candidate</span><span class="p">[</span><span class="s1">&#39;CandidateName&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;  &quot;</span> 
+        <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">candidate</span><span class="p">[</span><span class="s1">&#39;FinalAutoMLJobObjectiveMetric&#39;</span><span class="p">][</span><span class="s1">&#39;Value&#39;</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>metric validation:accuracy
+0  automl-dm-1675608463sujxUg8wYQX0-002-657fba80  0.6150500178337097
+1  automl-dm-1675608463sujxUg8wYQX0-001-5d775b4b  0.6149100065231323
+2  automl-dm-1675608463sujxUg8wYQX0-003-a2d5723e  0.3990600109100342
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Review-best-candidate">Review best candidate<a class="anchor-link" href="#Review-best-candidate"> </a></h3><p>Now that we have successfully completed the Autopilot job on the dataset and visualized the trials, we can get the information about the best candidate model and review it.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can use the <code>best_candidate</code> function passing the Autopilot job name. <strong>Note</strong>: This function will give an error if candidates have not been generated.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">candidates</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">list_candidates</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">candidates</span> <span class="o">!=</span> <span class="p">[]:</span>
+    <span class="n">best_candidate</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">best_candidate</span><span class="p">(</span>
+        <span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span> 
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">best_candidate</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{
+    &#34;CandidateName&#34;: &#34;automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#34;,
+    &#34;CandidateProperties&#34;: {
+        &#34;CandidateArtifactLocations&#34;: {
+            &#34;Explainability&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/documentation/explainability/output&#34;,
+            &#34;ModelInsights&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/documentation/model_monitor/output&#34;
+        },
+        &#34;CandidateMetrics&#34;: [
+            {
+                &#34;MetricName&#34;: &#34;F1macro&#34;,
+                &#34;Set&#34;: &#34;Validation&#34;,
+                &#34;StandardMetricName&#34;: &#34;F1macro&#34;,
+                &#34;Value&#34;: 0.6152600049972534
+            },
+            {
+                &#34;MetricName&#34;: &#34;PrecisionMacro&#34;,
+                &#34;Set&#34;: &#34;Validation&#34;,
+                &#34;StandardMetricName&#34;: &#34;PrecisionMacro&#34;,
+                &#34;Value&#34;: 0.6158699989318848
+            },
+            {
+                &#34;MetricName&#34;: &#34;Accuracy&#34;,
+                &#34;Set&#34;: &#34;Validation&#34;,
+                &#34;StandardMetricName&#34;: &#34;Accuracy&#34;,
+                &#34;Value&#34;: 0.6150500178337097
+            },
+            {
+                &#34;MetricName&#34;: &#34;BalancedAccuracy&#34;,
+                &#34;Set&#34;: &#34;Validation&#34;,
+                &#34;StandardMetricName&#34;: &#34;BalancedAccuracy&#34;,
+                &#34;Value&#34;: 0.6150500178337097
+            },
+            {
+                &#34;MetricName&#34;: &#34;LogLoss&#34;,
+                &#34;Set&#34;: &#34;Validation&#34;,
+                &#34;StandardMetricName&#34;: &#34;LogLoss&#34;,
+                &#34;Value&#34;: 0.843940019607544
+            },
+            {
+                &#34;MetricName&#34;: &#34;RecallMacro&#34;,
+                &#34;Set&#34;: &#34;Validation&#34;,
+                &#34;StandardMetricName&#34;: &#34;RecallMacro&#34;,
+                &#34;Value&#34;: 0.6150500178337097
+            }
+        ]
+    },
+    &#34;CandidateStatus&#34;: &#34;Completed&#34;,
+    &#34;CandidateSteps&#34;: [
+        {
+            &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:processing-job/automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#34;,
+            &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-db-1-ec0fb37f4b964d1a9485854c252aa8f0683f5&#34;,
+            &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::ProcessingJob&#34;
+        },
+        {
+            &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a&#34;,
+            &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a&#34;,
+            &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TrainingJob&#34;
+        },
+        {
+            &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:transform-job/automl-dm-1675608463-dpp2-rpb-1-fd31c8d697b34a02a3472ce6d7557cd&#34;,
+            &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463-dpp2-rpb-1-fd31c8d697b34a02a3472ce6d7557cd&#34;,
+            &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TransformJob&#34;
+        },
+        {
+            &#34;CandidateStepArn&#34;: &#34;arn:aws:sagemaker:us-east-1:491783890788:training-job/automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#34;,
+            &#34;CandidateStepName&#34;: &#34;automl-dm-1675608463sujxUg8wYQX0-002-657fba80&#34;,
+            &#34;CandidateStepType&#34;: &#34;AWS::SageMaker::TrainingJob&#34;
+        }
+    ],
+    &#34;CreationTime&#34;: &#34;2023-02-05 15:06:01+00:00&#34;,
+    &#34;EndTime&#34;: &#34;2023-02-05 15:07:54+00:00&#34;,
+    &#34;FinalAutoMLJobObjectiveMetric&#34;: {
+        &#34;MetricName&#34;: &#34;validation:accuracy&#34;,
+        &#34;Value&#34;: 0.6150500178337097
+    },
+    &#34;InferenceContainers&#34;: [
+        {
+            &#34;Environment&#34;: {
+                &#34;AUTOML_SPARSE_ENCODE_RECORDIO_PROTOBUF&#34;: &#34;1&#34;,
+                &#34;AUTOML_TRANSFORM_MODE&#34;: &#34;feature-transform&#34;,
+                &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;application/x-recordio-protobuf&#34;,
+                &#34;SAGEMAKER_PROGRAM&#34;: &#34;sagemaker_serve&#34;,
+                &#34;SAGEMAKER_SUBMIT_DIRECTORY&#34;: &#34;/opt/ml/model/code&#34;
+            },
+            &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#34;,
+            &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a/output/model.tar.gz&#34;
+        },
+        {
+            &#34;Environment&#34;: {
+                &#34;MAX_CONTENT_LENGTH&#34;: &#34;20971520&#34;,
+                &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;text/csv&#34;,
+                &#34;SAGEMAKER_INFERENCE_OUTPUT&#34;: &#34;predicted_label&#34;,
+                &#34;SAGEMAKER_INFERENCE_SUPPORTED&#34;: &#34;predicted_label,probability,probabilities&#34;
+            },
+            &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-xgboost:1.3-1-cpu-py3&#34;,
+            &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/tuning/automl-dm--dpp2-xgb/automl-dm-1675608463sujxUg8wYQX0-002-657fba80/output/model.tar.gz&#34;
+        },
+        {
+            &#34;Environment&#34;: {
+                &#34;AUTOML_TRANSFORM_MODE&#34;: &#34;inverse-label-transform&#34;,
+                &#34;SAGEMAKER_DEFAULT_INVOCATIONS_ACCEPT&#34;: &#34;text/csv&#34;,
+                &#34;SAGEMAKER_INFERENCE_INPUT&#34;: &#34;predicted_label&#34;,
+                &#34;SAGEMAKER_INFERENCE_OUTPUT&#34;: &#34;predicted_label&#34;,
+                &#34;SAGEMAKER_INFERENCE_SUPPORTED&#34;: &#34;predicted_label,probability,labels,probabilities&#34;,
+                &#34;SAGEMAKER_PROGRAM&#34;: &#34;sagemaker_serve&#34;,
+                &#34;SAGEMAKER_SUBMIT_DIRECTORY&#34;: &#34;/opt/ml/model/code&#34;
+            },
+            &#34;Image&#34;: &#34;683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-sklearn-automl:2.5-1-cpu-py3&#34;,
+            &#34;ModelDataUrl&#34;: &#34;s3://sagemaker-us-east-1-491783890788/autopilot/automl-dm-1675608463/data-processor-models/automl-dm-1675608463-dpp2-1-f8c17915c5bd4efbb7862d503ce9d50304a/output/model.tar.gz&#34;
+        }
+    ],
+    &#34;LastModifiedTime&#34;: &#34;2023-02-05 15:09:06.585000+00:00&#34;,
+    &#34;ObjectiveStatus&#34;: &#34;Succeeded&#34;
+}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Check the existence of the candidate name for the best candidate.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">while</span> <span class="s1">&#39;CandidateName&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">best_candidate</span><span class="p">:</span>
+    <span class="n">best_candidate</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">best_candidate</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[INFO] Autopilot Job is generating BestCandidate CandidateName. Please wait. &#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">best_candidate</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] BestCandidate CandidateName generated.&#39;</span><span class="p">)</span>  
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[OK] BestCandidate CandidateName generated.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Check the existence of the metric value for the best candidate.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">while</span> <span class="s1">&#39;FinalAutoMLJobObjectiveMetric&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">best_candidate</span><span class="p">:</span>
+    <span class="n">best_candidate</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">best_candidate</span><span class="p">(</span><span class="n">job_name</span><span class="o">=</span><span class="n">auto_ml_job_name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[INFO] Autopilot Job is generating BestCandidate FinalAutoMLJobObjectiveMetric. Please wait. &#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">best_candidate</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[OK] BestCandidate FinalAutoMLJobObjectiveMetric generated.&#39;</span><span class="p">)</span>  
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[OK] BestCandidate FinalAutoMLJobObjectiveMetric generated.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Print the information about the best candidate:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">best_candidate_identifier</span> <span class="o">=</span> <span class="n">best_candidate</span><span class="p">[</span><span class="s1">&#39;CandidateName&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Candidate name: &quot;</span> <span class="o">+</span> <span class="n">best_candidate_identifier</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Metric name: &quot;</span> <span class="o">+</span> <span class="n">best_candidate</span><span class="p">[</span><span class="s1">&#39;FinalAutoMLJobObjectiveMetric&#39;</span><span class="p">][</span><span class="s1">&#39;MetricName&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Metric value: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_candidate</span><span class="p">[</span><span class="s1">&#39;FinalAutoMLJobObjectiveMetric&#39;</span><span class="p">][</span><span class="s1">&#39;Value&#39;</span><span class="p">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Candidate name: automl-dm-1675608463sujxUg8wYQX0-002-657fba80
+Metric name: validation:accuracy
+Metric value: 0.6150500178337097
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Review-all-output-in-S3-bucket">Review all output in S3 bucket<a class="anchor-link" href="#Review-all-output-in-S3-bucket"> </a></h2><p>We can see the artifacts generated by Autopilot including the following:</p>
+
+<pre><code>data-processor-models/        # "models" learned to transform raw data into features 
+documentation/                # explainability and other documentation about your model
+preprocessed-data/            # data for train and validation
+sagemaker-automl-candidates/  # candidate models which autopilot compares
+transformed-data/             # candidate-specific data for train and validation
+tuning/                       # candidate-specific tuning results
+validations/                  # validation results</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Deploy-and-test-best-candidate-model">Deploy and test best candidate model<a class="anchor-link" href="#Deploy-and-test-best-candidate-model"> </a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Deploy-best-candidate-model">Deploy best candidate model<a class="anchor-link" href="#Deploy-best-candidate-model"> </a></h3><p>While batch transformations are supported, we will deploy our model as a REST Endpoint in this example.</p>
+<p>First, we need to customize the inference response. The inference containers generated by SageMaker Autopilot allow you to select the response content for predictions. By default the inference containers are configured to generate the <code>predicted_label</code>. But we can add <code>probability</code> into the list of inference response keys.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">inference_response_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;predicted_label&#39;</span><span class="p">,</span> <span class="s1">&#39;probability&#39;</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we will create a SageMaker endpoint from the best candidate generated by Autopilot. Wait for SageMaker to deploy the endpoint.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">autopilot_model</span> <span class="o">=</span> <span class="n">automl</span><span class="o">.</span><span class="n">deploy</span><span class="p">(</span>
+    <span class="n">initial_instance_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">instance_type</span><span class="o">=</span><span class="s1">&#39;ml.m5.large&#39;</span><span class="p">,</span>
+    <span class="n">candidate</span><span class="o">=</span><span class="n">best_candidate</span><span class="p">,</span>
+    <span class="n">inference_response_keys</span><span class="o">=</span><span class="n">inference_response_keys</span><span class="p">,</span>
+    <span class="n">predictor_cls</span><span class="o">=</span><span class="n">sagemaker</span><span class="o">.</span><span class="n">predictor</span><span class="o">.</span><span class="n">Predictor</span><span class="p">,</span>
+    <span class="n">serializer</span><span class="o">=</span><span class="n">sagemaker</span><span class="o">.</span><span class="n">serializers</span><span class="o">.</span><span class="n">JSONSerializer</span><span class="p">(),</span>
+    <span class="n">deserializer</span><span class="o">=</span><span class="n">sagemaker</span><span class="o">.</span><span class="n">deserializers</span><span class="o">.</span><span class="n">JSONDeserializer</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Endpoint name:  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">autopilot_model</span><span class="o">.</span><span class="n">endpoint_name</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>-------!
+Endpoint name:  sagemaker-sklearn-automl-2023-02-05-15-18-52-694
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Test-the-model">Test the model<a class="anchor-link" href="#Test-the-model"> </a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's invoke a few predictions for the actual reviews using the deployed endpoint to test our model.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">review_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;This product is great!&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;OK, but not great.&#39;</span><span class="p">,</span>
+               <span class="s1">&#39;This is not the right product.&#39;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">review</span> <span class="ow">in</span> <span class="n">review_list</span><span class="p">:</span>
+    
+    <span class="c1"># remove commas from the review since we&#39;re passing the inputs as a CSV</span>
+    <span class="n">review</span> <span class="o">=</span> <span class="n">review</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">sm_runtime</span><span class="o">.</span><span class="n">invoke_endpoint</span><span class="p">(</span>
+        <span class="n">EndpointName</span><span class="o">=</span><span class="n">autopilot_model</span><span class="o">.</span><span class="n">endpoint_name</span><span class="p">,</span> <span class="c1"># endpoint name</span>
+        <span class="n">ContentType</span><span class="o">=</span><span class="s1">&#39;text/csv&#39;</span><span class="p">,</span> <span class="c1"># type of input data</span>
+        <span class="n">Accept</span><span class="o">=</span><span class="s1">&#39;text/csv&#39;</span><span class="p">,</span> <span class="c1"># type of the inference in the response</span>
+        <span class="n">Body</span><span class="o">=</span><span class="n">review</span> <span class="c1"># review text</span>
+        <span class="p">)</span>
+
+    <span class="n">response_body</span><span class="o">=</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;Body&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Review: &#39;</span><span class="p">,</span> <span class="n">review</span><span class="p">,</span> <span class="s1">&#39; Predicated class: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response_body</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(-1 = Negative, 0=Neutral, 1=Positive)&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Review:  This product is great!  Predicated class: 1
+Review:  OK but not great.  Predicated class: 0
+Review:  This is not the right product.  Predicated class: -1
+(-1 = Negative, 0=Neutral, 1=Positive)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So we used Amazon SageMaker Autopilot to automatically find the best model, hyper-parameters, and feature-engineering scripts for our dataset. Autopilot uses a uniquely-transparent approach to AutoML by generating re-usable Python scripts and notebooks.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Acknowledgements">Acknowledgements<a class="anchor-link" href="#Acknowledgements"> </a></h2><p>I'd like to express my thanks to the great <a href="https://www.deeplearning.ai/courses/practical-data-science-specialization/">Deep Learning AI Practical Data Science on AWS Specialisation Course</a> which i completed, and acknowledge the use of some images and other materials from the training course in this article.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div>
+  
+  <a class="u-url" href="/aws/cloud-data-science/natural-language-processing/2023/02/05/train-model-aws-sagemaker-autopilot.html" hidden></a>
+</article><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="pranath/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+<script type="text/javascript" src="/js/lightbox.js"></script>
+<link rel="stylesheet" href="/css/lightbox.css">
+</body>
+
+</html>
