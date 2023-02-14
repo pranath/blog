@@ -8,16 +8,16 @@
 <meta name="generator" content="Jekyll v4.1.1" />
 <meta property="og:title" content="Optimize Models in the Cloud using AWS Automatic Model Tuning" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="When training ML models, hyperparameter tuning is a step taken to find the best performing training model. In article we will apply a random algorithm of Automated Hyperparameter Tuning to train a BERT-based natural language processing (NLP) classifier. The model analyzes customer feedback and classifies the messages into positive, neutral, and negative sentiments." />
-<meta property="og:description" content="When training ML models, hyperparameter tuning is a step taken to find the best performing training model. In article we will apply a random algorithm of Automated Hyperparameter Tuning to train a BERT-based natural language processing (NLP) classifier. The model analyzes customer feedback and classifies the messages into positive, neutral, and negative sentiments." />
+<meta name="description" content="When training ML models, hyperparameter tuning is a step taken to find the best performing training model. In this article we will apply a random algorithm of Automated Hyperparameter Tuning to train a BERT-based natural language processing (NLP) classifier. The model analyzes customer feedback and classifies the messages into positive, neutral, and negative sentiments." />
+<meta property="og:description" content="When training ML models, hyperparameter tuning is a step taken to find the best performing training model. In this article we will apply a random algorithm of Automated Hyperparameter Tuning to train a BERT-based natural language processing (NLP) classifier. The model analyzes customer feedback and classifies the messages into positive, neutral, and negative sentiments." />
 <link rel="canonical" href="https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/deep-learning/2023/02/14/optimize-models-in-the-cloud-using-aws-automatic-model-tuning.html" />
 <meta property="og:url" content="https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/deep-learning/2023/02/14/optimize-models-in-the-cloud-using-aws-automatic-model-tuning.html" />
 <meta property="og:site_name" content="livingdatalab" />
-<meta property="og:image" content="https://www.livingdatalab.com/images/aws0.png" />
+<meta property="og:image" content="https://www.livingdatalab.com/images/aws.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2023-02-14T00:00:00-06:00" />
 <script type="application/ld+json">
-{"url":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/deep-learning/2023/02/14/optimize-models-in-the-cloud-using-aws-automatic-model-tuning.html","@type":"BlogPosting","headline":"Optimize Models in the Cloud using AWS Automatic Model Tuning","dateModified":"2023-02-14T00:00:00-06:00","datePublished":"2023-02-14T00:00:00-06:00","image":"https://www.livingdatalab.com/images/aws0.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/deep-learning/2023/02/14/optimize-models-in-the-cloud-using-aws-automatic-model-tuning.html"},"description":"When training ML models, hyperparameter tuning is a step taken to find the best performing training model. In article we will apply a random algorithm of Automated Hyperparameter Tuning to train a BERT-based natural language processing (NLP) classifier. The model analyzes customer feedback and classifies the messages into positive, neutral, and negative sentiments.","@context":"https://schema.org"}</script>
+{"url":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/deep-learning/2023/02/14/optimize-models-in-the-cloud-using-aws-automatic-model-tuning.html","@type":"BlogPosting","headline":"Optimize Models in the Cloud using AWS Automatic Model Tuning","dateModified":"2023-02-14T00:00:00-06:00","datePublished":"2023-02-14T00:00:00-06:00","image":"https://www.livingdatalab.com/images/aws.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.livingdatalab.com/aws/cloud-data-science/natural-language-processing/deep-learning/2023/02/14/optimize-models-in-the-cloud-using-aws-automatic-model-tuning.html"},"description":"When training ML models, hyperparameter tuning is a step taken to find the best performing training model. In this article we will apply a random algorithm of Automated Hyperparameter Tuning to train a BERT-based natural language processing (NLP) classifier. The model analyzes customer feedback and classifies the messages into positive, neutral, and negative sentiments.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://www.livingdatalab.com/feed.xml" title="livingdatalab" /><!-- the google_analytics_id gets auto inserted from the config file -->
 
@@ -94,7 +94,7 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Optimize Models in the Cloud using AWS Automatic Model Tuning</h1><p class="page-description">When training ML models, hyperparameter tuning is a step taken to find the best performing training model. In article we will apply a random algorithm of Automated Hyperparameter Tuning to train a BERT-based natural language processing (NLP) classifier. The model analyzes customer feedback and classifies the messages into positive, neutral, and negative sentiments.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-02-14T00:00:00-06:00" itemprop="datePublished">
+    <h1 class="post-title p-name" itemprop="name headline">Optimize Models in the Cloud using AWS Automatic Model Tuning</h1><p class="page-description">When training ML models, hyperparameter tuning is a step taken to find the best performing training model. In this article we will apply a random algorithm of Automated Hyperparameter Tuning to train a BERT-based natural language processing (NLP) classifier. The model analyzes customer feedback and classifies the messages into positive, neutral, and negative sentiments.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-02-14T00:00:00-06:00" itemprop="datePublished">
         Feb 14, 2023
       </time>
        • <span class="read-time" title="Estimated read time">
@@ -151,7 +151,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#Evaluate-the-results">Evaluate the results </a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#Show-the-best-candidate">Show the best candidate </a></li>
-<li class="toc-entry toc-h3"><a href="#3.2.-Evaluate-the-best-candidate">3.2. Evaluate the best candidate </a></li>
+<li class="toc-entry toc-h3"><a href="#Evaluate-the-best-candidate">Evaluate the best candidate </a></li>
 <li class="toc-entry toc-h3"><a href="#Inspect-the-processed-output-data">Inspect the processed output data </a></li>
 </ul>
 </li>
@@ -1065,9 +1065,8 @@ Wall time: 24min 53s
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a name="c3w1-3.2."></a></p>
-<h3 id="3.2.-Evaluate-the-best-candidate">
-<a class="anchor" href="#3.2.-Evaluate-the-best-candidate" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.2. Evaluate the best candidate<a class="anchor-link" href="#3.2.-Evaluate-the-best-candidate"> </a>
+<h3 id="Evaluate-the-best-candidate">
+<a class="anchor" href="#Evaluate-the-best-candidate" aria-hidden="true"><span class="octicon octicon-link"></span></a>Evaluate the best candidate<a class="anchor-link" href="#Evaluate-the-best-candidate"> </a>
 </h3>
 <p>Let's pull the information about the best candidate from the dataframe and then take the Training Job name from the column <code>TrainingJobName</code>.</p>
 
